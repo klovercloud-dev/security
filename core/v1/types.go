@@ -10,7 +10,7 @@ type Resource struct {
 }
 
 type Permission struct {
-	PermissionType enums.PERMISION_TYPE `json:"permission_type" bson:"permission_type"`
+	PermissionName enums.PERMISION_TYPE `json:"permission_type" bson:"permission_type"`
 }
 
 type Role struct {
@@ -36,4 +36,8 @@ type User struct {
 	Status      string             `json:"status" bson:"status"`
 	CreatedDate string             `json:"created_date" bson:"created_date"`
 	UpdatedDate string             `json:"updated_date" bson:"updated_date"`
+}
+
+type RoleUpdateOption struct {
+	Option enums.ROLE_UPDATE_OPTION `json:"option" bson:"option"`
 }

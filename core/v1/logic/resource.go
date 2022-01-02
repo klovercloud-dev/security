@@ -7,14 +7,19 @@ import (
 )
 
 type resourceService struct {
-	repo repository.ResourceRepository
+	repo repository.Resource
+}
+
+func (r resourceService) Get() ([]v1.Resource, int64) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (r resourceService) Store(resource v1.Resource) error {
 	return r.repo.Store(resource)
 }
 
-func (r resourceService) Get(name string) (v1.Resource, error) {
+func (r resourceService) GetByName(name string) (v1.Resource, error) {
 	//TODO implement me
 	panic("implement me")
 }
@@ -25,7 +30,7 @@ func (r resourceService) Delete(name string) error {
 }
 
 // NewCompanyService returns Company type service
-func NewResourceService(repo repository.ResourceRepository) service.Resource {
+func NewResourceService(repo repository.Resource) service.Resource {
 	return &resourceService{
 		repo: repo,
 	}

@@ -35,3 +35,10 @@ const (
 	ROLE_SUPER_ADMIN = ROLE_TYPE("super_admin")
 	ROLE_MODERATOR   = ROLE_TYPE("moderator")
 )
+
+type ROLE_UPDATE_OPTION string
+
+const (
+	ROLE_UPDATE_OPTION_ADD    = ROLE_UPDATE_OPTION("add")
+	ROLE_UPDATE_OPTION_REMOVE = ROLE_UPDATE_OPTION("remove")
+)

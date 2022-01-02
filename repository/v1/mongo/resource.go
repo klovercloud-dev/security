@@ -17,6 +17,21 @@ type resourceRepository struct {
 	timeout time.Duration
 }
 
+func (r resourceRepository) Get() ([]v1.Resource, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r resourceRepository) GetByName(name string) (v1.Resource, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r resourceRepository) Delete(name string) error {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (r resourceRepository) Store(resource v1.Resource) error {
 	coll := r.manager.Db.Collection(ResourceCollection)
 	_, err := coll.InsertOne(r.manager.Ctx, resource)
@@ -26,7 +41,7 @@ func (r resourceRepository) Store(resource v1.Resource) error {
 	return nil
 }
 
-func NewResourceRepository(timeout int) repository.ResourceRepository {
+func NewResourceRepository(timeout int) repository.Resource {
 	return &resourceRepository{
 		manager: GetDmManager(),
 		timeout: time.Duration(timeout) * time.Second,
