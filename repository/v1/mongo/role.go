@@ -16,6 +16,11 @@ type roleRepository struct {
 	timeout time.Duration
 }
 
+func (r roleRepository) Update(name string, permissions []v1.Permission) error {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (r roleRepository) Store(role v1.Role) error {
 	//TODO implement me
 	panic("implement me")

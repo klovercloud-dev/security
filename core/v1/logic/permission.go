@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"errors"
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/repository"
 	"github.com/klovercloud-ci/core/v1/service"
@@ -11,18 +12,29 @@ type permissionService struct {
 }
 
 func (p permissionService) Store(permission v1.Permission) error {
-	//TODO implement me
-	panic("implement me")
+	listOfPermission, err := p.Get()
+	if err != nil {
+		return err
+	}
+	m := make(map[string]bool)
+
+	for _, v := range listOfPermission {
+		m[string(v.Name)] = true
+	}
+
+	if _, ok := m[string(permission.Name)]; !ok {
+		return errors.New("Permission not valid!")
+	}
+
+	return p.repo.Store(permission)
 }
 
 func (p permissionService) Get() ([]v1.Permission, error) {
-	//TODO implement me
-	panic("implement me")
+	return p.repo.Get()
 }
 
 func (p permissionService) Delete(permissionName string) error {
-	//TODO implement me
-	panic("implement me")
+	return p.repo.Delete(permissionName)
 }
 
 func NewPermissionService(repo repository.Permission) service.Permission {

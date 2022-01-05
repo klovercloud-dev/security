@@ -27,18 +27,9 @@ const (
 	PERMISSION_CREATE = PERMISION_TYPE("create")
 )
 
-type ROLE_TYPE string
-
-const (
-	ROLE_ADMIN       = ROLE_TYPE("admin")
-	ROLE_USER        = ROLE_TYPE("user")
-	ROLE_SUPER_ADMIN = ROLE_TYPE("super_admin")
-	ROLE_MODERATOR   = ROLE_TYPE("moderator")
-)
-
 type ROLE_UPDATE_OPTION string
 
 const (
-	ROLE_UPDATE_OPTION_ADD    = ROLE_UPDATE_OPTION("add")
-	ROLE_UPDATE_OPTION_REMOVE = ROLE_UPDATE_OPTION("remove")
+	APPEND_PERMISSION = ROLE_UPDATE_OPTION("append")
+	REMOVE_PERMISSION = ROLE_UPDATE_OPTION("remove")
 )

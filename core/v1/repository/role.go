@@ -7,6 +7,7 @@ type Role interface {
 	Get() ([]v1.Role, int64)
 	GetByName(name string) (v1.Role, error)
 	Delete(name string) error
+	Update(name string, permissions []v1.Permission) error
 	AppendPermissions(name string, permissions []v1.Permission) error
 	RemovePermissions(name string, permission []v1.Permission) error
 }

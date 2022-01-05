@@ -2,7 +2,6 @@ package v1
 
 import (
 	"github.com/klovercloud-ci/enums"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Resource struct {
@@ -10,7 +9,7 @@ type Resource struct {
 }
 
 type Permission struct {
-	PermissionName enums.PERMISION_TYPE `json:"permission_type" bson:"permission_type"`
+	Name enums.PERMISION_TYPE `json:"name" bson:"name"`
 }
 
 type Role struct {
@@ -21,21 +20,38 @@ type Role struct {
 type UserResourcePermission struct {
 	UserId    string `json:"user_id" bson:"user_id"`
 	Resources []struct {
-		Name  string
-		Roles []Role
+		Name  string `json:"name" bson:"name"`
+		Roles []Role `json:"roles" bson:"roles"`
 	} `json:"resources" bson:"resources"`
 }
 
 type User struct {
-	ID          primitive.ObjectID `json:"_id" bson:"_id"`
-	FirstName   string             `json:"first_name" bson:"first_name" binding:"required"`
-	LastName    string             `json:"last_name" bson:"last_name" binding:"required"`
-	Email       string             `json:"email" bson:"email" binding:"required"`
-	Password    string             `json:"password" bson:"password" binding:"required"`
-	Role        enums.ROLE_TYPE    `json:"role" bson:"role"`
-	Status      string             `json:"status" bson:"status"`
-	CreatedDate string             `json:"created_date" bson:"created_date"`
-	UpdatedDate string             `json:"updated_date" bson:"updated_date"`
+	ID           string `json:"_id" bson:"_id"`
+	FirstName    string `json:"first_name" bson:"first_name" `
+	LastName     string `json:"last_name" bson:"last_name"`
+	Email        string `json:"email" bson:"email" `
+	Password     string `json:"password" bson:"password" `
+	Status       string `json:"status" bson:"status"`
+	CreatedDate  string `json:"created_date" bson:"created_date"`
+	UpdatedDate  string `json:"updated_date" bson:"updated_date"`
+	Token        string `json:"token" bson:"token"`
+	RefreshToken string `json:"refresh_token" bson:"refresh_token"`
+	AuthType     string `json:"auth_type" bson:"auth_type"`
+}
+
+type UserRegistrationDto struct {
+	ID                 string                 `json:"_id" bson:"_id"`
+	FirstName          string                 `json:"first_name" bson:"first_name" `
+	LastName           string                 `json:"last_name" bson:"last_name"`
+	Email              string                 `json:"email" bson:"email" `
+	Password           string                 `json:"password" bson:"password" `
+	Status             string                 `json:"status" bson:"status"`
+	CreatedDate        string                 `json:"created_date" bson:"created_date"`
+	UpdatedDate        string                 `json:"updated_date" bson:"updated_date"`
+	Token              string                 `json:"token" bson:"token"`
+	RefreshToken       string                 `json:"refresh_token" bson:"refresh_token"`
+	AuthType           string                 `json:"auth_type" bson:"auth_type"`
+	ResourcePermission UserResourcePermission `json:"resource_permission" bson:"resource_permission"`
 }
 
 type RoleUpdateOption struct {

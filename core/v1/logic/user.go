@@ -1,37 +1,100 @@
 package logic
 
 import (
+	"errors"
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/repository"
 	"github.com/klovercloud-ci/core/v1/service"
+	"net/mail"
 )
 
 type userService struct {
 	userRepo repository.User
+	urpRepo  repository.UserResourcePermission
 }
 
-func (u userService) Store(user v1.User) error {
-	//TODO implement me
-	panic("implement me")
+func (u userService) Store(userWithResourcePermission v1.UserRegistrationDto) error {
+	user, userResourcePermission := getUserAndResourcePermissionBody(userWithResourcePermission)
+	mailFlag := mailValidation(userWithResourcePermission.Email)
+	if mailFlag == false {
+		return errors.New("email is not valid")
+	}
+	Users, _ := u.Get()
+	for _, v := range Users {
+		if v.Email == userWithResourcePermission.Email {
+			return errors.New("email is already registered")
+		}
+	}
+	if userWithResourcePermission.Password == "" {
+		return errors.New("password is empty")
+	} else if len(userWithResourcePermission.Password) < 8 {
+		return errors.New("password is minimum 8 characters")
+	}
+	err := u.userRepo.Store(user)
+	if err != nil {
+		return err
+	}
+
+	err = u.urpRepo.Store(userResourcePermission)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func getUserAndResourcePermissionBody(u v1.UserRegistrationDto) (v1.User, v1.UserResourcePermission) {
+	user := v1.User{
+		ID:           u.ID,
+		FirstName:    u.FirstName,
+		LastName:     u.LastName,
+		Email:        u.Email,
+		Password:     u.Password,
+		Status:       u.Status,
+		CreatedDate:  u.CreatedDate,
+		UpdatedDate:  u.UpdatedDate,
+		Token:        u.Token,
+		RefreshToken: u.RefreshToken,
+		AuthType:     u.AuthType,
+	}
+	userResourcePermission := v1.UserResourcePermission{
+		UserId:    u.ID,
+		Resources: u.ResourcePermission.Resources,
+	}
+	return user, userResourcePermission
 }
 
 func (u userService) Get() ([]v1.User, error) {
-	//TODO implement me
-	panic("implement me")
+	users, err := u.userRepo.Get()
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }
 
 func (u userService) GetByID(id string) (v1.User, error) {
-	//TODO implement me
-	panic("implement me")
+	user, err := u.userRepo.GetByID(id)
+	if err != nil {
+		return v1.User{}, err
+	}
+	return user, nil
 }
 
 func (u userService) Delete(id string) error {
-	//TODO implement me
-	panic("implement me")
+	err := u.userRepo.Delete(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func NewUserService(userRepo repository.User) service.User {
+func mailValidation(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return err == nil
+}
+
+func NewUserService(userRepo repository.User, urpRepo repository.UserResourcePermission) service.User {
 	return &userService{
 		userRepo: userRepo,
+		urpRepo:  urpRepo,
 	}
 }

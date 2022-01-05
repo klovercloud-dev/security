@@ -17,7 +17,7 @@ type resourceRepository struct {
 	timeout time.Duration
 }
 
-func (r resourceRepository) Get() ([]v1.Resource, error) {
+func (r resourceRepository) Get() ([]v1.Resource, int64) {
 	//TODO implement me
 	panic("implement me")
 }
