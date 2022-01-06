@@ -58,10 +58,7 @@ func (r roleService) Update(name string, permissions []v1.Permission, option v1.
 
 	m := make(map[string]bool)
 
-	listOfPermissions, err := r.permissionRepo.Get()
-	if err != nil {
-		return err
-	}
+	listOfPermissions := r.permissionRepo.Get()
 	for _, each := range listOfPermissions {
 		m[string(each.Name)] = true
 	}

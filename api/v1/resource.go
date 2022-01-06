@@ -10,7 +10,7 @@ import (
 )
 
 type resourceApi struct {
-	resourceService service.Resource
+	service service.Resource
 }
 
 func (r resourceApi) Store(context echo.Context) error {
@@ -19,7 +19,7 @@ func (r resourceApi) Store(context echo.Context) error {
 		log.Println("Input Error:", err.Error())
 		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
 	}
-	err := r.resourceService.Store(formData)
+	err := r.service.Store(formData)
 	if err != nil {
 		log.Println("[Error]:", err.Error())
 		return common.GenerateErrorResponse(context, nil, "Operation Failed!")
@@ -29,15 +29,32 @@ func (r resourceApi) Store(context echo.Context) error {
 }
 
 func (r resourceApi) Get(context echo.Context) error {
-	//TODO implement me
-	panic("implement me")
+	data := r.service.Get()
+	if len(data) == 0 {
+		return common.GenerateErrorResponse(context, nil, "No resource found!")
+	}
+	return common.GenerateSuccessResponse(context, data, nil, "Success!")
+}
+
+func (r resourceApi) GetByName(context echo.Context) error {
+	name := context.Param("resourceName")
+	data := r.service.GetByName(name)
+	if data.Name == "" {
+		return common.GenerateErrorResponse(context, nil, "Resource not found!")
+	}
+	return common.GenerateSuccessResponse(context, data, nil, "Success!")
 }
 
 func (r resourceApi) Delete(context echo.Context) error {
-	//TODO implement me
-	panic("implement me")
+	name := context.Param("resourceName")
+	err := r.service.Delete(name)
+	if err != nil {
+		log.Println("[Error]:", err.Error())
+		return common.GenerateErrorResponse(context, nil, "Operation Failed!")
+	}
+	return common.GenerateSuccessResponse(context, nil, nil, "Success!")
 }
 
 func NewResourceApi(resourceService service.Resource) api.Resource {
-	return &resourceApi{resourceService: resourceService}
+	return &resourceApi{service: resourceService}
 }
