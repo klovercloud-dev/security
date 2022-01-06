@@ -11,12 +11,12 @@ type resourceService struct {
 	repo repository.Resource
 }
 
-func (r resourceService) Get() ([]v1.Resource, int64) {
+func (r resourceService) Get() []v1.Resource {
 	return r.repo.Get()
 }
 
 func (r resourceService) Store(resource v1.Resource) error {
-	resources, _ := r.repo.Get()
+	resources := r.repo.Get()
 	for _, res := range resources {
 		if res.Name == resource.Name {
 			return errors.New("Resource already exists!")
@@ -25,7 +25,7 @@ func (r resourceService) Store(resource v1.Resource) error {
 	return r.repo.Store(resource)
 }
 
-func (r resourceService) GetByName(name string) (v1.Resource, error) {
+func (r resourceService) GetByName(name string) v1.Resource {
 	return r.repo.GetByName(name)
 }
 
