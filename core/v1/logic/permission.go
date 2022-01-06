@@ -12,10 +12,7 @@ type permissionService struct {
 }
 
 func (p permissionService) Store(permission v1.Permission) error {
-	listOfPermission, err := p.Get()
-	if err != nil {
-		return err
-	}
+	listOfPermission := p.Get()
 	m := make(map[string]bool)
 
 	for _, v := range listOfPermission {
@@ -29,7 +26,7 @@ func (p permissionService) Store(permission v1.Permission) error {
 	return p.repo.Store(permission)
 }
 
-func (p permissionService) Get() ([]v1.Permission, error) {
+func (p permissionService) Get() []v1.Permission {
 	return p.repo.Get()
 }
 

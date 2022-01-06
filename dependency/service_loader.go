@@ -12,3 +12,10 @@ func GetV1ResourceService() service.Resource {
 
 	return resource
 }
+
+func GetV1PermissionService() service.Permission {
+	var permission service.Permission
+	permission = logic.NewPermissionService(mongo.NewPermissionRepository(300))
+
+	return permission
+}
