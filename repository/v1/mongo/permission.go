@@ -21,7 +21,7 @@ func (p permissionRepository) Store(permission v1.Permission) error {
 	panic("implement me")
 }
 
-func (p permissionRepository) Get() ([]v1.Permission, error) {
+func (p permissionRepository) Get() []v1.Permission {
 	//TODO implement me
 	panic("implement me")
 }
@@ -31,9 +31,9 @@ func (p permissionRepository) Delete(permissionName string) error {
 	panic("implement me")
 }
 
-func newPermissionRepository(manager *dmManager, timeout time.Duration) repository.Permission {
+func NewPermissionRepository(timeout int) repository.Permission {
 	return &permissionRepository{
-		manager: manager,
-		timeout: timeout,
+		manager: GetDmManager(),
+		timeout: time.Duration(timeout) * time.Second,
 	}
 }
