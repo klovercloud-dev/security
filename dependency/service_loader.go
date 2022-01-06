@@ -19,3 +19,10 @@ func GetV1PermissionService() service.Permission {
 
 	return permission
 }
+
+func GetV1UserService() service.User {
+	var user service.User
+	user = logic.NewUserService(mongo.NewUserRepository(300), mongo.NewUserResourcePermissionRepository(300))
+
+	return user
+}

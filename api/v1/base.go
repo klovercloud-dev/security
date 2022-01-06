@@ -8,6 +8,7 @@ import (
 func Router(g *echo.Group) {
 	ResourceRouter(g.Group("/resource"))
 	PermissionRouter(g.Group("/permission"))
+	UserRouter(g.Group("/user"))
 }
 
 func ResourceRouter(g *echo.Group) {
@@ -23,4 +24,12 @@ func PermissionRouter(g *echo.Group) {
 	g.POST("", permissionApi.Store)
 	g.GET("", permissionApi.Get)
 	g.DELETE("", permissionApi.Delete)
+}
+
+func UserRouter(g *echo.Group) {
+	userApi := NewUserApi(dependency.GetV1UserService())
+	g.POST("", userApi.Store)
+	g.GET("", userApi.Get)
+	g.GET("/:id", userApi.GetByID)
+	g.DELETE("/:id", userApi.Delete)
 }

@@ -3,6 +3,7 @@ package mongo
 import (
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/repository"
+	"log"
 	"time"
 )
 
@@ -17,8 +18,12 @@ type userResourcePermissionRepository struct {
 }
 
 func (u userResourcePermissionRepository) Store(userResourcePermission v1.UserResourcePermission) error {
-	//TODO implement me
-	panic("implement me")
+	coll := u.manager.Db.Collection(UserResourcePermission)
+	_, err := coll.InsertOne(u.manager.Ctx, userResourcePermission)
+	if err != nil {
+		log.Println("[ERROR] Insert document:", err.Error())
+	}
+	return nil
 }
 
 func (u userResourcePermissionRepository) Get() ([]v1.UserResourcePermission, error) {
@@ -41,9 +46,9 @@ func (u userResourcePermissionRepository) Update(userResourcePermission v1.UserR
 	panic("implement me")
 }
 
-func NewUserResourcePermissionRepository(m *dmManager, timeout time.Duration) repository.UserResourcePermission {
+func NewUserResourcePermissionRepository(timeout int) repository.UserResourcePermission {
 	return &userResourcePermissionRepository{
-		manager: m,
-		timeout: timeout,
+		manager: GetDmManager(),
+		timeout: time.Duration(timeout),
 	}
 }

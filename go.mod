@@ -3,6 +3,7 @@ module github.com/klovercloud-ci
 go 1.17
 
 require (
+	github.com/google/uuid v1.1.2
 	github.com/joho/godotenv v1.3.0
 	github.com/labstack/echo/v4 v4.6.1
 	go.mongodb.org/mongo-driver v1.8.1
