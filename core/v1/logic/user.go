@@ -14,7 +14,14 @@ type userService struct {
 }
 
 func (u userService) UpdateToken(token, refreshToken, existingToken string) error {
-	panic("implement me")
+	oldUser := u.userRepo.GetByToken(existingToken)
+	if oldUser.ID == "" {
+		return errors.New("user does not exist")
+	}
+	oldUser.Token = token
+	oldUser.RefreshToken = refreshToken
+
+	return u.userRepo.UpdateToken(oldUser)
 }
 
 func (u userService) GetByEmail(email string) v1.User {
