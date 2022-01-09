@@ -9,6 +9,7 @@ import (
 
 type tokenService struct {
 	tokenRepo repository.Token
+	jwtService service.Jwt
 }
 
 func (t tokenService) Store(token v1.Token) error {
@@ -22,9 +23,15 @@ func (t tokenService) Store(token v1.Token) error {
 	return t.tokenRepo.Store(token)
 }
 
-func (t tokenService) IsValid(token string) (bool, error) {
-	//TODO implement me
-	panic("implement me")
+func (t tokenService) IsValid(token string) bool {
+	res,_:=t.jwtService.IsTokenValid(token)
+	if res{
+		if t.tokenRepo.GetByToken(token).Uid==""{
+			return false
+		}
+		return true
+	}
+	return false
 }
 
 func (t tokenService) Delete(uid string) error {
@@ -35,8 +42,9 @@ func (t tokenService) Update(token string, refreshToken string, existingToken st
 	return t.tokenRepo.Update(token, refreshToken, existingToken)
 }
 
-func NewTokenService(tokenRepo repository.Token) service.Token {
+func NewTokenService(tokenRepo repository.Token,jwtService service.Jwt) service.Token {
 	return &tokenService{
 		tokenRepo: tokenRepo,
+		jwtService: jwtService,
 	}
 }

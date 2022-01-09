@@ -53,11 +53,6 @@ func (t tokenRepository) Store(token v1.Token) error {
 	return nil
 }
 
-func (t tokenRepository) IsValid(token string) (bool, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
 func (t tokenRepository) Delete(uid string) error {
 	coll := t.manager.Db.Collection(TokenCollection)
 	filter := bson.M{"uid": uid}
@@ -72,28 +67,22 @@ func (t tokenRepository) Delete(uid string) error {
 }
 
 func (t tokenRepository) Update(token string, refreshToken string, existingToken string) error {
-	oldToken := t.GetByToken(existingToken)
-
-	oToken := oldToken.Token
-	oldRefreshToken := oldToken.RefreshToken
-
-	if oldToken.Uid != "" {
+	oldTokenObj := t.GetByToken(existingToken)
+	if oldTokenObj.Uid==""{
 		return errors.New("[ERROR] Token does not exists")
 	}
-
-	oldToken.Token = token
-	oldToken.RefreshToken = refreshToken
+	oldTokenObj.Token=token
+	oldTokenObj.RefreshToken=refreshToken
 
 	filter := bson.M{
-		"$or": []interface{}{
-			bson.M{"token": oToken},
-			bson.M{"refresh_token": oldRefreshToken},
+		"$and": []interface{}{
+			bson.M{"uid": oldTokenObj.Uid},
 		},
 	}
 	update := bson.M{
-		"$set": oldToken,
+		"$set": oldTokenObj,
 	}
-	upsert := true
+	upsert := false
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
 		ReturnDocument: &after,

@@ -53,7 +53,7 @@ func (j jwtService) GenerateToken(userUUID string, duration int, data interface{
 	return tokenString, refreshTokenStr,nil
 }
 
-func (j jwtService) IsValidToken(tokenString string) (bool, *jwt.Token) {
+func (j jwtService) IsTokenValid(tokenString string) (bool, *jwt.Token) {
 	claims := jwt.MapClaims{}
 	 jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 		return (RsaKeys.PublicKey), nil
