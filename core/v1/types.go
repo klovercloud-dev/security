@@ -69,3 +69,8 @@ type Token struct {
 	RefreshToken string           `json:"refresh_token" bson:"refresh_token"`
 	Type         enums.TOKEN_TYPE `json:"type" bson:"type"`
 }
+
+type LoginDto struct {
+	Email          string           `json:"email" bson:"email"`
+	Password        string           `json:"password" bson:"password"`
+}

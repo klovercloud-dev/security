@@ -8,7 +8,7 @@ import (
 
 type Jwt interface {
  GetRsaKeys() *v1.RsaKeys
- GenerateToken(userUUID string,duration int,data interface{}) (string,string, error)
+ GenerateToken(userUUID string,duration int64,data interface{}) (token string, refreshToken string,err  error)
  IsTokenValid(tokenString string) (bool, *jwt.Token)
  GetPrivateKey() *rsa.PrivateKey
  GetPublicKey() *rsa.PublicKey

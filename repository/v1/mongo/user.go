@@ -6,6 +6,7 @@ import (
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/repository"
 	"go.mongodb.org/mongo-driver/bson"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"time"
 )
@@ -46,8 +47,13 @@ func (u userRepository) GetByEmail(email string) v1.User {
 }
 
 func (u userRepository) Store(user v1.User) error {
+	hashedPassword,err:= bcrypt.GenerateFromPassword([]byte(user.Password),bcrypt.DefaultCost)
+	if err != nil {
+		log.Println("[ERROR] Insert document:", err.Error())
+	}
+	user.Password=string(hashedPassword)
 	coll := u.manager.Db.Collection(UserCollection)
-	_, err := coll.InsertOne(u.manager.Ctx, user)
+	_, err = coll.InsertOne(u.manager.Ctx, user)
 	if err != nil {
 		log.Println("[ERROR] Insert document:", err.Error())
 	}

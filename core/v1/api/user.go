@@ -9,4 +9,5 @@ type User interface {
 	Get(context echo.Context) error
 	GetByID(context echo.Context) error
 	Delete(context echo.Context) error
+
 }

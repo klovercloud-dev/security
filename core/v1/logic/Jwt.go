@@ -28,7 +28,7 @@ func (j jwtService) GetRsaKeys() *v1.RsaKeys {
 	return RsaKeys
 }
 
-func (j jwtService) GenerateToken(userUUID string, duration int, data interface{}) (string, string, error) {
+func (j jwtService) GenerateToken(userUUID string, duration int64, data interface{}) (string, string, error) {
 	token := jwt.New(jwt.SigningMethodRS512)
 	token.Claims = jwt.MapClaims{
 		"exp": duration,

@@ -13,6 +13,10 @@ type userService struct {
 	urpRepo  repository.UserResourcePermission
 }
 
+func (u userService) GetByEmail(email string) v1.User {
+	return u.userRepo.GetByEmail(email)
+}
+
 func (u userService) Store(userWithResourcePermission v1.UserRegistrationDto) error {
 	user, userResourcePermission := getUserAndResourcePermissionBody(userWithResourcePermission)
 	mailFlag := mailValidation(userWithResourcePermission.Email)

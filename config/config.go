@@ -37,6 +37,13 @@ var PrivateKey string
 // Publickey refers to rsa public key .
 var Publickey string
 
+// RegularTokenLifetime refers to token lifetime of regular.
+var RegularTokenLifetime string
+
+
+// CTLTokenLifetime refers to token lifetime of ctl.
+var CTLTokenLifetime string
+
 // InitEnvironmentVariables initializes environment variables
 func InitEnvironmentVariables() {
 	err := godotenv.Load()
@@ -56,4 +63,6 @@ func InitEnvironmentVariables() {
 	}
 	PrivateKey =os.Getenv("PRIVATE_KEY")
 	Publickey=os.Getenv("PUBLIC_KEY")
+	RegularTokenLifetime =os.Getenv("REGULAR_TOKEN_LIFETIME")
+	CTLTokenLifetime=os.Getenv("CTL_TOKEN_LIFETIME")
 }

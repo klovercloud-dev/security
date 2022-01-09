@@ -17,7 +17,7 @@ func (p permissionApi) Store(context echo.Context) error {
 	formData := v1.Permission{}
 	if err := context.Bind(&formData); err != nil {
 		log.Println("Input Error:", err.Error())
-		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
+		return common.GenerateErrorResponse(context, nil, err.Error())
 	}
 	err := p.service.Store(formData)
 	if err != nil {
