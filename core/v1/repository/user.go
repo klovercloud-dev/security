@@ -8,4 +8,6 @@ type User interface {
 	GetByID(id string) (v1.User, error)
 	Delete(id string) error
 	GetByEmail(email string) v1.User
+	GetByToken(token string) v1.User
+	UpdateToken(user v1.User) error
 }

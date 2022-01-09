@@ -9,6 +9,11 @@ import (
 type UserMock struct {
 }
 
+func (u UserMock) UpdateToken(token, refreshToken, existingToken string) error {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (u UserMock) Store(user v1.UserRegistrationDto) error {
 	//TODO implement me
 	panic("implement me")

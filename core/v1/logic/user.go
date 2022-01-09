@@ -13,6 +13,17 @@ type userService struct {
 	urpRepo  repository.UserResourcePermission
 }
 
+func (u userService) UpdateToken(token, refreshToken, existingToken string) error {
+	oldUser := u.userRepo.GetByToken(existingToken)
+	if oldUser.ID == "" {
+		return errors.New("user does not exist")
+	}
+	oldUser.Token = token
+	oldUser.RefreshToken = refreshToken
+
+	return u.userRepo.UpdateToken(oldUser)
+}
+
 func (u userService) Store(userWithResourcePermission v1.UserRegistrationDto) error {
 	user, userResourcePermission := v1.GetUserAndResourcePermissionBody(userWithResourcePermission)
 	mailFlag := mailValidation(userWithResourcePermission.Email)
