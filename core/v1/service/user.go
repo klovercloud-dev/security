@@ -7,4 +7,5 @@ type User interface {
 	Get() []v1.User
 	GetByID(id string) (v1.User, error)
 	Delete(id string) error
+	UpdateToken(token, refreshToken, existingToken string) error
 }
