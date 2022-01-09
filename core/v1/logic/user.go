@@ -14,7 +14,7 @@ type userService struct {
 }
 
 func (u userService) Store(userWithResourcePermission v1.UserRegistrationDto) error {
-	user, userResourcePermission := getUserAndResourcePermissionBody(userWithResourcePermission)
+	user, userResourcePermission := v1.GetUserAndResourcePermissionBody(userWithResourcePermission)
 	mailFlag := mailValidation(userWithResourcePermission.Email)
 	if mailFlag == false {
 		return errors.New("email is not valid")
@@ -38,27 +38,6 @@ func (u userService) Store(userWithResourcePermission v1.UserRegistrationDto) er
 		return err
 	}
 	return nil
-}
-
-func getUserAndResourcePermissionBody(u v1.UserRegistrationDto) (v1.User, v1.UserResourcePermission) {
-	user := v1.User{
-		ID:           u.ID,
-		FirstName:    u.FirstName,
-		LastName:     u.LastName,
-		Email:        u.Email,
-		Password:     u.Password,
-		Status:       u.Status,
-		CreatedDate:  u.CreatedDate,
-		UpdatedDate:  u.UpdatedDate,
-		Token:        u.Token,
-		RefreshToken: u.RefreshToken,
-		AuthType:     u.AuthType,
-	}
-	userResourcePermission := v1.UserResourcePermission{
-		UserId:    u.ID,
-		Resources: u.ResourcePermission.Resources,
-	}
-	return user, userResourcePermission
 }
 
 func (u userService) Get() []v1.User {

@@ -59,6 +59,27 @@ type RoleUpdateOption struct {
 	Option enums.ROLE_UPDATE_OPTION `json:"option" bson:"option"`
 }
 
+func GetUserAndResourcePermissionBody(u UserRegistrationDto) (User, UserResourcePermission) {
+	user := User{
+		ID:           u.ID,
+		FirstName:    u.FirstName,
+		LastName:     u.LastName,
+		Email:        u.Email,
+		Password:     u.Password,
+		Status:       u.Status,
+		CreatedDate:  u.CreatedDate,
+		UpdatedDate:  u.UpdatedDate,
+		Token:        u.Token,
+		RefreshToken: u.RefreshToken,
+		AuthType:     u.AuthType,
+	}
+	userResourcePermission := UserResourcePermission{
+		UserId:    u.ID,
+		Resources: u.ResourcePermission.Resources,
+	}
+	return user, userResourcePermission
+}
+
 type RsaKeys struct {
 	PrivateKey *rsa.PrivateKey
 	PublicKey  *rsa.PublicKey
