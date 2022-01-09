@@ -57,3 +57,10 @@ type UserRegistrationDto struct {
 type RoleUpdateOption struct {
 	Option enums.ROLE_UPDATE_OPTION `json:"option" bson:"option"`
 }
+
+type Token struct {
+	Uid          string           `json:"uid" bson:"uid"`
+	Token        string           `json:"token" bson:"token"`
+	RefreshToken string           `json:"refresh_token" bson:"refresh_token"`
+	Type         enums.TOKEN_TYPE `json:"type" bson:"type"`
+}

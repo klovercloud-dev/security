@@ -40,3 +40,10 @@ const (
 	APPEND_PERMISSION = ROLE_UPDATE_OPTION("append")
 	REMOVE_PERMISSION = ROLE_UPDATE_OPTION("remove")
 )
+
+type TOKEN_TYPE string
+
+const (
+	REGULAR_TOKEN = TOKEN_TYPE("regular")
+	CTL_TOKEN     = TOKEN_TYPE("ctl")
+)
