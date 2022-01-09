@@ -31,6 +31,12 @@ var DatabaseName string
 // Database refers to database options.
 var Database string
 
+// PrivateKey refers to rsa private key .
+var PrivateKey string
+
+// Publickey refers to rsa public key .
+var Publickey string
+
 // InitEnvironmentVariables initializes environment variables
 func InitEnvironmentVariables() {
 	err := godotenv.Load()
@@ -48,4 +54,6 @@ func InitEnvironmentVariables() {
 	if Database == enums.MONGO {
 		DatabaseConnectionString = "mongodb://" + DbUsername + ":" + DbPassword + "@" + DbServer + ":" + DbPort
 	}
+	PrivateKey =os.Getenv("PRIVATE_KEY")
+	Publickey=os.Getenv("PUBLIC_KEY")
 }

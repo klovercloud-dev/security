@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"crypto/rsa"
 	"github.com/klovercloud-ci/enums"
 )
 
@@ -56,4 +57,9 @@ type UserRegistrationDto struct {
 
 type RoleUpdateOption struct {
 	Option enums.ROLE_UPDATE_OPTION `json:"option" bson:"option"`
+}
+
+type RsaKeys struct {
+	PrivateKey *rsa.PrivateKey
+	PublicKey  *rsa.PublicKey
 }
