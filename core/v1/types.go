@@ -63,3 +63,9 @@ type RsaKeys struct {
 	PrivateKey *rsa.PrivateKey
 	PublicKey  *rsa.PublicKey
 }
+type Token struct {
+	Uid          string           `json:"uid" bson:"uid"`
+	Token        string           `json:"token" bson:"token"`
+	RefreshToken string           `json:"refresh_token" bson:"refresh_token"`
+	Type         enums.TOKEN_TYPE `json:"type" bson:"type"`
+}
