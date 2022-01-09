@@ -20,6 +20,31 @@ type userRepository struct {
 	timeout time.Duration
 }
 
+func (u userRepository) GetByEmail(email string) v1.User {
+	var res v1.User
+	query := bson.M{
+		"$and": []bson.M{},
+	}
+	and := []bson.M{{"email": email}}
+	query["$and"] = and
+	coll := u.manager.Db.Collection(UserCollection)
+	result, err := coll.Find(u.manager.Ctx, query, nil)
+	if err != nil {
+		log.Println(err.Error())
+		return v1.User{}
+	}
+	for result.Next(context.TODO()) {
+		elemValue := new(v1.User)
+		err := result.Decode(elemValue)
+		if err != nil {
+			log.Println("[ERROR]", err)
+			break
+		}
+		res = *elemValue
+	}
+	return res
+}
+
 func (u userRepository) Store(user v1.User) error {
 	coll := u.manager.Db.Collection(UserCollection)
 	_, err := coll.InsertOne(u.manager.Ctx, user)

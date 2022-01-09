@@ -19,11 +19,9 @@ func (u userService) Store(userWithResourcePermission v1.UserRegistrationDto) er
 	if mailFlag == false {
 		return errors.New("email is not valid")
 	}
-	Users := u.Get()
-	for _, v := range Users {
-		if v.Email == userWithResourcePermission.Email {
-			return errors.New("email is already registered")
-		}
+	isUserExist := u.userRepo.GetByEmail(user.Email)
+	if isUserExist.Email != "" {
+		return errors.New("email is already registered")
 	}
 	if userWithResourcePermission.Password == "" {
 		return errors.New("password is empty")
