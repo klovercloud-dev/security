@@ -3,6 +3,7 @@ package v1
 import (
 	"crypto/rsa"
 	"github.com/klovercloud-ci/enums"
+	"time"
 )
 
 type Resource struct {
@@ -59,6 +60,27 @@ type RoleUpdateOption struct {
 	Option enums.ROLE_UPDATE_OPTION `json:"option" bson:"option"`
 }
 
+func GetUserAndResourcePermissionBody(u UserRegistrationDto) (User, UserResourcePermission) {
+	user := User{
+		ID:           u.ID,
+		FirstName:    u.FirstName,
+		LastName:     u.LastName,
+		Email:        u.Email,
+		Password:     u.Password,
+		Status:       u.Status,
+		CreatedDate:  u.CreatedDate,
+		UpdatedDate:  u.UpdatedDate,
+		Token:        u.Token,
+		RefreshToken: u.RefreshToken,
+		AuthType:     u.AuthType,
+	}
+	userResourcePermission := UserResourcePermission{
+		UserId:    u.ID,
+		Resources: u.ResourcePermission.Resources,
+	}
+	return user, userResourcePermission
+}
+
 type RsaKeys struct {
 	PrivateKey *rsa.PrivateKey
 	PublicKey  *rsa.PublicKey
@@ -73,4 +95,11 @@ type Token struct {
 type LoginDto struct {
 	Email          string           `json:"email" bson:"email"`
 	Password        string           `json:"password" bson:"password"`
+}
+
+type JWTPayLoad struct {
+	AccessToken  string           `json:"access_token" bson:"access_token"`
+	RefreshToken string           `json:"refresh_token" bson:"refresh_token"`
+	ExpiresIn int64    `json:"expires_in" bson:"expires_in"`
+	CreationTime time.Time `json:"creation_time" bson:"creation_time"`
 }
