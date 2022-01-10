@@ -7,7 +7,7 @@ const (
 	// PRODUCTION mongo as db
 	PRODUCTION = ENVIRONMENT("PRODUCTION")
 	// INMEMORY in memory storage as db
-	DEV  = ENVIRONMENT("DEV")
+	DEVELOP  = ENVIRONMENT("DEVELOP")
 	TEST = ENVIRONMENT("TEST")
 )
 
@@ -46,4 +46,9 @@ type TOKEN_TYPE string
 const (
 	REGULAR_TOKEN = TOKEN_TYPE("regular")
 	CTL_TOKEN     = TOKEN_TYPE("ctl")
+)
+
+type RUN_MODE string
+const (
+	PRODCUTION = RUN_MODE("production")
 )

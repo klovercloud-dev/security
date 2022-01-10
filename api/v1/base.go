@@ -9,6 +9,7 @@ func Router(g *echo.Group) {
 	ResourceRouter(g.Group("/resource"))
 	PermissionRouter(g.Group("/permission"))
 	UserRouter(g.Group("/user"))
+	OauthRouter(g.Group("/oauth"))
 }
 
 func ResourceRouter(g *echo.Group) {
@@ -32,4 +33,9 @@ func UserRouter(g *echo.Group) {
 	g.GET("", userApi.Get)
 	g.GET("/:id", userApi.GetByID)
 	g.DELETE("/:id", userApi.Delete)
+}
+
+func OauthRouter(g *echo.Group) {
+	oauthApi := NewOauthApi(dependency.GetV1UserService(),dependency.GetV1JwtService(),dependency.GetV1UserResourcePermissionService(),dependency.GetV1TokenService())
+	g.POST("/login", oauthApi.Login)
 }

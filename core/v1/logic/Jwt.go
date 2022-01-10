@@ -3,6 +3,7 @@ package logic
 import (
 	"crypto/rsa"
 	"crypto/x509"
+	"encoding/json"
 	"encoding/pem"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/klovercloud-ci/config"
@@ -31,21 +32,22 @@ func (j jwtService) GetRsaKeys() *v1.RsaKeys {
 func (j jwtService) GenerateToken(userUUID string, duration int64, data interface{}) (string, string, error) {
 	token := jwt.New(jwt.SigningMethodRS512)
 	token.Claims = jwt.MapClaims{
-		"exp": duration,
-		"iat": time.Now().Unix(),
+		"exp": time.Now().UTC().Add(time.Duration(duration) * time.Millisecond).Unix(),
+		"iat": time.Now().UTC().Unix(),
 		"sub": userUUID,
 		"data":data,
 	}
-	tokenString, err := token.SignedString(RsaKeys.PrivateKey)
+	tokenString, err := token.SignedString(j.GetRsaKeys().PrivateKey)
 	if err != nil {
 		return "","",err
 	}
 	token.Claims = jwt.MapClaims{
-		"exp": duration+duration/4,
-		"iat": time.Now().Unix(),
+		"exp": time.Now().UTC().Add(time.Duration(duration+duration/4) * time.Millisecond).Unix(),
+		"iat": time.Now().UTC().Unix(),
 		"sub": userUUID,
+		"data":data,
 	}
-	refreshTokenStr,err:=token.SignedString(RsaKeys.PrivateKey)
+	refreshTokenStr,err:=token.SignedString(j.GetRsaKeys().PrivateKey)
 	if err != nil {
 		return "","",err
 	}
@@ -53,12 +55,25 @@ func (j jwtService) GenerateToken(userUUID string, duration int64, data interfac
 	return tokenString, refreshTokenStr,nil
 }
 
-func (j jwtService) IsTokenValid(tokenString string) (bool, *jwt.Token) {
+
+func (j jwtService) IsTokenValid(tokenString string) bool {
 	claims := jwt.MapClaims{}
-	 jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		return (RsaKeys.PublicKey), nil
+	jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		return (j.GetRsaKeys().PublicKey), nil
 	})
-	return false,nil
+
+	var tm time.Time
+	switch iat := claims["exp"].(type) {
+	case float64:
+		tm = time.Unix(int64(iat), 0)
+	case json.Number:
+		v, _ := iat.Int64()
+		tm = time.Unix(v, 0)
+	}
+	if time.Now().UTC().After(tm){
+		return false
+	}
+	return true
 }
 
 func (j jwtService) GetPrivateKey() *rsa.PrivateKey {
@@ -75,19 +90,13 @@ func (j jwtService) GetPrivateKey() *rsa.PrivateKey {
 }
 
 func (j jwtService) GetPublicKey() *rsa.PublicKey {
-	block, rest := pem.Decode([]byte(config.Publickey))
-	if rest != nil {
-		log.Print(rest)
-	}
-	publicKeyImported, err := x509.ParsePKIXPublicKey(block.Bytes)
+	block, _ := pem.Decode([]byte(config.Publickey))
+	publicKeyImported, err := x509.ParsePKCS1PublicKey(block.Bytes)
 	if err != nil {
 		log.Print(err.Error())
+		panic(err)
 	}
-	rsaPub, ok := publicKeyImported.(*rsa.PublicKey)
-	if !ok {
-		log.Println(err.Error())
-	}
-	return rsaPub
+	return publicKeyImported
 }
 
 func NewJwtService() service.Jwt {

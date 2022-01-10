@@ -27,16 +27,6 @@ func (t tokenService) Store(token v1.Token) error {
 	return t.tokenRepo.Store(token)
 }
 
-func (t tokenService) IsValid(token string) bool {
-	res, _ := t.jwtService.IsTokenValid(token)
-	if res {
-		if t.tokenRepo.GetByToken(token).Uid == "" {
-			return false
-		}
-		return true
-	}
-	return false
-}
 
 func (t tokenService) Delete(uid string) error {
 	return t.tokenRepo.Delete(uid)

@@ -22,7 +22,7 @@ func (u userApi) Store(context echo.Context) error {
 		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
 	}
 	formData.ID = uuid.New().String()
-	formData.CreatedDate = time.Now().String()
+	formData.CreatedDate = time.Now()
 	err := u.userService.Store(formData)
 	if err != nil {
 		return common.GenerateErrorResponse(context, nil, err.Error())

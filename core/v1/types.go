@@ -34,8 +34,8 @@ type User struct {
 	Email        string `json:"email" bson:"email" `
 	Password     string `json:"password" bson:"password" `
 	Status       string `json:"status" bson:"status"`
-	CreatedDate  string `json:"created_date" bson:"created_date"`
-	UpdatedDate  string `json:"updated_date" bson:"updated_date"`
+	CreatedDate  time.Time `json:"created_date" bson:"created_date"`
+	UpdatedDate  time.Time `json:"updated_date" bson:"updated_date"`
 	Token        string `json:"token" bson:"token"`
 	RefreshToken string `json:"refresh_token" bson:"refresh_token"`
 	AuthType     string `json:"auth_type" bson:"auth_type"`
@@ -48,8 +48,8 @@ type UserRegistrationDto struct {
 	Email              string                 `json:"email" bson:"email" `
 	Password           string                 `json:"password" bson:"password" `
 	Status             string                 `json:"status" bson:"status"`
-	CreatedDate        string                 `json:"created_date" bson:"created_date"`
-	UpdatedDate        string                 `json:"updated_date" bson:"updated_date"`
+	CreatedDate        time.Time                 `json:"created_date" bson:"created_date"`
+	UpdatedDate        time.Time                 `json:"updated_date" bson:"updated_date"`
 	Token              string                 `json:"token" bson:"token"`
 	RefreshToken       string                 `json:"refresh_token" bson:"refresh_token"`
 	AuthType           string                 `json:"auth_type" bson:"auth_type"`
@@ -97,9 +97,12 @@ type LoginDto struct {
 	Password        string           `json:"password" bson:"password"`
 }
 
+type RefreshTokenDto struct {
+	RefreshToken string           `json:"refresh_token" bson:"refresh_token"`
+}
+
+
 type JWTPayLoad struct {
 	AccessToken  string           `json:"access_token" bson:"access_token"`
 	RefreshToken string           `json:"refresh_token" bson:"refresh_token"`
-	ExpiresIn int64    `json:"expires_in" bson:"expires_in"`
-	CreationTime time.Time `json:"creation_time" bson:"creation_time"`
 }
