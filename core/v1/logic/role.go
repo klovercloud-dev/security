@@ -13,13 +13,13 @@ type roleService struct {
 	permissionRepo repository.Permission
 }
 
-func (r roleService) Get() ([]v1.Role, int64) {
-	roles, total := r.roleRepo.Get()
-	return roles, total
+func (r roleService) Get() []v1.Role {
+	roles := r.roleRepo.Get()
+	return roles
 }
 
 func (r roleService) Store(role v1.Role) error {
-	roles, _ := r.roleRepo.Get()
+	roles := r.roleRepo.Get()
 	for _, each := range roles {
 		if each.Name == role.Name {
 			return errors.New("Role already exists!")
@@ -32,12 +32,9 @@ func (r roleService) Store(role v1.Role) error {
 	return nil
 }
 
-func (r roleService) GetByName(name string) (v1.Role, error) {
-	roleByName, err := r.roleRepo.GetByName(name)
-	if err != nil {
-		return v1.Role{}, err
-	}
-	return roleByName, nil
+func (r roleService) GetByName(name string) v1.Role {
+	roleByName := r.roleRepo.GetByName(name)
+	return roleByName
 }
 
 func (r roleService) Delete(name string) error {
@@ -49,11 +46,15 @@ func (r roleService) Delete(name string) error {
 }
 
 func (r roleService) Update(name string, permissions []v1.Permission, option v1.RoleUpdateOption) error {
-	roles, _ := r.roleRepo.Get()
+	roles := r.roleRepo.Get()
+	flag := false
 	for _, each := range roles {
-		if each.Name != name {
-			return errors.New("Role already exists!")
+		if each.Name == name {
+			flag = true
 		}
+	}
+	if !flag {
+		return errors.New("role does not exists")
 	}
 
 	m := make(map[string]bool)
@@ -65,7 +66,7 @@ func (r roleService) Update(name string, permissions []v1.Permission, option v1.
 
 	for _, each := range permissions {
 		if _, ok := m[string(each.Name)]; !ok {
-			return errors.New("Permission not found!")
+			return errors.New("permission not found")
 		}
 	}
 	if option.Option == enums.APPEND_PERMISSION {
@@ -87,6 +88,9 @@ func (r roleService) Update(name string, permissions []v1.Permission, option v1.
 	return nil
 }
 
-func NewRoleService(roleRepo repository.Role) service.Role {
-	return &roleService{roleRepo: roleRepo}
+func NewRoleService(roleRepo repository.Role, permissionRepo repository.Permission) service.Role {
+	return &roleService{
+		roleRepo: roleRepo,
+		permissionRepo: permissionRepo,
+	}
 }

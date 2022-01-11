@@ -14,11 +14,11 @@ func (u userResourcePermissionService) Store(userResourcePermission v1.UserResou
 	return u.repo.Store(userResourcePermission)
 }
 
-func (u userResourcePermissionService) Get() ([]v1.UserResourcePermission, error) {
+func (u userResourcePermissionService) Get() []v1.UserResourcePermission {
 	return u.repo.Get()
 }
 
-func (u userResourcePermissionService) GetByUserID(userID string) (v1.UserResourcePermission, error) {
+func (u userResourcePermissionService) GetByUserID(userID string) v1.UserResourcePermission {
 	return u.repo.GetByUserID(userID)
 }
 
