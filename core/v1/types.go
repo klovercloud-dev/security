@@ -36,8 +36,6 @@ type User struct {
 	Status       string `json:"status" bson:"status"`
 	CreatedDate  time.Time `json:"created_date" bson:"created_date"`
 	UpdatedDate  time.Time `json:"updated_date" bson:"updated_date"`
-	Token        string `json:"token" bson:"token"`
-	RefreshToken string `json:"refresh_token" bson:"refresh_token"`
 	AuthType     string `json:"auth_type" bson:"auth_type"`
 }
 
@@ -50,8 +48,6 @@ type UserRegistrationDto struct {
 	Status             string                 `json:"status" bson:"status"`
 	CreatedDate        time.Time                 `json:"created_date" bson:"created_date"`
 	UpdatedDate        time.Time                 `json:"updated_date" bson:"updated_date"`
-	Token              string                 `json:"token" bson:"token"`
-	RefreshToken       string                 `json:"refresh_token" bson:"refresh_token"`
 	AuthType           string                 `json:"auth_type" bson:"auth_type"`
 	ResourcePermission UserResourcePermission `json:"resource_permission" bson:"resource_permission"`
 }
@@ -70,8 +66,6 @@ func GetUserAndResourcePermissionBody(u UserRegistrationDto) (User, UserResource
 		Status:       u.Status,
 		CreatedDate:  u.CreatedDate,
 		UpdatedDate:  u.UpdatedDate,
-		Token:        u.Token,
-		RefreshToken: u.RefreshToken,
 		AuthType:     u.AuthType,
 	}
 	userResourcePermission := UserResourcePermission{
@@ -105,4 +99,18 @@ type RefreshTokenDto struct {
 type JWTPayLoad struct {
 	AccessToken  string           `json:"access_token" bson:"access_token"`
 	RefreshToken string           `json:"refresh_token" bson:"refresh_token"`
+}
+
+
+type PasswordResetDto struct {
+	Email              string                 `json:"email" bson:"email"`
+	CurrentPassword  string           `json:"current_password" bson:"current_password"`
+	NewPassword string           `json:"new_password" bson:"new_password"`
+}
+
+type Otp struct {
+	ID           string `json:"id" bson:"id"`
+	Email              string                 `json:"email" bson:"email"`
+	Otp string  `json:"otp" bson:"otp"`
+	Exp time.Time `json:"exp" bson:"exp"`
 }

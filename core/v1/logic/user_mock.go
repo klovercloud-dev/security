@@ -9,6 +9,10 @@ import (
 type UserMock struct {
 }
 
+func (u UserMock) UpdatePassword(user v1.User) error {
+	return nil
+}
+
 func (u UserMock) GetByEmail(email string) v1.User {
 	return v1.User{
 		ID:           "1",
@@ -19,8 +23,6 @@ func (u UserMock) GetByEmail(email string) v1.User {
 		Status:       "active",
 		CreatedDate:  time.Now().UTC(),
 		UpdatedDate:  time.Now().UTC(),
-		Token:        "",
-		RefreshToken: "",
 		AuthType:     "password",
 	}
 }
@@ -49,8 +51,6 @@ func (u UserMock) GetByID(id string) (v1.User, error) {
 		Status:       "active",
 		CreatedDate:  time.Now().UTC(),
 		UpdatedDate:  time.Now().UTC(),
-		Token:        "",
-		RefreshToken: "",
 		AuthType:     "password",
 	}, nil
 }

@@ -21,8 +21,8 @@ func GetV1PermissionService() service.Permission {
 }
 
 func GetV1UserService() service.User {
-	if config.RunMode==string(enums.PRODCUTION){
-		return logic.NewUserService(mongo.NewUserRepository(3000), mongo.NewUserResourcePermissionRepository(3000))
+	if config.RunMode==string(enums.PRODUCTION){
+		return logic.NewUserService(mongo.NewUserRepository(3000),GetV1UserResourcePermissionService(),GetV1TokenService())
 	}
 	return logic.NewUserMock()
 }
@@ -32,14 +32,14 @@ func GetV1JwtService() service.Jwt {
 }
 
 func GetV1UserResourcePermissionService() service.UserResourcePermission {
-	if config.RunMode==string(enums.PRODCUTION) {
+	if config.RunMode==string(enums.PRODUCTION) {
 		return logic.NewUserResourcePermissionService(mongo.NewUserResourcePermissionRepository(3000))
 	}
 	return  logic.NewMockUserResourcePermissionService()
 }
 
 func GetV1TokenService() service.Token {
-	if config.RunMode==string(enums.PRODCUTION) {
+	if config.RunMode==string(enums.PRODUCTION) {
 		return logic.NewTokenService(mongo.NewTokenRepository(3000), GetV1JwtService())
 	}
 	return logic.NewTokenMock()

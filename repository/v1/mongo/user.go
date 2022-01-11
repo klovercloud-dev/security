@@ -6,8 +6,8 @@ import (
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/repository"
 	"go.mongodb.org/mongo-driver/bson"
-	"golang.org/x/crypto/bcrypt"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"time"
 )
@@ -22,6 +22,10 @@ type userRepository struct {
 	timeout time.Duration
 }
 
+func (u userRepository) UpdateToken(user v1.User) error {
+	panic("implement me")
+}
+
 func (u userRepository) GetByToken(token string) v1.User {
 	var res v1.User
 	query := bson.M{
@@ -30,7 +34,7 @@ func (u userRepository) GetByToken(token string) v1.User {
 			bson.M{"refresh_token": token},
 		},
 	}
-	coll := u.manager.Db.Collection(TokenCollection)
+	coll := u.manager.Db.Collection(UserCollection)
 	result, err := coll.Find(u.manager.Ctx, query, nil)
 	if err != nil {
 		log.Println(err.Error())
@@ -47,7 +51,12 @@ func (u userRepository) GetByToken(token string) v1.User {
 	return res
 }
 
-func (u userRepository) UpdateToken(user v1.User) error {
+func (u userRepository) UpdatePassword(user v1.User) error {
+	hashedPassword,err:= bcrypt.GenerateFromPassword([]byte(user.Password),bcrypt.DefaultCost)
+	if err != nil {
+		log.Println("[ERROR] Insert document:", err.Error())
+	}
+	user.Password=string(hashedPassword)
 	filter := bson.M{
 		"$and": []interface{}{
 			bson.M{"id": user.ID},
@@ -63,9 +72,9 @@ func (u userRepository) UpdateToken(user v1.User) error {
 		Upsert:         &upsert,
 	}
 	coll := u.manager.Db.Collection(TokenCollection)
-	err := coll.FindOneAndUpdate(u.manager.Ctx, filter, update, &opt)
+	uopdateErr := coll.FindOneAndUpdate(u.manager.Ctx, filter, update, &opt)
 	if err != nil {
-		log.Println("[ERROR]", err.Err())
+		log.Println("[ERROR]", uopdateErr.Err())
 	}
 	return nil
 }

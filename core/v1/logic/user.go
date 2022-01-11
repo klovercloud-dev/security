@@ -10,18 +10,18 @@ import (
 
 type userService struct {
 	userRepo repository.User
-	urpRepo  repository.UserResourcePermission
+	urpService  service.UserResourcePermission
+	tokenService service.Token
 }
 
-func (u userService) UpdateToken(token, refreshToken, existingToken string) error {
-	oldUser := u.userRepo.GetByToken(existingToken)
-	if oldUser.ID == "" {
-		return errors.New("user does not exist")
-	}
-	oldUser.Token = token
-	oldUser.RefreshToken = refreshToken
+func (u userService) UpdatePassword(user v1.User) error {
+	return u.userRepo.UpdatePassword(user)
+}
 
-	return u.userRepo.UpdateToken(oldUser)
+
+
+func (u userService) UpdateToken(token, refreshToken, existingToken string) error {
+	return u.tokenService.Update(token,refreshToken,existingToken)
 }
 
 func (u userService) GetByEmail(email string) v1.User {
@@ -48,7 +48,7 @@ func (u userService) Store(userWithResourcePermission v1.UserRegistrationDto) er
 		return err
 	}
 
-	err = u.urpRepo.Store(userResourcePermission)
+	err = u.urpService.Store(userResourcePermission)
 	if err != nil {
 		return err
 	}
@@ -81,9 +81,10 @@ func mailValidation(email string) bool {
 	return err == nil
 }
 
-func NewUserService(userRepo repository.User, urpRepo repository.UserResourcePermission) service.User {
+func NewUserService(userRepo repository.User, urpService service.UserResourcePermission,tokenService service.Token) service.User {
 	return &userService{
 		userRepo: userRepo,
-		urpRepo:  urpRepo,
+		urpService:  urpService,
+		tokenService: tokenService,
 	}
 }

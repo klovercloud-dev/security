@@ -9,5 +9,5 @@ type User interface {
 	Delete(id string) error
 	GetByEmail(email string) v1.User
 	GetByToken(token string) v1.User
-	UpdateToken(user v1.User) error
+	UpdatePassword(user v1.User) error
 }

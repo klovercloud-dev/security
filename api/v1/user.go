@@ -6,13 +6,51 @@ import (
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/api"
 	"github.com/klovercloud-ci/core/v1/service"
+	"github.com/klovercloud-ci/enums"
 	"github.com/labstack/echo/v4"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"time"
 )
 
 type userApi struct {
 	userService service.User
+}
+
+
+func (u userApi) Update(context echo.Context) error {
+	action := context.QueryParam("action")
+	if action==string(enums.RESET_PASSWORD){
+		return u.ResetPassword(context)
+	}else if action==string(enums.FORGOT_PASSWORD){
+		return u.ForgotPassword(context)
+	}
+	return common.GenerateErrorResponse(context,"[ERROR]: No action type is provided!","Please provide a action type!")
+}
+
+func (u userApi) ForgotPassword(context echo.Context) error {
+	panic("implement me")
+}
+func (u userApi) ResetPassword(context echo.Context) error {
+	formData:=v1.PasswordResetDto{}
+	if err := context.Bind(&formData); err != nil {
+		log.Println("Input Error:", err.Error())
+		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
+	}
+	user:= u.userService.GetByEmail(formData.Email)
+	if user.ID == "" {
+		return common.GenerateForbiddenResponse(context, "[ERROR]: No User found!", "Please login with actual user email!")
+	}
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(formData.CurrentPassword))
+	if err != nil {
+		return common.GenerateForbiddenResponse(context, "[ERROR]: Password not matched!", "Please provide due credential!"+err.Error())
+	}
+	user.Password=formData.NewPassword
+	err=u.userService.UpdatePassword(user)
+	if err != nil {
+		return common.GenerateForbiddenResponse(context, "[ERROR]: Failed to reset password!", err.Error())
+	}
+	return common.GenerateSuccessResponse(context,nil,nil,"Operation Successful!")
 }
 
 func (u userApi) Store(context echo.Context) error {

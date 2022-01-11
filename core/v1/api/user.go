@@ -9,5 +9,7 @@ type User interface {
 	Get(context echo.Context) error
 	GetByID(context echo.Context) error
 	Delete(context echo.Context) error
-
+    ResetPassword(context echo.Context) error
+	ForgotPassword(context echo.Context) error
+	Update(context echo.Context) error
 }

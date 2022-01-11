@@ -41,14 +41,22 @@ const (
 	REMOVE_PERMISSION = ROLE_UPDATE_OPTION("remove")
 )
 
+// TOKEN_TYPE token type of user
 type TOKEN_TYPE string
 
 const (
+	// REGULAR_TOKEN refers to  limited lifetime token and refresh token
 	REGULAR_TOKEN = TOKEN_TYPE("regular")
+	// CTL_TOKEN refers to  long lifetime token and refresh token
 	CTL_TOKEN     = TOKEN_TYPE("ctl")
 )
 
-type RUN_MODE string
+// USER_UPDATE_ACTION users update action
+type USER_UPDATE_ACTION string
+
 const (
-	PRODCUTION = RUN_MODE("production")
+	// RESET_PASSWORD refers to password reset action
+	RESET_PASSWORD = USER_UPDATE_ACTION("reset_password")
+	// FORGOT_PASSWORD refers to password forgot action
+	FORGOT_PASSWORD     = USER_UPDATE_ACTION("forgot_password")
 )
