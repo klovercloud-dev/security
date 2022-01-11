@@ -28,8 +28,9 @@ func GetV1RoleService() service.Role {
 }
 
 func GetV1UserService() service.User {
-	if config.RunMode==string(enums.PRODUCTION){
-		return logic.NewUserService(mongo.NewUserRepository(3000),GetV1UserResourcePermissionService(),GetV1TokenService(), GetV1OtpService(), GetV1EmailMediaService(), GetV1PhoneMediaService())
+
+	if config.RunMode==string(enums.PRODUCTION) || config.RunMode==string(enums.DEVELOP){
+		return logic.NewUserService(mongo.NewUserRepository(3000),GetV1UserResourcePermissionService(),GetV1TokenService(),getV1OtpService(),GetV1EmailMediaService(),GetV1PhoneMediaService())
 	}
 	return logic.NewUserMock(logic.NewMockEmailService(),logic.NewMockPhoneService())
 }
@@ -38,8 +39,9 @@ func GetV1EmailMediaService()service.Media{
 	return logic.NewEmailService()
 }
 
-func GetV1OtpService()service.Otp{
-	if config.RunMode==string(enums.PRODUCTION) {
+
+func getV1OtpService()service.Otp{
+	if config.RunMode==string(enums.PRODUCTION)  || config.RunMode==string(enums.DEVELOP){
 		return logic.NewOtpService(mongo.NewOtpRepository(3000))
 	}
 	return  logic.NewMockOtpService()
@@ -53,14 +55,14 @@ func GetV1JwtService() service.Jwt {
 }
 
 func GetV1UserResourcePermissionService() service.UserResourcePermission {
-	if config.RunMode==string(enums.PRODUCTION) {
+	if config.RunMode==string(enums.PRODUCTION)  || config.RunMode==string(enums.DEVELOP){
 		return logic.NewUserResourcePermissionService(mongo.NewUserResourcePermissionRepository(3000))
 	}
 	return  logic.NewMockUserResourcePermissionService()
 }
 
 func GetV1TokenService() service.Token {
-	if config.RunMode==string(enums.PRODUCTION) {
+	if config.RunMode==string(enums.PRODUCTION)  || config.RunMode==string(enums.DEVELOP){
 		return logic.NewTokenService(mongo.NewTokenRepository(3000), GetV1JwtService())
 	}
 	return logic.NewTokenMock()

@@ -13,7 +13,7 @@ type Resource struct {
 }
 
 type Permission struct {
-	Name enums.PERMISION_TYPE `json:"name" bson:"name"`
+	Name string `json:"name" bson:"name"`
 }
 
 type Role struct {
