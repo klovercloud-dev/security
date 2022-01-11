@@ -108,18 +108,13 @@ type JWTPayLoad struct {
 
 
 type PasswordResetDto struct {
-	Email              string      `json:"email" bson:"email"`
-	CurrentPassword    string      `json:"current_password" bson:"current_password"`
-	NewPassword 	   string      `json:"new_password" bson:"new_password"`
+	Otp              string                 `json:"otp" bson:"otp"`
+	Email              string                 `json:"email" bson:"email"`
+	CurrentPassword  string           `json:"current_password" bson:"current_password"`
+	NewPassword string           `json:"new_password" bson:"new_password"`
 }
 
-type Otp struct {
-	ID           string 	`json:"id" bson:"id"`
-	Email        string     `json:"email" bson:"email"`
-	Phone        string     `json:"phone" bson:"phone"`
-	Otp 		 string  	`json:"otp" bson:"otp"`
-	Exp 		 time.Time  `json:"exp" bson:"exp"`
-}
+
 
 // Validate validates UserRegistrationDto data
 func(u UserRegistrationDto) Validate() error{
@@ -184,4 +179,12 @@ func(p Permission) Validate() error {
 		return errors.New("permission name is required")
 	}
 	return nil
+}
+
+type Otp struct {
+	ID           string 	`json:"id" bson:"id"`
+	Email        string     `json:"email" bson:"email"`
+	Phone        string     `json:"phone" bson:"phone"`
+	Otp 		 string  	`json:"otp" bson:"otp"`
+	Exp 		 time.Time  `json:"exp" bson:"exp"`
 }

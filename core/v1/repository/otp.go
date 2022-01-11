@@ -7,5 +7,5 @@ type Otp interface {
 	// If any record exists, update that record by newly passed object
 	// else store
 	Store(otp v1.Otp) error
-	FindByOtp(otp string ) v1.Otp
+	FindByOtp(otp string) v1.Otp
 }

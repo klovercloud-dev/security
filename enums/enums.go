@@ -78,6 +78,14 @@ const (
 type AUTH_TYPE string
 
 const (
-	// ACTIVE user status for active user
+	// PASSWORD grand_type of users authentication
 	PASSWORD = AUTH_TYPE("PASSWORD")
+)
+// MEDIA otp media
+type MEDIA string
+const (
+	// EMAIL refers to email media
+	EMAIL = MEDIA("email")
+	// PHONE refers to phone media
+	PHONE     = MEDIA("phone")
 )

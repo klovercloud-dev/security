@@ -6,10 +6,10 @@ import (
 )
 
 func Router(g *echo.Group) {
-	ResourceRouter(g.Group("/resource"))
-	PermissionRouter(g.Group("/permission"))
-	UserRouter(g.Group("/user"))
-	RoleRouter(g.Group("/role"))
+	RoleRouter(g.Group("/roles"))
+	ResourceRouter(g.Group("/resources"))
+	PermissionRouter(g.Group("/permissions"))
+	UserRouter(g.Group("/users"))
 	OauthRouter(g.Group("/oauth"))
 }
 
@@ -38,13 +38,12 @@ func RoleRouter(g *echo.Group) {
 }
 
 func UserRouter(g *echo.Group) {
-	userApi := NewUserApi(dependency.GetV1UserService(), dependency.GetV1UserResourcePermissionService())
-	//userResourcePermissionApi := NewUserResourcePermissionApi(dependency.GetV1UserResourcePermissionService())
+	userApi := NewUserApi(dependency.GetV1UserService(), dependency.GetV1UserResourcePermissionService(),dependency.GetV1OtpService())
 	g.POST("", userApi.Store)
 	g.GET("", userApi.Get)
 	g.GET("/:id", userApi.GetByID)
 	g.DELETE("/:id", userApi.Delete)
-	g.POST("/:id/userResourcePermission", userApi.Update)
+	g.PUT("/:id/userResourcePermission", userApi.Update)
 }
 
 func OauthRouter(g *echo.Group) {

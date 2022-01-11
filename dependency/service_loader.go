@@ -29,11 +29,25 @@ func GetV1RoleService() service.Role {
 
 func GetV1UserService() service.User {
 	if config.RunMode==string(enums.PRODUCTION){
-		return logic.NewUserService(mongo.NewUserRepository(3000),GetV1UserResourcePermissionService(),GetV1TokenService())
+		return logic.NewUserService(mongo.NewUserRepository(3000),GetV1UserResourcePermissionService(),GetV1TokenService(), GetV1OtpService(), GetV1EmailMediaService(), GetV1PhoneMediaService())
 	}
-	return logic.NewUserMock()
+	return logic.NewUserMock(logic.NewMockEmailService(),logic.NewMockPhoneService())
 }
 
+func GetV1EmailMediaService()service.Media{
+	return logic.NewEmailService()
+}
+
+func GetV1OtpService()service.Otp{
+	if config.RunMode==string(enums.PRODUCTION) {
+		return logic.NewOtpService(mongo.NewOtpRepository(3000))
+	}
+	return  logic.NewMockOtpService()
+}
+
+func GetV1PhoneMediaService()service.Media{
+	return logic.NewPhoneService()
+}
 func GetV1JwtService() service.Jwt {
 	return  logic.NewJwtService()
 }
