@@ -5,6 +5,7 @@ import (
 	"github.com/klovercloud-ci/enums"
 	"log"
 	"os"
+	"strings"
 )
 
 // ServerPort refers to server port.
@@ -59,6 +60,12 @@ var SmtpHost string
 // SmtpPort refers to mail servers smtp port.
 var SmtpPort string
 
+// Resources refers to resources.
+var Resources  []string
+
+// Permissions refers to permission.
+var Permissions  []string
+
 // InitEnvironmentVariables initializes environment variables
 func InitEnvironmentVariables() {
 	RunMode = os.Getenv("RUN_MODE")
@@ -95,4 +102,6 @@ func InitEnvironmentVariables() {
 	MailServerHostEmailSecret=os.Getenv("MAIL_SERVER_HOST_EMAIL_SECRET")
 	SmtpHost=os.Getenv("SMTP_HOST")
 	SmtpPort=os.Getenv("SMTP_PORT")
+	Resources=strings.Split(os.Getenv("RESOURCES"),",")
+	Permissions=strings.Split(os.Getenv("PERMISSIONS"),",")
 }

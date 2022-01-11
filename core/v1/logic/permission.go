@@ -1,11 +1,9 @@
 package logic
 
 import (
-	"errors"
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/repository"
 	"github.com/klovercloud-ci/core/v1/service"
-	"github.com/klovercloud-ci/enums"
 )
 
 type permissionService struct {
@@ -13,16 +11,6 @@ type permissionService struct {
 }
 
 func (p permissionService) Store(permission v1.Permission) error {
-	m := make(map[string]bool)
-
-	for _, v := range enums.PERMISSION_LIST {
-		m[string(v)] = true
-	}
-
-	if _, ok := m[string(permission.Name)]; !ok {
-		return errors.New("Permission not valid!")
-	}
-
 	return p.repo.Store(permission)
 }
 
