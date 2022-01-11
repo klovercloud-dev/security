@@ -32,6 +32,7 @@ type User struct {
 	FirstName    string `json:"first_name" bson:"first_name" `
 	LastName     string `json:"last_name" bson:"last_name"`
 	Email        string `json:"email" bson:"email" `
+	Phone        string `json:"phone" bson:"phone" `
 	Password     string `json:"password" bson:"password" `
 	Status       string `json:"status" bson:"status"`
 	CreatedDate  time.Time `json:"created_date" bson:"created_date"`
@@ -103,6 +104,7 @@ type JWTPayLoad struct {
 
 
 type PasswordResetDto struct {
+	Otp              string                 `json:"otp" bson:"otp"`
 	Email              string                 `json:"email" bson:"email"`
 	CurrentPassword  string           `json:"current_password" bson:"current_password"`
 	NewPassword string           `json:"new_password" bson:"new_password"`
@@ -111,6 +113,7 @@ type PasswordResetDto struct {
 type Otp struct {
 	ID           string `json:"id" bson:"id"`
 	Email              string                 `json:"email" bson:"email"`
+	Phone        string `json:"phone" bson:"phone" `
 	Otp string  `json:"otp" bson:"otp"`
 	Exp time.Time `json:"exp" bson:"exp"`
 }

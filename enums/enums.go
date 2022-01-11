@@ -60,3 +60,12 @@ const (
 	// FORGOT_PASSWORD refers to password forgot action
 	FORGOT_PASSWORD     = USER_UPDATE_ACTION("forgot_password")
 )
+
+// MEDIA otp media
+type MEDIA string
+const (
+	// EMAIL refers to email media
+	EMAIL = MEDIA("email")
+	// PHOME refers to phone media
+	PHONE     = MEDIA("phone")
+)

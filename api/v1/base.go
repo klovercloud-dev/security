@@ -6,9 +6,9 @@ import (
 )
 
 func Router(g *echo.Group) {
-	ResourceRouter(g.Group("/resource"))
-	PermissionRouter(g.Group("/permission"))
-	UserRouter(g.Group("/user"))
+	ResourceRouter(g.Group("/resources"))
+	PermissionRouter(g.Group("/permissions"))
+	UserRouter(g.Group("/users"))
 	OauthRouter(g.Group("/oauth"))
 }
 
@@ -33,6 +33,7 @@ func UserRouter(g *echo.Group) {
 	g.GET("", userApi.Get)
 	g.GET("/:id", userApi.GetByID)
 	g.DELETE("/:id", userApi.Delete)
+	g.PUT("", userApi.Update)
 }
 
 func OauthRouter(g *echo.Group) {

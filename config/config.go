@@ -47,6 +47,18 @@ var CTLTokenLifetime string
 // RunMode refers to run mode.
 var RunMode string
 
+// MailServerHostEmail refers to mail servers host email address.
+var MailServerHostEmail string
+
+// MailServerHostEmailSecret refers to mail servers host email address secret.
+var MailServerHostEmailSecret string
+
+// SmtpHost refers to mail servers smtp host addresss.
+var SmtpHost string
+
+// SmtpPort refers to mail servers smtp port.
+var SmtpPort string
+
 // InitEnvironmentVariables initializes environment variables
 func InitEnvironmentVariables() {
 	RunMode = os.Getenv("RUN_MODE")
@@ -78,4 +90,9 @@ func InitEnvironmentVariables() {
 	Publickey=os.Getenv("PUBLIC_KEY")
 	RegularTokenLifetime =os.Getenv("REGULAR_TOKEN_LIFETIME")
 	CTLTokenLifetime=os.Getenv("CTL_TOKEN_LIFETIME")
+
+	MailServerHostEmail=os.Getenv("MAIL_SERVER_HOST_EMAIL")
+	MailServerHostEmailSecret=os.Getenv("MAIL_SERVER_HOST_EMAIL_SECRET")
+	SmtpHost=os.Getenv("SMTP_HOST")
+	SmtpPort=os.Getenv("SMTP_PORT")
 }

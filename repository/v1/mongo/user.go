@@ -22,8 +22,29 @@ type userRepository struct {
 	timeout time.Duration
 }
 
-func (u userRepository) UpdateToken(user v1.User) error {
-	panic("implement me")
+func (u userRepository) GetByPhone(phone string) v1.User {
+	var res v1.User
+	query := bson.M{
+		"$and": []bson.M{
+			{"phone": phone},
+		},
+	}
+	coll := u.manager.Db.Collection(UserCollection)
+	result, err := coll.Find(u.manager.Ctx, query, nil)
+	if err != nil {
+		log.Println(err.Error())
+		return v1.User{}
+	}
+	for result.Next(context.TODO()) {
+		elemValue := new(v1.User)
+		err := result.Decode(elemValue)
+		if err != nil {
+			log.Println("[ERROR]", err)
+			break
+		}
+		res = *elemValue
+	}
+	return res
 }
 
 func (u userRepository) GetByToken(token string) v1.User {
@@ -137,7 +158,7 @@ func (u userRepository) Get() []v1.User {
 	return results
 }
 
-func (u userRepository) GetByID(id string) (v1.User, error) {
+func (u userRepository) GetByID(id string) v1.User{
 	var res v1.User
 	query := bson.M{
 		"$and": []bson.M{},
@@ -158,7 +179,7 @@ func (u userRepository) GetByID(id string) (v1.User, error) {
 		}
 		res = *elemValue
 	}
-	return res, nil
+	return res
 }
 
 func (u userRepository) Delete(id string) error {
