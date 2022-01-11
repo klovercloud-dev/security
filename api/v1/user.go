@@ -98,7 +98,12 @@ func (u userApi) Store(context echo.Context) error {
 	formData.ID = uuid.New().String()
 	formData.CreatedDate = time.Now().UTC()
 	formData.UpdatedDate = time.Now().UTC()
-	err := u.userService.Store(formData)
+	formData.Status=enums.ACTIVE
+	err:=formData.Validate()
+	if err!=nil{
+		return common.GenerateErrorResponse(context,"[ERROR]: Failed to register user!",err.Error())
+	}
+	err = u.userService.Store(formData)
 	if err != nil {
 		return common.GenerateErrorResponse(context, nil, err.Error())
 	}

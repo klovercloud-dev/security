@@ -69,9 +69,9 @@ type STATUS string
 
 const (
 	// ACTIVE user status for active user
-	ACTIVE = STATUS("ACTIVE")
+	ACTIVE = STATUS("active")
 	// INACTIVE user status for inactive user
-	INACTIVE = STATUS("INACTIVE")
+	INACTIVE = STATUS("inactive")
 )
 
 // AUTH_TYPE AuthType update action
@@ -79,7 +79,7 @@ type AUTH_TYPE string
 
 const (
 	// PASSWORD grand_type of users authentication
-	PASSWORD = AUTH_TYPE("PASSWORD")
+	PASSWORD = AUTH_TYPE("password")
 )
 // MEDIA otp media
 type MEDIA string

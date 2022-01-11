@@ -66,7 +66,7 @@ func InitEnvironmentVariables() {
 		RunMode = string(enums.DEVELOP)
 	}
 
-	log.Println("RUN MODE:", RunMode)
+
 
 	if RunMode != string(enums.PRODUCTION) {
 		//Load .env file
@@ -76,6 +76,7 @@ func InitEnvironmentVariables() {
 			return
 		}
 	}
+	log.Println("RUN MODE:", RunMode)
 	ServerPort = os.Getenv("SERVER_PORT")
 	DbServer = os.Getenv("MONGO_SERVER")
 	DbPort = os.Getenv("MONGO_PORT")
