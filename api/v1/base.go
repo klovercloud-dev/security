@@ -10,7 +10,7 @@ func Router(g *echo.Group) {
 	PermissionRouter(g.Group("/permission"))
 	UserRouter(g.Group("/user"))
 	RoleRouter(g.Group("/role"))
-	UserResourcePermissionRouter(g.Group("/userResourcePermission"))
+	OauthRouter(g.Group("/oauth"))
 }
 
 func ResourceRouter(g *echo.Group) {
@@ -38,19 +38,16 @@ func RoleRouter(g *echo.Group) {
 }
 
 func UserRouter(g *echo.Group) {
-	userApi := NewUserApi(dependency.GetV1UserService())
-	userResourcePermissionApi := NewUserResourcePermissionApi(dependency.GetV1UserResourcePermissionService())
+	userApi := NewUserApi(dependency.GetV1UserService(), dependency.GetV1UserResourcePermissionService())
+	//userResourcePermissionApi := NewUserResourcePermissionApi(dependency.GetV1UserResourcePermissionService())
 	g.POST("", userApi.Store)
 	g.GET("", userApi.Get)
 	g.GET("/:id", userApi.GetByID)
 	g.DELETE("/:id", userApi.Delete)
-	g.POST("/:id/userResourcePermission", userResourcePermissionApi.Update)
+	g.POST("/:id/userResourcePermission", userApi.Update)
 }
 
-func UserResourcePermissionRouter(g *echo.Group) {
-	userResourcePermissionApi := NewUserResourcePermissionApi(dependency.GetV1UserResourcePermissionService())
-	g.POST("", userResourcePermissionApi.Store)
-	g.GET("", userResourcePermissionApi.Get)
-	g.GET("/:id", userResourcePermissionApi.GetByUserID)
-	g.DELETE("/:id", userResourcePermissionApi.Delete)
+func OauthRouter(g *echo.Group) {
+	oauthApi := NewOauthApi(dependency.GetV1UserService(),dependency.GetV1JwtService(),dependency.GetV1UserResourcePermissionService(),dependency.GetV1TokenService())
+	g.POST("/login", oauthApi.Login)
 }

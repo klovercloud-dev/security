@@ -44,12 +44,25 @@ var RegularTokenLifetime string
 // CTLTokenLifetime refers to token lifetime of ctl.
 var CTLTokenLifetime string
 
+// RunMode refers to run mode.
+var RunMode string
+
 // InitEnvironmentVariables initializes environment variables
 func InitEnvironmentVariables() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Println("ERROR:", err.Error())
-		return
+	RunMode = os.Getenv("RUN_MODE")
+	if RunMode == "" {
+		RunMode = string(enums.DEVELOP)
+	}
+
+	log.Println("RUN MODE:", RunMode)
+
+	if RunMode != string(enums.PRODUCTION) {
+		//Load .env file
+		err := godotenv.Load()
+		if err != nil {
+			log.Println("ERROR:", err.Error())
+			return
+		}
 	}
 	ServerPort = os.Getenv("SERVER_PORT")
 	DbServer = os.Getenv("MONGO_SERVER")

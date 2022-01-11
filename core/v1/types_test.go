@@ -3,10 +3,12 @@ package v1
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/klovercloud-ci/enums"
 	_ "github.com/klovercloud-ci/enums"
+	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
-	"github.com/stretchr/testify/assert"
+	"time"
 )
 
 // Initialize UserRegistrationDto from JSON data
@@ -16,6 +18,7 @@ func InitUserRegistrationDto(str string) UserRegistrationDto {
 	if err != nil {
 		return UserRegistrationDto{}
 	}
+	fmt.Println(res)
 	return res
 }
 
@@ -34,19 +37,42 @@ func TestGetUserAndResourcePermissionBody(t *testing.T) {
 
 	var testdata []TestCase
 
+	loc, _ := time.LoadLocation("EST")
+	timeData := time.Date(2022, 1, 11, 14,9,0,0, loc).UTC()
+	fmt.Println(timeData)
+
+	// UserResourcePermission test data
+	ids := []string{"123"}
+	firstNames := []string{"Shabrul"}
+	lastNames := []string{"TheBOSS"}
+	emails := []string{"shabrul_theboss@klovercloud.com"}
+	phones := []string{"01707007007"}
+	passwords := []string{"IAmTheBoss"}
+	status := []enums.STATUS{"ACTIVE"}
+	createdDates := []time.Time{timeData}
+	updatedDates := []time.Time{timeData}
+	authTypes := []enums.AUTH_TYPE{"PASSWORD"}
+	// UserResourcePermission -> Resource_Permission data
+	userIds := []string{"123"}
+		// UserResourcePermission -> Resource_Permission ->  Resources data
+		resourcesNames := [][]string{{"resources1"}}
+			// UserResourcePermission -> Resource_Permission ->  Resources -> Roles data
+			rolesNames := [][]string{{"admin"}}
+				// UserResourcePermission -> Resource_Permission ->  Resources -> Roles -> Permission data
+				permissionNames := [][]enums.PERMISION_TYPE{{"create", "read"}}
+
 	jsonData := []string{
 		`{
 			"_id": "123",
 			"first_name": "Shabrul",
 			"last_name": "TheBOSS",
 			"email": "shabrul_theboss@klovercloud.com",
+			"phone": "01707007007",
 			"password":	"IAmTheBoss",
-			"status": "Married",
-			"created_date": "2022-01-10",
-			"updated_date": "2022-01-10",
-			"token": "1231654sdaf61v1a1rg",
-			"refresh_token": "4dsaf4e9a4f89484",
-			"auth_type": "Secured",
+			"status": "ACTIVE",
+			"created_date": "2022-01-11 19:09:00 +0000 UTC",
+			"updated_date": "2022-01-11 19:09:00 +0000 UTC",
+			"auth_type": "PASSWORD",
 			"resource_permission":	{
 				"user_id": "123",
 				"resources": [
@@ -78,13 +104,12 @@ func TestGetUserAndResourcePermissionBody(t *testing.T) {
 				FirstName:    "Shabrul",
 				LastName:     "TheBOSS",
 				Email:        "shabrul_theboss@klovercloud.com",
+				Phone: 		  "01707007007",
 				Password:     "IAmTheBoss",
-				Status:       "Married",
-				CreatedDate:  "2022-01-10",
-				UpdatedDate:  "2022-01-10",
-				Token:        "1231654sdaf61v1a1rg",
-				RefreshToken: "4dsaf4e9a4f89484",
-				AuthType:     "Secured",
+				Status:       "ACTIVE",
+				CreatedDate:  timeData,
+				UpdatedDate:  timeData,
+				AuthType:     "PASSWORD",
 			},
 			UserResourcePermission{
 				UserId:    "123",
@@ -114,8 +139,44 @@ func TestGetUserAndResourcePermissionBody(t *testing.T) {
 	}
 
 	for i := 0; i < len(jsonData); i++ {
+
 		testcase := TestCase{
-			data:     InitUserRegistrationDto(jsonData[i]),
+			data:     UserRegistrationDto{
+				ID:                 ids[i],
+				FirstName:          firstNames[i],
+				LastName:           lastNames[i],
+				Email:              emails[i],
+				Phone:              phones[i],
+				Password:           passwords[i],
+				Status:             status[i],
+				CreatedDate:        createdDates[i],
+				UpdatedDate:        updatedDates[i],
+				AuthType:           authTypes[i],
+				ResourcePermission: UserResourcePermission{
+					UserId:    userIds[i],
+					Resources: []struct {
+						Name  string `json:"name" bson:"name"`
+						Roles []Role `json:"roles" bson:"roles"`
+					}{
+						{
+							Name: resourcesNames[i][0],
+							Roles: []Role{
+								{
+									Name:        rolesNames[i][0],
+									Permissions: []Permission{
+										{
+											Name: permissionNames[i][0],
+										},
+										{
+											Name: permissionNames[i][1],
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 			expected: expec[i],
 		}
 		testdata = append(testdata, testcase)

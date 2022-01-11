@@ -10,18 +10,18 @@ import (
 
 type userService struct {
 	userRepo repository.User
-	urpRepo  repository.UserResourcePermission
+	urpService  service.UserResourcePermission
+	tokenService service.Token
 }
 
-func (u userService) UpdateToken(token, refreshToken, existingToken string) error {
-	oldUser := u.userRepo.GetByToken(existingToken)
-	if oldUser.ID == "" {
-		return errors.New("user does not exist")
-	}
-	oldUser.Token = token
-	oldUser.RefreshToken = refreshToken
+func (u userService) UpdatePassword(user v1.User) error {
+	return u.userRepo.UpdatePassword(user)
+}
 
-	return u.userRepo.UpdateToken(oldUser)
+
+
+func (u userService) UpdateToken(token, refreshToken, existingToken string) error {
+	return u.tokenService.Update(token,refreshToken,existingToken)
 }
 
 func (u userService) GetByEmail(email string) v1.User {
@@ -30,25 +30,22 @@ func (u userService) GetByEmail(email string) v1.User {
 
 func (u userService) Store(userWithResourcePermission v1.UserRegistrationDto) error {
 	user, userResourcePermission := v1.GetUserAndResourcePermissionBody(userWithResourcePermission)
-	mailFlag := mailValidation(userWithResourcePermission.Email)
-	if mailFlag == false {
-		return errors.New("email is not valid")
-	}
 	isUserExist := u.userRepo.GetByEmail(user.Email)
 	if isUserExist.Email != "" {
 		return errors.New("email is already registered")
 	}
-	if userWithResourcePermission.Password == "" {
-		return errors.New("password is empty")
-	} else if len(userWithResourcePermission.Password) < 8 {
-		return errors.New("password is minimum 8 characters")
-	}
-	err := u.userRepo.Store(user)
+
+	err:=userWithResourcePermission.Validate()
 	if err != nil {
 		return err
 	}
 
-	err = u.urpRepo.Store(userResourcePermission)
+	err = u.userRepo.Store(user)
+	if err != nil {
+		return err
+	}
+
+	err = u.urpService.Store(userResourcePermission)
 	if err != nil {
 		return err
 	}
@@ -81,9 +78,10 @@ func mailValidation(email string) bool {
 	return err == nil
 }
 
-func NewUserService(userRepo repository.User, urpRepo repository.UserResourcePermission) service.User {
+func NewUserService(userRepo repository.User, urpService service.UserResourcePermission,tokenService service.Token) service.User {
 	return &userService{
 		userRepo: userRepo,
-		urpRepo:  urpRepo,
+		urpService:  urpService,
+		tokenService: tokenService,
 	}
 }
