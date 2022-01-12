@@ -13,7 +13,7 @@ type userMock struct {
 	phoneMediaService service.Media
 }
 
-func (u userMock) AttachCompany(id, companyId string) error {
+func (u userMock) AttachCompany(company v1.Company, companyId,token string) error {
 	panic("implement me")
 }
 

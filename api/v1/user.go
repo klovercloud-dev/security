@@ -18,6 +18,7 @@ type userApi struct {
 	userService service.User
 	userResourcePermissionService service.UserResourcePermission
 	otpService service.Otp
+	jwtService service.Jwt
 }
 
 func (u userApi) UpdateUserResourcePermission(context echo.Context) error {
@@ -48,7 +49,29 @@ func (u userApi) Update(context echo.Context) error {
 }
 
 func (u userApi) AttachCompany(context echo.Context) error {
-	return nil
+	bearerToken:=context.Request().Header.Get("Authorization")
+	if bearerToken==""{
+		return common.GenerateForbiddenResponse(context,"[ERROR]: No token found!","Please provide a valid token!")
+	}
+	var token string
+	if len(strings.Split(bearerToken," "))==2{
+		token=strings.Split(bearerToken," ")[1]
+	}else{
+		return common.GenerateForbiddenResponse(context,"[ERROR]: No token found!","Please provide a valid token!")
+	}
+	if !u.jwtService.IsTokenValid(token){
+		return common.GenerateForbiddenResponse(context, "[ERROR]: Token is expired!","Please login again to get token!")
+	}
+	formData := v1.Company{}
+	if err := context.Bind(&formData); err != nil {
+		log.Println("Input Error:", err.Error())
+		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
+	}
+	err := u.userService.AttachCompany(formData, formData.Id,token)
+	if err != nil {
+		return common.GenerateErrorResponse(context, "[ERROR]: Failed to attach company with user", err.Error())
+	}
+	return common.GenerateSuccessResponse(context, nil, nil, "Successfully attached company with user")
 }
 func (u userApi) ForgotPassword(context echo.Context) error {
 	media := context.QueryParam("media")
@@ -151,10 +174,11 @@ func (u userApi) Delete(context echo.Context) error {
 	return common.GenerateSuccessResponse(context, nil, nil, "Successfully Deleted User!")
 }
 
-func NewUserApi(userService service.User,userResourcePermissionService service.UserResourcePermission,	otpService service.Otp) api.User {
+func NewUserApi(userService service.User,userResourcePermissionService service.UserResourcePermission,	otpService service.Otp,jwtService service.Jwt) api.User {
 	return &userApi{
 		userService: userService,
 		userResourcePermissionService: userResourcePermissionService,
 		otpService: otpService,
+		jwtService: jwtService,
 	}
 }

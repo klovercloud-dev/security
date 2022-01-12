@@ -1,7 +1,6 @@
 package logic
 
 import (
-	"errors"
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/repository"
 	"github.com/klovercloud-ci/core/v1/service"
@@ -13,11 +12,15 @@ type tokenService struct {
 	jwtService service.Jwt
 }
 
+func (t tokenService) GetByToken(token string) v1.Token {
+	return t.tokenRepo.GetByToken(token)
+}
+
 func (t tokenService) Store(token v1.Token) error {
 	if token.Type == enums.REGULAR_TOKEN {
 		oldToken := t.tokenRepo.GetByUID(token.Uid)
 		if oldToken.Uid == "" {
-			return errors.New("token not found")
+			return t.tokenRepo.Store(token)
 		}
 
 		oldToken.Token = token.Token

@@ -23,7 +23,28 @@ type userRepository struct {
 }
 
 func (u userRepository) AttachCompany(id, companyId string) error {
-	panic("implement me")
+	user := u.GetByID(id)
+	user.Metadata.CompanyId = companyId
+	filter := bson.M{
+		"$and": []bson.M{
+			{"id": id},
+		},
+	}
+	update := bson.M{
+		"$set": user,
+	}
+	upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	coll := u.manager.Db.Collection(UserCollection)
+	err := coll.FindOneAndUpdate(u.manager.Ctx, filter, update, &opt)
+	if err != nil {
+		log.Println("[ERROR] Insert document:", err.Err())
+	}
+	return nil
 }
 
 func (u userRepository) GetByPhone(phone string) v1.User {

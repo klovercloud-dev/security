@@ -38,7 +38,7 @@ func RoleRouter(g *echo.Group) {
 }
 
 func UserRouter(g *echo.Group) {
-	userApi := NewUserApi(dependency.GetV1UserService(), dependency.GetV1UserResourcePermissionService(),dependency.GetV1OtpService())
+	userApi := NewUserApi(dependency.GetV1UserService(), dependency.GetV1UserResourcePermissionService(),dependency.GetV1OtpService(),dependency.GetV1JwtService())
 	g.POST("", userApi.Store)
 	g.GET("", userApi.Get)
 	g.GET("/:id", userApi.GetByID)

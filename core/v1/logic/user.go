@@ -2,7 +2,9 @@ package logic
 
 import (
 	"crypto/rand"
+	"encoding/json"
 	"errors"
+	"github.com/klovercloud-ci/config"
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/repository"
 	"github.com/klovercloud-ci/core/v1/service"
@@ -17,10 +19,27 @@ type userService struct {
 	otpService service.Otp
 	emailMediaService service.Media
 	phoneMediaService service.Media
+	httpClientService service.HttpClient
 }
 
-func (u userService) AttachCompany(id, companyId string) error {
-	panic("implement me")
+func (u userService) AttachCompany(company v1.Company, companyId,token string) error {
+	tokenObject:=u.tokenService.GetByToken(token)
+	if tokenObject.Uid==""{
+		return errors.New("no token found")
+	}
+	marshal, marshalErr := json.Marshal(company)
+	if marshalErr != nil {
+		return marshalErr
+	}
+	header := make(map[string]string)
+	header["token"] = token
+	header["Authorization"]="Bearer "+token
+	header["Content-Type"] = "application/json"
+	_, err := u.httpClientService.Post(config.ApiServerUrl+"/companies", header, marshal)
+	if err != nil {
+		return  err
+	}
+	return u.userRepo.AttachCompany(tokenObject.Uid,companyId)
 }
 
 func (u userService) GetByOtp(otp string) v1.User {
@@ -126,7 +145,7 @@ func mailValidation(email string) bool {
 	return err == nil
 }
 
-func NewUserService(userRepo repository.User, urpService service.UserResourcePermission,tokenService service.Token,otpService service.Otp,emailMediaService service.Media,phoneMediaService service.Media) service.User {
+func NewUserService(userRepo repository.User, urpService service.UserResourcePermission,tokenService service.Token,otpService service.Otp,emailMediaService service.Media,phoneMediaService service.Media, httpClientService service.HttpClient) service.User {
 	return &userService{
 		userRepo:          userRepo,
 		urpService:        urpService,
@@ -134,5 +153,6 @@ func NewUserService(userRepo repository.User, urpService service.UserResourcePer
 		otpService:        otpService,
 		emailMediaService: emailMediaService,
 		phoneMediaService: phoneMediaService,
+		httpClientService: httpClientService,
 	}
 }

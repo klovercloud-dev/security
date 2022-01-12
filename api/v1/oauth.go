@@ -39,7 +39,7 @@ func  (o oauthApi) handleRefreshTokenGrant(context echo.Context) error{
 	}
 
 	if !o.jwtService.IsTokenValid(refreshTokenDto.RefreshToken){
-		return common.GenerateForbiddenResponse(context, "[ERROR]: Token is expired!","Please login again for get token!")
+		return common.GenerateForbiddenResponse(context, "[ERROR]: Token is expired!","Please login again to get token!")
 	}
 	claims := jwt.MapClaims{}
 	jwt.ParseWithClaims(refreshTokenDto.RefreshToken, claims, func(token *jwt.Token) (interface{}, error) {

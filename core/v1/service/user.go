@@ -13,5 +13,5 @@ type User interface {
 	UpdateToken(token, refreshToken, existingToken string) error
 	UpdatePassword(user v1.User) error
 	SendOtp(email, phone string) error
-	AttachCompany(id ,companyId string) error
+	AttachCompany(company v1.Company, companyId,token string) error
 }

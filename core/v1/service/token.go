@@ -6,4 +6,5 @@ type Token interface {
 	Store(token v1.Token) error
 	Delete(uid string) error
 	Update(token string, refreshToken string, existingToken string) error
+	GetByToken(token string) v1.Token
 }

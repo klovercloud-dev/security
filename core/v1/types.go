@@ -192,3 +192,60 @@ type Otp struct {
 	Otp 		 string  	`json:"otp" bson:"otp"`
 	Exp 		 time.Time  `json:"exp" bson:"exp"`
 }
+
+// Company contains company data
+type Company struct {
+	MetaData     CompanyMetadata      `bson:"_metadata" json:"_metadata"`
+	Id           string               `bson:"id" json:"id"`
+	Name         string               `bson:"name" json:"name"`
+	Repositories []Repository         `bson:"repositories" json:"repositories"`
+}
+
+// CompanyMetadata contains company metadata info
+type CompanyMetadata struct {
+	Labels                    map[string]string `bson:"labels" json:"labels" yaml:"labels"`
+	NumberOfConcurrentProcess int64             `bson:"number_of_concurrent_process" json:"number_of_concurrent_process" yaml:"number_of_concurrent_process"`
+	TotalProcessPerDay        int64             `bson:"total_process_per_day" json:"total_process_per_day" yaml:"total_process_per_day"`
+}
+
+// Repository contains repository info
+type Repository struct {
+	Id           string                `bson:"id" json:"id"`
+	Type         string `bson:"type" json:"type"`
+	Token        string                `bson:"token" json:"token"`
+	Applications []Application         `bson:"applications" json:"applications"`
+}
+
+// Application contains application info
+type Application struct {
+	MetaData ApplicationMetadata  `bson:"_metadata" json:"_metadata"`
+	Url      string               `bson:"url" json:"url"`
+	Webhook  GitWebhook           `bson:"webhook" json:"webhook"`
+}
+
+// ApplicationMetadata contains application metadata info
+type ApplicationMetadata struct {
+	Labels           map[string]string `bson:"labels" json:"labels"`
+	Id               string            `bson:"id" json:"id"`
+	Name             string            `bson:"name" json:"name"`
+	IsWebhookEnabled bool              `bson:"is_webhook_enabled" json:"is_webhook_enabled"`
+}
+
+// GitWebhook contains github web hook data
+type GitWebhook struct {
+	Type   string   `json:"type"`
+	ID     string   `json:"id"`
+	Active bool     `json:"active"`
+	Events []string `json:"events"`
+	Config struct {
+		URL         string `json:"url"`
+		InsecureSsl string `json:"insecure_ssl"`
+		ContentType string `json:"content_type"`
+	} `json:"config"`
+	UpdatedAt     time.Time `json:"updated_at"`
+	CreatedAt     time.Time `json:"created_at"`
+	URL           string    `json:"url"`
+	TestURL       string    `json:"test_url"`
+	PingURL       string    `json:"ping_url"`
+	DeliveriesURL string    `json:"deliveries_url"`
+}

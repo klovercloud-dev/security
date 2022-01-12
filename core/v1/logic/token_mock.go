@@ -10,6 +10,10 @@ var tokens map[string][] v1.Token
 type tokenMock struct {
 }
 
+func (t tokenMock) GetByToken(token string) v1.Token {
+	panic("implement me")
+}
+
 func (t tokenMock) Store(token v1.Token) error {
 	if tokens==nil{
 		tokens=make( map[string][] v1.Token)

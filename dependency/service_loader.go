@@ -19,10 +19,12 @@ func GetV1PermissionService() service.Permission {
 	permission = logic.NewPermissionService(mongo.NewPermissionRepository(3000))
 	return permission
 }
-
+func GetV1HttpClient() service.HttpClient{
+	return logic.NewHttpClientService()
+}
 func GetV1UserService() service.User {
 	if config.RunMode==string(enums.PRODUCTION) || config.RunMode==string(enums.DEVELOP){
-		return logic.NewUserService(mongo.NewUserRepository(3000),GetV1UserResourcePermissionService(),GetV1TokenService(), GetV1OtpService(), GetV1EmailMediaService(), GetV1PhoneMediaService())
+		return logic.NewUserService(mongo.NewUserRepository(3000),GetV1UserResourcePermissionService(),GetV1TokenService(), GetV1OtpService(), GetV1EmailMediaService(), GetV1PhoneMediaService(),GetV1HttpClient())
 	}
 	return logic.NewUserMock(logic.NewMockEmailService(),logic.NewMockPhoneService())
 }
