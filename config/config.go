@@ -66,6 +66,9 @@ var Resources  []string
 // Permissions refers to permission.
 var Permissions  []string
 
+// ApiServerUrl refers to api servers base url.
+var ApiServerUrl string
+
 // InitEnvironmentVariables initializes environment variables
 func InitEnvironmentVariables() {
 	RunMode = os.Getenv("RUN_MODE")
@@ -104,4 +107,5 @@ func InitEnvironmentVariables() {
 	SmtpPort=os.Getenv("SMTP_PORT")
 	Resources=strings.Split(os.Getenv("RESOURCES"),",")
 	Permissions=strings.Split(os.Getenv("PERMISSIONS"),",")
+	ApiServerUrl=os.Getenv("API_SERVER_URL")
 }
