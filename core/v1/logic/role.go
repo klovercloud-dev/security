@@ -10,7 +10,7 @@ import (
 
 type roleService struct {
 	roleRepo       repository.Role
-	permissionRepo repository.Permission
+	permissionService service.Permission
 }
 
 func (r roleService) Get() []v1.Role {
@@ -59,7 +59,7 @@ func (r roleService) Update(name string, permissions []v1.Permission, option v1.
 
 	m := make(map[string]bool)
 
-	listOfPermissions := r.permissionRepo.Get()
+	listOfPermissions := r.permissionService.Get()
 	for _, each := range listOfPermissions {
 		m[string(each.Name)] = true
 	}
@@ -88,9 +88,9 @@ func (r roleService) Update(name string, permissions []v1.Permission, option v1.
 	return nil
 }
 
-func NewRoleService(roleRepo repository.Role, permissionRepo repository.Permission) service.Role {
+func NewRoleService(roleRepo repository.Role, permissionService service.Permission) service.Role {
 	return &roleService{
 		roleRepo: roleRepo,
-		permissionRepo: permissionRepo,
+		permissionService: permissionService,
 	}
 }

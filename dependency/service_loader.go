@@ -20,17 +20,9 @@ func GetV1PermissionService() service.Permission {
 	return permission
 }
 
-func GetV1RoleService() service.Role {
-	var role service.Role
-	role = logic.NewRoleService(mongo.NewRoleRepository(300), mongo.NewPermissionRepository(300))
-
-	return role
-}
-
 func GetV1UserService() service.User {
-
 	if config.RunMode==string(enums.PRODUCTION) || config.RunMode==string(enums.DEVELOP){
-		return logic.NewUserService(mongo.NewUserRepository(3000),GetV1UserResourcePermissionService(),GetV1TokenService(),getV1OtpService(),GetV1EmailMediaService(),GetV1PhoneMediaService())
+		return logic.NewUserService(mongo.NewUserRepository(3000),GetV1UserResourcePermissionService(),GetV1TokenService(), GetV1OtpService(), GetV1EmailMediaService(), GetV1PhoneMediaService())
 	}
 	return logic.NewUserMock(logic.NewMockEmailService(),logic.NewMockPhoneService())
 }
@@ -39,8 +31,7 @@ func GetV1EmailMediaService()service.Media{
 	return logic.NewEmailService()
 }
 
-
-func getV1OtpService()service.Otp{
+func GetV1OtpService()service.Otp{
 	if config.RunMode==string(enums.PRODUCTION)  || config.RunMode==string(enums.DEVELOP){
 		return logic.NewOtpService(mongo.NewOtpRepository(3000))
 	}
@@ -68,9 +59,9 @@ func GetV1TokenService() service.Token {
 	return logic.NewTokenMock()
 }
 
-//func GetV1UserResourcePermissionService() service.UserResourcePermission {
-//	var userResourcePermission service.UserResourcePermission
-//	userResourcePermission = logic.NewUserResourcePermissionService(mongo.NewUserResourcePermissionRepository(300))
-//
-//	return userResourcePermission
-//}
+func GetV1RoleService()service.Role{
+	if config.RunMode==string(enums.PRODUCTION)  || config.RunMode==string(enums.DEVELOP){
+		return logic.NewRoleService(mongo.NewRoleRepository(3000), GetV1PermissionService())
+	}
+	return logic.NewMockRoleService()
+}
