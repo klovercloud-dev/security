@@ -22,6 +22,10 @@ type userRepository struct {
 	timeout time.Duration
 }
 
+func (u userRepository) AttachCompany(id, companyId string) error {
+	panic("implement me")
+}
+
 func (u userRepository) GetByPhone(phone string) v1.User {
 	var res v1.User
 	query := bson.M{

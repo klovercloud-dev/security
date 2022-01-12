@@ -28,6 +28,7 @@ type UserResourcePermission struct {
 }
 
 type User struct {
+	Metadata UserMetadata  `json:"metadata" bson:"metadata"`
 	ID           string `json:"id" bson:"id"`
 	FirstName    string `json:"first_name" bson:"first_name" `
 	LastName     string `json:"last_name" bson:"last_name"`
@@ -40,6 +41,9 @@ type User struct {
 	AuthType     string `json:"auth_type" bson:"auth_type"`
 }
 
+type UserMetadata struct {
+	CompanyId           string `json:"company_id" bson:"company_id"`
+}
 type UserRegistrationDto struct {
 	ID                 string                 `json:"_id" bson:"_id"`
 	FirstName          string                 `json:"first_name" bson:"first_name" `

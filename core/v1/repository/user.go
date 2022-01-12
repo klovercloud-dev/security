@@ -11,4 +11,5 @@ type User interface {
 	GetByPhone(phone string) v1.User
 	GetByToken(token string) v1.User
 	UpdatePassword(user v1.User) error
+	AttachCompany(id,companyId string) error
 }

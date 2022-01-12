@@ -19,6 +19,10 @@ type userService struct {
 	phoneMediaService service.Media
 }
 
+func (u userService) AttachCompany(id, companyId string) error {
+	panic("implement me")
+}
+
 func (u userService) GetByOtp(otp string) v1.User {
 	otpObject:=u.otpService.FindByOtp(otp)
 	return u.GetByID(otpObject.ID)

@@ -13,6 +13,10 @@ type userMock struct {
 	phoneMediaService service.Media
 }
 
+func (u userMock) AttachCompany(id, companyId string) error {
+	panic("implement me")
+}
+
 func (u userMock) GetByOtp(otp string) v1.User {
 	panic("implement me")
 }
