@@ -43,7 +43,6 @@ func (r resourceRepository) Get() []v1.Resource {
 // Get resource from the database by the given name
 func (r resourceRepository) GetByName(name string) v1.Resource {
 	elemValue := new(v1.Resource)
-	var resource v1.Resource
 	filter := bson.M{"name": name}
 	coll := r.manager.Db.Collection(ResourceCollection)
 	result := coll.FindOne(r.manager.Ctx, filter)
@@ -52,8 +51,7 @@ func (r resourceRepository) GetByName(name string) v1.Resource {
 		log.Println("[ERROR]", err)
 		return *elemValue
 	}
-	resource = *elemValue
-	return resource
+	return *elemValue
 }
 
 // Delete a resource from the database by the given name

@@ -16,6 +16,8 @@ import (
 
 type userApi struct {
 	userService service.User
+	userResourcePermissionService service.UserResourcePermission
+	otpService service.Otp
 }
 
 func (u userApi) Update(context echo.Context) error {
@@ -24,6 +26,8 @@ func (u userApi) Update(context echo.Context) error {
 		return u.ResetPassword(context)
 	} else if action == string(enums.FORGOT_PASSWORD) {
 		return u.ForgotPassword(context)
+	} else if action == string(enums.UPDATE_USER_RESOURCE_PERMISSION) {
+		return u.UserResourcePermissionApi(context)
 	}
 	return common.GenerateErrorResponse(context, "[ERROR]: No action type is provided!", "Please provide a action type!")
 }
@@ -47,6 +51,10 @@ func (u userApi) ResetPassword(context echo.Context) error {
 		log.Println("Input Error:", err.Error())
 		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
 	}
+
+	if !u.otpService.IsValid(formData.Otp){
+		return common.GenerateErrorResponse(context,"[ERROR]: Invalid Otp","Please provide a valid otp!")
+	}
 	var user v1.User
 	if formData.Otp!=""{
 		user=u.userService.GetByID(formData.Otp)
@@ -68,6 +76,19 @@ func (u userApi) ResetPassword(context echo.Context) error {
 	return common.GenerateSuccessResponse(context, nil, nil, "Operation Successful!")
 }
 
+func (u userApi) UserResourcePermissionApi(context echo.Context) error {
+	formData := v1.UserResourcePermission{}
+	if err := context.Bind(&formData); err != nil {
+		log.Println("Input Error:", err.Error())
+		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
+	}
+	err := u.userResourcePermissionService.Update(formData)
+	if err != nil {
+		return common.GenerateErrorResponse(context, nil, "Failed to update!")
+	}
+	return common.GenerateSuccessResponse(context, nil, nil, "Successfully updated")
+}
+
 func (u userApi) Store(context echo.Context) error {
 	formData := v1.UserRegistrationDto{}
 	if err := context.Bind(&formData); err != nil {
@@ -75,8 +96,14 @@ func (u userApi) Store(context echo.Context) error {
 		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
 	}
 	formData.ID = uuid.New().String()
-	formData.CreatedDate = time.Now()
-	err := u.userService.Store(formData)
+	formData.CreatedDate = time.Now().UTC()
+	formData.UpdatedDate = time.Now().UTC()
+	formData.Status=enums.ACTIVE
+	err:=formData.Validate()
+	if err!=nil{
+		return common.GenerateErrorResponse(context,"[ERROR]: Failed to register user!",err.Error())
+	}
+	err = u.userService.Store(formData)
 	if err != nil {
 		return common.GenerateErrorResponse(context, nil, err.Error())
 	}
@@ -106,8 +133,10 @@ func (u userApi) Delete(context echo.Context) error {
 	return common.GenerateSuccessResponse(context, nil, nil, "Successfully Deleted User!")
 }
 
-func NewUserApi(userService service.User) api.User {
+func NewUserApi(userService service.User,userResourcePermissionService service.UserResourcePermission,	otpService service.Otp) api.User {
 	return &userApi{
 		userService: userService,
+		userResourcePermissionService: userResourcePermissionService,
+		otpService: otpService,
 	}
 }

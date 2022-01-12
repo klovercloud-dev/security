@@ -1,3 +1,6 @@
+# github.com/davecgh/go-spew v1.1.1
+## explicit
+github.com/davecgh/go-spew/spew
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
 ## explicit
 github.com/dgrijalva/jwt-go
@@ -17,7 +20,7 @@ github.com/google/uuid
 ## explicit
 github.com/joho/godotenv
 # github.com/klauspost/compress v1.13.6
-## explicit
+## explicit; go 1.15
 github.com/klauspost/compress
 github.com/klauspost/compress/fse
 github.com/klauspost/compress/huff0
@@ -25,46 +28,52 @@ github.com/klauspost/compress/internal/snapref
 github.com/klauspost/compress/zstd
 github.com/klauspost/compress/zstd/internal/xxhash
 # github.com/klovercloud-ci-cd/integration-manager v0.0.0-20211114072956-790b543f0bc3
-## explicit
+## explicit; go 1.15
 # github.com/labstack/echo/v4 v4.6.1
-## explicit
+## explicit; go 1.15
 github.com/labstack/echo/v4
 github.com/labstack/echo/v4/middleware
 # github.com/labstack/gommon v0.3.1
-## explicit
+## explicit; go 1.12
 github.com/labstack/gommon/bytes
 github.com/labstack/gommon/color
 github.com/labstack/gommon/log
 github.com/labstack/gommon/random
 # github.com/mattn/go-colorable v0.1.11
-## explicit
+## explicit; go 1.13
 github.com/mattn/go-colorable
 # github.com/mattn/go-isatty v0.0.14
-## explicit
+## explicit; go 1.12
 github.com/mattn/go-isatty
 # github.com/pkg/errors v0.9.1
 ## explicit
 github.com/pkg/errors
+# github.com/pmezard/go-difflib v1.0.0
+## explicit
+github.com/pmezard/go-difflib/difflib
+# github.com/stretchr/testify v1.7.0
+## explicit; go 1.13
+github.com/stretchr/testify/assert
 # github.com/valyala/bytebufferpool v1.0.0
 ## explicit
 github.com/valyala/bytebufferpool
 # github.com/valyala/fasttemplate v1.2.1
-## explicit
+## explicit; go 1.12
 github.com/valyala/fasttemplate
 # github.com/xdg-go/pbkdf2 v1.0.0
-## explicit
+## explicit; go 1.9
 github.com/xdg-go/pbkdf2
 # github.com/xdg-go/scram v1.0.2
-## explicit
+## explicit; go 1.11
 github.com/xdg-go/scram
 # github.com/xdg-go/stringprep v1.0.2
-## explicit
+## explicit; go 1.11
 github.com/xdg-go/stringprep
 # github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d
 ## explicit
 github.com/youmark/pkcs8
 # go.mongodb.org/mongo-driver v1.8.1
-## explicit
+## explicit; go 1.10
 go.mongodb.org/mongo-driver/bson
 go.mongodb.org/mongo-driver/bson/bsoncodec
 go.mongodb.org/mongo-driver/bson/bsonoptions
@@ -100,7 +109,7 @@ go.mongodb.org/mongo-driver/x/mongo/driver/topology
 go.mongodb.org/mongo-driver/x/mongo/driver/uuid
 go.mongodb.org/mongo-driver/x/mongo/driver/wiremessage
 # golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa
-## explicit
+## explicit; go 1.17
 golang.org/x/crypto/acme
 golang.org/x/crypto/acme/autocert
 golang.org/x/crypto/bcrypt
@@ -108,7 +117,7 @@ golang.org/x/crypto/blowfish
 golang.org/x/crypto/ocsp
 golang.org/x/crypto/pbkdf2
 # golang.org/x/net v0.0.0-20211108170745-6635138e15ea
-## explicit
+## explicit; go 1.17
 golang.org/x/net/http/httpguts
 golang.org/x/net/http2
 golang.org/x/net/http2/h2c
@@ -118,11 +127,11 @@ golang.org/x/net/idna
 ## explicit
 golang.org/x/sync/errgroup
 # golang.org/x/sys v0.0.0-20211109065445-02f5c0300f6e
-## explicit
+## explicit; go 1.17
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.7
-## explicit
+## explicit; go 1.17
 golang.org/x/text/secure/bidirule
 golang.org/x/text/transform
 golang.org/x/text/unicode/bidi
@@ -130,3 +139,6 @@ golang.org/x/text/unicode/norm
 # golang.org/x/time v0.0.0-20201208040808-7e3f01d25324
 ## explicit
 golang.org/x/time/rate
+# gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+## explicit
+gopkg.in/yaml.v3
