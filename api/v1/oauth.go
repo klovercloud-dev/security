@@ -94,10 +94,7 @@ func (o oauthApi) handlePasswordGrant(context echo.Context) error {
 	if err != nil {
 		return common.GenerateForbiddenResponse(context, "[ERROR]: Password not matched!", "Please login with due credential!"+err.Error())
 	}
-	userResourcePermission, err := o.userResourcePermission.GetByUserID(existingUser.ID)
-	if err != nil {
-		return common.GenerateForbiddenResponse(context, "[ERROR]: Failed to get users resource wise permissions!", err.Error())
-	}
+	userResourcePermission := o.userResourcePermission.GetByUserID(existingUser.ID)
 	var tokenLifeTime int64
 	if token_type == string(enums.REGULAR_TOKEN) {
 		i, err := strconv.ParseInt(config.RegularTokenLifetime, 10, 64)

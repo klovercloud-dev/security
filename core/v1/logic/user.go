@@ -82,20 +82,17 @@ func (u userService) GetByEmail(email string) v1.User {
 
 func (u userService) Store(userWithResourcePermission v1.UserRegistrationDto) error {
 	user, userResourcePermission := v1.GetUserAndResourcePermissionBody(userWithResourcePermission)
-	mailFlag := mailValidation(userWithResourcePermission.Email)
-	if mailFlag == false {
-		return errors.New("email is not valid")
-	}
 	isUserExist := u.userRepo.GetByEmail(user.Email)
 	if isUserExist.Email != "" {
 		return errors.New("email is already registered")
 	}
-	if userWithResourcePermission.Password == "" {
-		return errors.New("password is empty")
-	} else if len(userWithResourcePermission.Password) < 8 {
-		return errors.New("password is minimum 8 characters")
+
+	err:=userWithResourcePermission.Validate()
+	if err != nil {
+		return err
 	}
-	err := u.userRepo.Store(user)
+
+	err = u.userRepo.Store(user)
 	if err != nil {
 		return err
 	}

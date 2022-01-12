@@ -6,6 +6,7 @@ import (
 )
 
 func Router(g *echo.Group) {
+	RoleRouter(g.Group("/roles"))
 	ResourceRouter(g.Group("/resources"))
 	PermissionRouter(g.Group("/permissions"))
 	UserRouter(g.Group("/users"))
@@ -27,13 +28,23 @@ func PermissionRouter(g *echo.Group) {
 	g.DELETE("", permissionApi.Delete)
 }
 
+func RoleRouter(g *echo.Group) {
+	roleApi := NewRoleApi(dependency.GetV1RoleService())
+	g.POST("", roleApi.Store)
+	g.GET("", roleApi.Get)
+	g.GET("/:roleName", roleApi.GetByName)
+	g.DELETE("/:roleName", roleApi.Delete)
+	g.POST("/:roleName", roleApi.Update)
+}
+
 func UserRouter(g *echo.Group) {
-	userApi := NewUserApi(dependency.GetV1UserService())
+	userApi := NewUserApi(dependency.GetV1UserService(), dependency.GetV1UserResourcePermissionService(),dependency.GetV1OtpService())
 	g.POST("", userApi.Store)
 	g.GET("", userApi.Get)
 	g.GET("/:id", userApi.GetByID)
 	g.DELETE("/:id", userApi.Delete)
 	g.PUT("", userApi.Update)
+	g.PUT("/:id/userResourcePermission", userApi.UpdateUserResourcePermission)
 }
 
 func OauthRouter(g *echo.Group) {

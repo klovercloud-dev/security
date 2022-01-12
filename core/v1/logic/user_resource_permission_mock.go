@@ -38,6 +38,7 @@ func (m mockUserResourcePermissionService) Update(userResourcePermission v1.User
 }
 
 func NewMockUserResourcePermissionService() service.UserResourcePermission {
-	return &mockUserResourcePermissionService{
-	}
+	//return &mockUserResourcePermissionService{
+	//}
+	return nil
 }

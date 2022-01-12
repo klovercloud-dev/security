@@ -2,7 +2,9 @@ package v1
 
 import (
 	"crypto/rsa"
+	"errors"
 	"github.com/klovercloud-ci/enums"
+	"net/mail"
 	"time"
 )
 
@@ -35,25 +37,26 @@ type User struct {
 	Email        string `json:"email" bson:"email" `
 	Phone        string `json:"phone" bson:"phone" `
 	Password     string `json:"password" bson:"password" `
-	Status       string `json:"status" bson:"status"`
+	Status       enums.STATUS 		`json:"status" bson:"status"`
 	CreatedDate  time.Time `json:"created_date" bson:"created_date"`
 	UpdatedDate  time.Time `json:"updated_date" bson:"updated_date"`
-	AuthType     string `json:"auth_type" bson:"auth_type"`
+	AuthType     enums.AUTH_TYPE 	`json:"auth_type" bson:"auth_type"`
 }
 
 type UserMetadata struct {
 	CompanyId           string `json:"company_id" bson:"company_id"`
 }
 type UserRegistrationDto struct {
-	ID                 string                 `json:"_id" bson:"_id"`
+	ID                 string                 `json:"id" bson:"id"`
 	FirstName          string                 `json:"first_name" bson:"first_name" `
 	LastName           string                 `json:"last_name" bson:"last_name"`
 	Email              string                 `json:"email" bson:"email" `
+	Phone        	   string 				  `json:"phone" bson:"phone"`
 	Password           string                 `json:"password" bson:"password" `
-	Status             string                 `json:"status" bson:"status"`
-	CreatedDate        time.Time                 `json:"created_date" bson:"created_date"`
-	UpdatedDate        time.Time                 `json:"updated_date" bson:"updated_date"`
-	AuthType           string                 `json:"auth_type" bson:"auth_type"`
+	Status             enums.STATUS           `json:"status" bson:"status"`
+	CreatedDate        time.Time              `json:"created_date" bson:"created_date"`
+	UpdatedDate        time.Time              `json:"updated_date" bson:"updated_date"`
+	AuthType           enums.AUTH_TYPE        `json:"auth_type" bson:"auth_type"`
 	ResourcePermission UserResourcePermission `json:"resource_permission" bson:"resource_permission"`
 }
 
@@ -67,6 +70,7 @@ func GetUserAndResourcePermissionBody(u UserRegistrationDto) (User, UserResource
 		FirstName:    u.FirstName,
 		LastName:     u.LastName,
 		Email:        u.Email,
+		Phone: 		  u.Phone,
 		Password:     u.Password,
 		Status:       u.Status,
 		CreatedDate:  u.CreatedDate,
@@ -92,18 +96,18 @@ type Token struct {
 }
 
 type LoginDto struct {
-	Email          string           `json:"email" bson:"email"`
-	Password        string           `json:"password" bson:"password"`
+	Email          string     `json:"email" bson:"email"`
+	Password       string     `json:"password" bson:"password"`
 }
 
 type RefreshTokenDto struct {
-	RefreshToken string           `json:"refresh_token" bson:"refresh_token"`
+	RefreshToken 	string   `json:"refresh_token" bson:"refresh_token"`
 }
 
 
 type JWTPayLoad struct {
-	AccessToken  string           `json:"access_token" bson:"access_token"`
-	RefreshToken string           `json:"refresh_token" bson:"refresh_token"`
+	AccessToken  	string   `json:"access_token" bson:"access_token"`
+	RefreshToken 	string   `json:"refresh_token" bson:"refresh_token"`
 }
 
 
@@ -114,10 +118,77 @@ type PasswordResetDto struct {
 	NewPassword string           `json:"new_password" bson:"new_password"`
 }
 
+
+
+// Validate validates UserRegistrationDto data
+func(u UserRegistrationDto) Validate() error{
+	if u.ID == "" {
+		return errors.New("user id is required")
+	}
+	if u.FirstName == "" {
+		return errors.New("first name is required")
+	}
+	if u.LastName == "" {
+		return errors.New("last name is required")
+	}
+	if u.Email == "" {
+		return errors.New("email is required")
+	}
+	_, err := mail.ParseAddress(u.Email)
+	if err != nil {
+		return err
+	}
+	if u.Password == "" {
+		return errors.New("password is required")
+	} else if len(u.Password) < 8 {
+		return errors.New("password length must be at least 8")
+	}
+	if u.AuthType != enums.PASSWORD {
+		return errors.New("invalid user AuthType")
+	}
+	return u.ResourcePermission.Validate()
+}
+
+// Validate validates UserResourcePermission data
+func(u UserResourcePermission) Validate() error {
+	for _, eachResource := range u.Resources {
+		if eachResource.Name == "" {
+			return errors.New("resource name is required")
+		}
+		for _, eachRole := range eachResource.Roles {
+			if err := eachRole.Validate(); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// Validate validates Role data
+func(r Role) Validate() error {
+	if r.Name == "" {
+		return errors.New("role name is required")
+	}
+	for _, each := range r.Permissions {
+		if err := each.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Validate validates Permission data
+func(p Permission) Validate() error {
+	if p.Name == "" {
+		return errors.New("permission name is required")
+	}
+	return nil
+}
+
 type Otp struct {
-	ID           string `json:"id" bson:"id"`
-	Email              string                 `json:"email" bson:"email"`
-	Phone        string `json:"phone" bson:"phone" `
-	Otp string  `json:"otp" bson:"otp"`
-	Exp time.Time `json:"exp" bson:"exp"`
+	ID           string 	`json:"id" bson:"id"`
+	Email        string     `json:"email" bson:"email"`
+	Phone        string     `json:"phone" bson:"phone"`
+	Otp 		 string  	`json:"otp" bson:"otp"`
+	Exp 		 time.Time  `json:"exp" bson:"exp"`
 }
