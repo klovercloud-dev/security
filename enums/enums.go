@@ -21,7 +21,6 @@ const (
 
 
 type ROLE_UPDATE_OPTION string
-
 const (
 	APPEND_PERMISSION = ROLE_UPDATE_OPTION("append")
 	REMOVE_PERMISSION = ROLE_UPDATE_OPTION("remove")
@@ -29,7 +28,6 @@ const (
 
 // TOKEN_TYPE token type of user
 type TOKEN_TYPE string
-
 const (
 	// REGULAR_TOKEN refers to  limited lifetime token and refresh token
 	REGULAR_TOKEN = TOKEN_TYPE("regular")
@@ -72,8 +70,31 @@ const (
 	// EMAIL refers to email media
 	EMAIL = MEDIA("email")
 	// PHONE refers to phone media
-	PHONE     = MEDIA("phone")
+	PHONE = MEDIA("phone")
 )
 
+// USER_REGISTRATION_ACTION user registration action
+type USER_REGISTRATION_ACTION string
+const (
+	// CREATE_USER refers to create user by admin
+	CREATE_USER = USER_REGISTRATION_ACTION("create_user")
+)
 
+// ROLE role string
+type ROLE string
+const (
+	// ADMIN refers to admin role
+	ADMIN = ROLE("ADMIN")
+)
 
+// RESOURCE resource string
+type RESOURCE string
+const (
+	// USER refers to user resource
+	USER = RESOURCE("user")
+	PIPELINE = RESOURCE("pipeline")
+	PROCESS = RESOURCE("process")
+	COMPANY = RESOURCE("company")
+	REPOSITORY = RESOURCE("repository")
+	APPLICATION = RESOURCE("application")
+)

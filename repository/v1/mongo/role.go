@@ -49,10 +49,12 @@ func (r roleRepository) Update(name string, permissions []v1.Permission) error {
 
 // Store stores given role to database
 func (r roleRepository) Store(role v1.Role) error {
-	coll := r.manager.Db.Collection(RoleCollection)
-	_, err := coll.InsertOne(r.manager.Ctx, role)
-	if err != nil {
-		log.Println("[ERROR] Insert document:", err.Error())
+	if r.GetByName(role.Name).Name=="" {
+		coll := r.manager.Db.Collection(RoleCollection)
+		_, err := coll.InsertOne(r.manager.Ctx, role)
+		if err != nil {
+			log.Println("[ERROR] Insert document:", err.Error())
+		}
 	}
 	return nil
 }

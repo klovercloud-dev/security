@@ -21,7 +21,10 @@ func (o otpService) FindByOtp(otp string) v1.Otp {
 
 func (o otpService) IsValid(otpStr string) bool {
 	otp := o.repo.FindByOtp(otpStr)
-	if !time.Now().UTC().After(otp.Exp) {
+	if otp.ID == "" {
+		return false
+	}
+	if time.Now().UTC().After(otp.Exp) {
 		return false
 	}
 	return true
