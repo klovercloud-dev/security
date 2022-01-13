@@ -24,6 +24,7 @@ type userRepository struct {
 
 func (u userRepository) AttachCompany(id, companyId string) error {
 	user := u.GetByID(id)
+
 	user.Metadata.CompanyId = companyId
 	filter := bson.M{
 		"$and": []bson.M{

@@ -53,7 +53,11 @@ func  (o oauthApi) handleRefreshTokenGrant(context echo.Context) error{
 	if err := json.Unmarshal(jsonbody, &usersPermission); err != nil {
 		log.Println(err)
 	}
-
+	existingUser := o.userService.GetByID(usersPermission.UserId)
+	if existingUser.ID == "" {
+		return common.GenerateForbiddenResponse(context, "[ERROR]: No User found!", "Please login with actual user email!")
+	}
+	usersPermission.Metadata=existingUser.Metadata
 	tokenLifeTime, err := strconv.ParseInt(config.RegularTokenLifetime, 10, 64)
 		if err != nil {
 			log.Println(err.Error())
