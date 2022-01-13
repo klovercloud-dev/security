@@ -118,7 +118,7 @@ func (u userRepository) UpdatePassword(user v1.User) error {
 		ReturnDocument: &after,
 		Upsert:         &upsert,
 	}
-	coll := u.manager.Db.Collection(TokenCollection)
+	coll := u.manager.Db.Collection(UserCollection)
 	uopdateErr := coll.FindOneAndUpdate(u.manager.Ctx, filter, update, &opt)
 	if err != nil {
 		log.Println("[ERROR]", uopdateErr.Err())
@@ -187,10 +187,10 @@ func (u userRepository) Get() []v1.User {
 func (u userRepository) GetByID(id string) v1.User{
 	var res v1.User
 	query := bson.M{
-		"$and": []bson.M{},
+		"$and": []bson.M{
+			{"id": id},
+		},
 	}
-	and := []bson.M{{"_id": id}}
-	query["$and"] = and
 	coll := u.manager.Db.Collection(UserCollection)
 	result, err := coll.Find(u.manager.Ctx, query, nil)
 	if err != nil {

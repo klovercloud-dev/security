@@ -5,7 +5,7 @@ import (
 )
 
 type User interface {
-	Store(context echo.Context) error
+	Registration(context echo.Context) error
 	Get(context echo.Context) error
 	GetByID(context echo.Context) error
 	Delete(context echo.Context) error

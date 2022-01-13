@@ -18,13 +18,13 @@ func (m mockUserResourcePermissionService) Get() ([]v1.UserResourcePermission, e
 
 func (m mockUserResourcePermissionService) GetByUserID(userID string) (v1.UserResourcePermission, error) {
 	return v1.UserResourcePermission{
+		Metadata: v1.UserMetadata{CompanyId: "1"},
 		UserId:    "1",
-		Resources: []struct {
-			Name  string    `json:"name" bson:"name"`
-			Roles []v1.Role `json:"roles" bson:"roles"`
-		}{
-			{Name: "Pipeline", Roles: []v1.Role{{Name: "ADMIN", Permissions: []v1.Permission{{Name:"CREATE"},{Name: "READ"},{Name: "UPDATE"},{Name: "DELETE"}}}}},
-
+		Resources: []v1.ResourceWiseRoles{
+			{
+				Name: "Pipeline",
+				Roles: []v1.Role{{Name: "ADMIN", Permissions: []v1.Permission{{Name:"CREATE"},{Name: "READ"},{Name: "UPDATE"},{Name: "DELETE"}}}},
+			},
 		},
 	},nil
 }

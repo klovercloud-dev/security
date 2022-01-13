@@ -59,7 +59,7 @@ func TestGetUserAndResourcePermissionBody(t *testing.T) {
 			// UserResourcePermission -> Resource_Permission ->  Resources -> Roles data
 			rolesNames := [][]string{{"admin"}}
 				// UserResourcePermission -> Resource_Permission ->  Resources -> Roles -> Permission data
-				permissionNames := [][]enums.PERMISION_TYPE{{"create", "read"}}
+				permissionNames := [][]string{{"create", "read"}}
 
 	jsonData := []string{
 		`{

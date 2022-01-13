@@ -42,7 +42,7 @@ func (o otpRepository) Store(otp v1.Otp) error {
 func (o otpRepository) FindByOtp(otp string) v1.Otp {
 	elemValue := new(v1.Otp)
 	filter := bson.M{"otp": otp}
-	coll := o.manager.Db.Collection(ResourceCollection)
+	coll := o.manager.Db.Collection(OtpCollection)
 	result := coll.FindOne(o.manager.Ctx, filter)
 	err := result.Decode(elemValue)
 	if err != nil {
