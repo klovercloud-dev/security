@@ -22,6 +22,7 @@ type Role struct {
 }
 
 type UserResourcePermission struct {
+	Metadata UserMetadata  `json:"metadata" bson:"-"`
 	UserId    string `json:"user_id" bson:"user_id"`
 	Resources []struct {
 		Name  string `json:"name" bson:"name"`
