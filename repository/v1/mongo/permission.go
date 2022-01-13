@@ -21,15 +21,30 @@ type permissionRepository struct {
 
 // Store given permission into the database
 func (p permissionRepository) Store(permission v1.Permission) error {
-	coll := p.manager.Db.Collection(PermissionCollection)
-	_, err := coll.InsertOne(p.manager.Ctx, permission)
-	if err != nil {
-		log.Println("[ERROR] Insert document:", err.Error())
+	if p.GetByName(permission.Name).Name=="" {
+		coll := p.manager.Db.Collection(PermissionCollection)
+		_, err := coll.InsertOne(p.manager.Ctx, permission)
+		if err != nil {
+			log.Println("[ERROR] Insert document:", err.Error())
+		}
 	}
 	return nil
 }
+// Get permission from the database by the given name
+func (r permissionRepository) GetByName(name string) v1.Permission {
+	elemValue := new(v1.Permission)
+	filter := bson.M{"name": name}
+	coll := r.manager.Db.Collection(PermissionCollection)
+	result := coll.FindOne(r.manager.Ctx, filter)
+	err := result.Decode(elemValue)
+	if err != nil {
+		log.Println("[ERROR]", err)
+		return *elemValue
+	}
+	return *elemValue
+}
 
-// Get all permisions fromt the database
+// Get all Permissions from the database
 func (p permissionRepository) Get() []v1.Permission {
 	var permissions []v1.Permission
 	coll := p.manager.Db.Collection(PermissionCollection)

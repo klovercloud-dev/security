@@ -72,10 +72,12 @@ func (r resourceRepository) Delete(resourceName string) error {
 
 // Store a resource in the database
 func (r resourceRepository) Store(resource v1.Resource) error {
-	coll := r.manager.Db.Collection(ResourceCollection)
-	_, err := coll.InsertOne(r.manager.Ctx, resource)
-	if err != nil {
-		log.Println("[ERROR] Insert document:", err.Error())
+	if r.GetByName(resource.Name).Name=="" {
+		coll := r.manager.Db.Collection(ResourceCollection)
+		_, err := coll.InsertOne(r.manager.Ctx, resource)
+		if err != nil {
+			log.Println("[ERROR] Insert document:", err.Error())
+		}
 	}
 	return nil
 }
