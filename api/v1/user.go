@@ -214,9 +214,9 @@ func (u userApi) RegisterUser(context echo.Context) error {
 		log.Println(err)
 	}
 	flag := false
-	for _, eachRepo := range userResourcePermission.Resources {
-		if eachRepo.Name == string(enums.USER) {
-			for _, eachRole := range eachRepo.Roles {
+	for _, eachResource := range userResourcePermission.Resources {
+		if eachResource.Name == string(enums.USER) {
+			for _, eachRole := range eachResource.Roles {
 				if eachRole.Name == string(enums.ADMIN) {
 					flag = true
 				}
