@@ -65,15 +65,19 @@ func (u userMock) UpdatePassword(user v1.User) error {
 
 func (u userMock) GetByEmail(email string) v1.User {
 	return v1.User{
-		ID:           "1",
-		FirstName:    "Shahidul",
-		LastName:     "islam",
-		Email:        "zeromsi.official@gmail.com",
-		Password:     "$2a$10$VP2kfzMgzOT.ketk.g4qhOa5Wop3FreHfs8q5x8Flf9dpiX2Gmpze", //1323234
-		Status:       "active",
-		CreatedDate:  time.Now().UTC(),
-		UpdatedDate:  time.Now().UTC(),
-		AuthType:     "password",
+		Metadata:    v1.UserMetadata{
+			CompanyId: "1001",
+		},
+		ID:          "1",
+		FirstName:   "Shahidul",
+		LastName:    "islam",
+		Email:       "zeromsi.official@gmail.com",
+		Phone:       "",
+		Password:    "$2a$10$VP2kfzMgzOT.ketk.g4qhOa5Wop3FreHfs8q5x8Flf9dpiX2Gmpze", //1323234
+		Status:      "active",
+		CreatedDate: time.Now().UTC(),
+		UpdatedDate: time.Now().UTC(),
+		AuthType:    "password",
 	}
 }
 

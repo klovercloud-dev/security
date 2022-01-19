@@ -57,6 +57,16 @@ func GenerateForbiddenResponse(c echo.Context, data interface{}, message string)
 	})
 }
 
+// GenerateUnauthorizedResponse Http unauthorized response
+func GenerateUnauthorizedResponse(c echo.Context, data interface{}, message string) error {
+	return c.JSON(http.StatusUnauthorized, ResponseDTO{
+		Status:  "unauthorized",
+		Message: message,
+		Data:    data,
+	})
+}
+
+
 // GetPaginationMetadata return pagination metadata
 func GetPaginationMetadata(page, limit, totalRecords, totalPaginatedRecords int64) MetaData {
 	metaData := MetaData{

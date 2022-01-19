@@ -12,21 +12,25 @@ func (m mockUserResourcePermissionService) Store(userResourcePermission v1.UserR
 	panic("implement me")
 }
 
-func (m mockUserResourcePermissionService) Get() ([]v1.UserResourcePermission, error) {
+func (m mockUserResourcePermissionService) Get() []v1.UserResourcePermission {
 	panic("implement me")
 }
 
-func (m mockUserResourcePermissionService) GetByUserID(userID string) (v1.UserResourcePermission, error) {
+func (m mockUserResourcePermissionService) GetByUserID(userID string) v1.UserResourcePermission {
 	return v1.UserResourcePermission{
 		Metadata: v1.UserMetadata{CompanyId: "1"},
 		UserId:    "1",
 		Resources: []v1.ResourceWiseRoles{
 			{
-				Name: "Pipeline",
+				Name: "pipeline",
+				Roles: []v1.Role{{Name: "ADMIN", Permissions: []v1.Permission{{Name:"CREATE"},{Name: "READ"},{Name: "UPDATE"},{Name: "DELETE"}}}},
+			},
+			{
+				Name: "company",
 				Roles: []v1.Role{{Name: "ADMIN", Permissions: []v1.Permission{{Name:"CREATE"},{Name: "READ"},{Name: "UPDATE"},{Name: "DELETE"}}}},
 			},
 		},
-	},nil
+	}
 }
 
 func (m mockUserResourcePermissionService) Delete(userID string) error {
@@ -38,7 +42,6 @@ func (m mockUserResourcePermissionService) Update(userResourcePermission v1.User
 }
 
 func NewMockUserResourcePermissionService() service.UserResourcePermission {
-	//return &mockUserResourcePermissionService{
-	//}
-	return nil
+	return &mockUserResourcePermissionService{
+	}
 }
