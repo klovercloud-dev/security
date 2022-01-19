@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/service"
+	"github.com/klovercloud-ci/enums"
 	"io"
 	"time"
 )
@@ -50,6 +51,14 @@ func InitMockUsers() {
 		UpdatedDate:  time.Now().UTC(),
 		AuthType:     "password",
 	}
+}
+
+func (u userMock) UpdateStatus(id string, status enums.STATUS) error {
+	panic("implement me")
+}
+
+func (u userMock) GetUsersByCompanyId(companyId string) []v1.User {
+	panic("implement me")
 }
 
 func (u userMock) AttachCompany(company v1.Company, companyId,token string) error {
@@ -104,8 +113,7 @@ func (u userMock) UpdatePassword(user v1.User) error {
 
 func (u userMock) GetByEmail(email string) v1.User {
 	InitMockUsers()
-	user, ok := mockUsers[email]
-	if ok {
+	if user, ok := mockUsers[email]; ok {
 		return user
 	}
 	return v1.User{}
@@ -126,17 +134,13 @@ func (u userMock) Get() []v1.User {
 }
 
 func (u userMock) GetByID(id string) v1.User{
-	return v1.User{
-		ID:           "6363355f-d35f-4f0a-9696-9364c9a42051",
-		FirstName:    "shabrul",
-		LastName:     "islam",
-		Email:        "shabrul2451@gmail.com",
-		Password:     "$2a$10$VP2kfzMgzOT.ketk.g4qhOa5Wop3FreHfs8q5x8Flf9dpiX2Gmpze", //1323234
-		Status:       "active",
-		CreatedDate:  time.Now().UTC(),
-		UpdatedDate:  time.Now().UTC(),
-		AuthType:     "password",
+	InitMockUsers()
+	for _, user := range mockUsers {
+		if user.ID == id {
+			return user
+		}
 	}
+	return v1.User{}
 }
 
 func (u userMock) Delete(id string) error {
