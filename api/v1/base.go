@@ -29,7 +29,7 @@ func PermissionRouter(g *echo.Group) {
 }
 
 func RoleRouter(g *echo.Group) {
-	roleApi := NewRoleApi(dependency.GetV1RoleService())
+	roleApi := NewRoleApi(dependency.GetV1RoleService(), dependency.GetV1JwtService())
 	g.POST("", roleApi.Store)
 	g.GET("", roleApi.Get)
 	g.GET("/:roleName", roleApi.GetByName)
