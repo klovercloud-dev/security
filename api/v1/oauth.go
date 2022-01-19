@@ -26,7 +26,7 @@ func (o oauthApi) Login(context echo.Context) error {
 	if context.QueryParam("grant_type") == "password" {
 		return o.handlePasswordGrant(context)
 	}else if context.QueryParam("grant_type") == "refresh_token"{
-	return o.handleRefreshTokenGrant(context)
+		return o.handleRefreshTokenGrant(context)
 	}
 	return common.GenerateForbiddenResponse(context, nil, "Please provide a valid grant_type")
 }
@@ -54,15 +54,15 @@ func  (o oauthApi) handleRefreshTokenGrant(context echo.Context) error{
 		log.Println(err)
 	}
 	existingUser := o.userService.GetByID(usersPermission.UserId)
-	if existingUser.ID == "" || existingUser.Status!=enums.ACTIVE{
+	if existingUser.ID == "" || existingUser.Status!=enums.ACTIVE {
 		return common.GenerateForbiddenResponse(context, "[ERROR]: No User found!", "Please login with actual user email!")
 	}
 	usersPermission.Metadata=existingUser.Metadata
 	tokenLifeTime, err := strconv.ParseInt(config.RegularTokenLifetime, 10, 64)
-		if err != nil {
-			log.Println(err.Error())
-			return common.GenerateForbiddenResponse(context, "[ERROR]: failed to read regular token lifetime from env!", err.Error())
-		}
+	if err != nil {
+		log.Println(err.Error())
+		return common.GenerateForbiddenResponse(context, "[ERROR]: failed to read regular token lifetime from env!", err.Error())
+	}
 	token, refreshToken, err := o.jwtService.GenerateToken(usersPermission.UserId, tokenLifeTime, usersPermission)
 	if err != nil {
 		log.Println(err.Error())
@@ -91,7 +91,7 @@ func (o oauthApi) handlePasswordGrant(context echo.Context) error {
 	}
 
 	existingUser := o.userService.GetByEmail(loginDto.Email)
-	if existingUser.ID == "" {
+	if existingUser.ID == "" || existingUser.Status!=enums.ACTIVE{
 		return common.GenerateForbiddenResponse(context, "[ERROR]: No User found!", "Please login with actual user email!")
 	}
 	err := bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(loginDto.Password))

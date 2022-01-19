@@ -98,8 +98,6 @@ func (u userService) UpdatePassword(user v1.User) error {
 	return u.userRepo.UpdatePassword(user)
 }
 
-
-
 func (u userService) UpdateToken(token, refreshToken, existingToken string) error {
 	return u.tokenService.Update(token,refreshToken,existingToken)
 }

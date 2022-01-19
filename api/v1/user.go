@@ -46,8 +46,31 @@ func (u userApi) Update(context echo.Context) error {
 		return u.ForgotPassword(context)
 	} else if action == string(enums.ATTACH_COMPANY) {
 		return u.AttachCompany(context)
+	} else if action == string(enums.ACTIVE) || action == string(enums.INACTIVE) {
+		return u.UpdateStatus(context)
 	}
 	return common.GenerateErrorResponse(context, "[ERROR]: No action type is provided!", "Please provide a action type!")
+}
+
+func (u userApi) UpdateStatus(context echo.Context) error {
+	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, u.jwtService)
+	if err != nil {
+		return common.GenerateErrorResponse(context, err.Error(), "Operation Failed!")
+	}
+	if err := checkAuthority(userResourcePermission, string(enums.USER), string(enums.ADMIN), ""); err != nil {
+		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
+	}
+	action := context.QueryParam("action")
+	userId := context.QueryParam("id")
+	user := u.userService.GetByID(userId)
+	if user.ID == "" {
+		return common.GenerateErrorResponse(context, "[ERROR]: User not found!", "Please provide a valid user id!")
+	}
+	err = u.userService.UpdateStatus(userId, enums.STATUS(action))
+	if err != nil {
+		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
+	}
+	return common.GenerateSuccessResponse(context, nil, nil, "Operation Successful!")
 }
 
 func (u userApi) AttachCompany(context echo.Context) error {
@@ -255,9 +278,17 @@ func (u userApi) RegisterUser(context echo.Context) error {
 }
 
 func (u userApi) Get(context echo.Context) error {
-	var companyId string
-	// get companyid from token
-	//
+	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, u.jwtService)
+	if err != nil {
+		return common.GenerateErrorResponse(context, err.Error(), "Operation Failed!")
+	}
+	if err := checkAuthority(userResourcePermission, string(enums.USER), string(enums.ADMIN), ""); err != nil {
+		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
+	}
+	companyId := userResourcePermission.Metadata.CompanyId
+	if companyId == ""{
+		return common.GenerateErrorResponse(context,"[ERROR]: User got no company!","Please attach a company first!")
+	}
 	return common.GenerateSuccessResponse(context, u.userService.GetUsersByCompanyId(companyId), nil, "Success!")
 }
 
