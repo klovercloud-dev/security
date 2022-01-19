@@ -8,6 +8,7 @@ import (
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/repository"
 	"github.com/klovercloud-ci/core/v1/service"
+	"github.com/klovercloud-ci/enums"
 	"io"
 	"net/mail"
 )
@@ -20,6 +21,14 @@ type userService struct {
 	emailMediaService service.Media
 	phoneMediaService service.Media
 	httpClientService service.HttpClient
+}
+
+func (u userService) GetUsersByCompanyId(companyId string) []v1.User {
+	return u.userRepo.GetUsersByCompanyId(companyId)
+}
+
+func (u userService) UpdateStatus(id string, status enums.STATUS) error {
+	return u.userRepo.UpdateStatus(id,status)
 }
 
 func (u userService) AttachCompany(company v1.Company, companyId,token string) error {

@@ -5,6 +5,7 @@ import (
 	"errors"
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/repository"
+	"github.com/klovercloud-ci/enums"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/crypto/bcrypt"
@@ -20,6 +21,14 @@ var (
 type userRepository struct {
 	manager *dmManager
 	timeout time.Duration
+}
+
+func (u userRepository) GetUsersByCompanyId(companyId string) []v1.User {
+	panic("implement me")
+}
+
+func (u userRepository) UpdateStatus(id string, status enums.STATUS) error {
+	panic("implement me")
 }
 
 func (u userRepository) AttachCompany(id, companyId string) error {

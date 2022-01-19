@@ -57,6 +57,8 @@ const (
 	ACTIVE = STATUS("active")
 	// INACTIVE user status for inactive user
 	INACTIVE = STATUS("inactive")
+	// DELETED user status for deleted user
+	DELETED = STATUS("deleted")
 )
 
 // AUTH_TYPE AuthType update action

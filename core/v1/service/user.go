@@ -1,6 +1,9 @@
 package service
 
-import v1 "github.com/klovercloud-ci/core/v1"
+import (
+	v1 "github.com/klovercloud-ci/core/v1"
+	"github.com/klovercloud-ci/enums"
+)
 
 type User interface {
 	Store(user v1.UserRegistrationDto) error
@@ -14,4 +17,6 @@ type User interface {
 	UpdatePassword(user v1.User) error
 	SendOtp(email, phone string) error
 	AttachCompany(company v1.Company, companyId,token string) error
+	UpdateStatus(id string,status enums.STATUS) error
+	GetUsersByCompanyId(companyId string) [] v1.User
 }

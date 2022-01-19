@@ -15,17 +15,17 @@ func Router(g *echo.Group) {
 
 func ResourceRouter(g *echo.Group) {
 	resourceApi := NewResourceApi(dependency.GetV1ResourceService())
-	g.POST("", resourceApi.Store)
+	//g.POST("", resourceApi.Store)
 	g.GET("", resourceApi.Get)
-	g.GET("/:resourceName", resourceApi.GetByName)
-	g.DELETE("/:resourceName", resourceApi.Delete)
+	//g.GET("/:resourceName", resourceApi.GetByName)
+	//g.DELETE("/:resourceName", resourceApi.Delete)
 }
 
 func PermissionRouter(g *echo.Group) {
 	permissionApi := NewPermissionApi(dependency.GetV1PermissionService())
-	g.POST("", permissionApi.Store)
+	//g.POST("", permissionApi.Store)
 	g.GET("", permissionApi.Get)
-	g.DELETE("", permissionApi.Delete)
+	//g.DELETE("", permissionApi.Delete)
 }
 
 func RoleRouter(g *echo.Group) {

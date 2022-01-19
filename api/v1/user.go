@@ -289,8 +289,10 @@ func (u userApi) RegisterUser(context echo.Context) error {
 }
 
 func (u userApi) Get(context echo.Context) error {
-	data := u.userService.Get()
-	return common.GenerateSuccessResponse(context, data, nil, "Success!")
+	var companyId string
+	// get companyid from token
+	//
+	return common.GenerateSuccessResponse(context, u.userService.GetUsersByCompanyId(companyId), nil, "Success!")
 }
 
 func (u userApi) GetByID(context echo.Context) error {

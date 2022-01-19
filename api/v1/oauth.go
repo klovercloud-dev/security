@@ -54,7 +54,7 @@ func  (o oauthApi) handleRefreshTokenGrant(context echo.Context) error{
 		log.Println(err)
 	}
 	existingUser := o.userService.GetByID(usersPermission.UserId)
-	if existingUser.ID == "" {
+	if existingUser.ID == "" || existingUser.Status!=enums.ACTIVE{
 		return common.GenerateForbiddenResponse(context, "[ERROR]: No User found!", "Please login with actual user email!")
 	}
 	usersPermission.Metadata=existingUser.Metadata
