@@ -1,9 +1,12 @@
 package v1
 
 import (
+	"encoding/json"
 	"errors"
+	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/klovercloud-ci/api/common"
+	"github.com/klovercloud-ci/config"
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/api"
 	"github.com/klovercloud-ci/core/v1/service"
@@ -14,7 +17,6 @@ import (
 	"strings"
 	"time"
 )
-
 type userApi struct {
 	userService service.User
 	userResourcePermissionService service.UserResourcePermission
@@ -185,29 +187,46 @@ func (u userApi) RegisterAdmin(context echo.Context) error {
 }
 
 func (u userApi) RegisterUser(context echo.Context) error {
-	userResourcePermission, err := getUserResourcePermissionFromBearerToken(context, u)
-	if err!=nil {
-		return common.GenerateUnauthorizedResponse(context,nil,err.Error())
+	bearerToken:=context.Request().Header.Get("Authorization")
+	if bearerToken==""{
+		return common.GenerateForbiddenResponse(context,"[ERROR]: No token found!","Please provide a valid token!")
 	}
-	isAllowed := false
-	for _, eachRepo := range userResourcePermission.Resources {
-		if eachRepo.Name == string(enums.USER) {
-			for _, eachRole := range eachRepo.Roles {
+	var token string
+	if len(strings.Split(bearerToken," "))==2{
+		token=strings.Split(bearerToken," ")[1]
+	}else{
+		return common.GenerateForbiddenResponse(context,"[ERROR]: No token found!","Please provide a valid token!")
+	}
+	if !u.jwtService.IsTokenValid(token){
+		return common.GenerateForbiddenResponse(context, "[ERROR]: Token is expired!","Please login again to get token!")
+	}
+	claims := jwt.MapClaims{}
+	jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(config.Publickey), nil
+	})
+	jsonbody, err := json.Marshal(claims["data"])
+	if err != nil {
+		log.Println(err)
+	}
+	userResourcePermission := v1.UserResourcePermission{}
+	if err := json.Unmarshal(jsonbody, &userResourcePermission); err != nil {
+		log.Println(err)
+	}
+	flag := false
+	for _, eachResource := range userResourcePermission.Resources {
+		if eachResource.Name == string(enums.USER) {
+			for _, eachRole := range eachResource.Roles {
 				if eachRole.Name == string(enums.ADMIN) {
-					isAllowed = true
-					break
+					flag = true
 				}
 			}
 		}
-		if isAllowed{
-			break
-		}
 	}
-	if !isAllowed {
-		return common.GenerateUnauthorizedResponse(context, "[ERROR]: Insufficient permission", "User do not have sufficient permission!")
+	if !flag {
+		return common.GenerateForbiddenResponse(context,"[ERROR]: Insufficient permission","User do not have sufficient permission!")
 	}
-	if userResourcePermission.Metadata.CompanyId == "" {
-		return common.GenerateErrorResponse(context, "[ERROR]: User got no company!", "Please attach a company first!")
+	if userResourcePermission.Metadata.CompanyId==""{
+		return common.GenerateErrorResponse(context,"[ERROR]: User got no company!","Please attach a company first!")
 	}
 	formData := v1.UserRegistrationDto{}
 	if err := context.Bind(&formData); err != nil {
@@ -222,16 +241,16 @@ func (u userApi) RegisterUser(context echo.Context) error {
 	resources := formData.ResourcePermission.Resources
 	existingResources := u.resourceService.Get()
 	existingRoles := u.roleService.Get()
-	roleMap := make(map[string]v1.Role)
-	resourceMap := make(map[string]v1.Resource)
-	for _, role := range existingRoles {
-		roleMap[role.Name] = role
+	roleMap:=make(map[string]v1.Role)
+	resourceMap:=make(map[string]v1.Resource)
+	for _,role:=range existingRoles{
+		roleMap[role.Name]=role
 	}
-	existingRoles = nil
-	for _, resource := range existingResources {
-		resourceMap[resource.Name] = resource
+	existingRoles=nil
+	for _,resource:=range existingResources{
+		resourceMap[resource.Name]=resource
 	}
-	existingResources = nil
+	existingResources=nil
 	for _, eachResource := range resources {
 		if _, ok := resourceMap[eachResource.Name]; ok {
 			var addedRoles []v1.Role
@@ -252,23 +271,22 @@ func (u userApi) RegisterUser(context echo.Context) error {
 	formData.ResourcePermission = userResourcePermission
 	formData.CreatedDate = time.Now().UTC()
 	formData.UpdatedDate = time.Now().UTC()
-	formData.Status = enums.ACTIVE
-	formData.Metadata = userResourcePermission.Metadata
+	formData.Status=enums.ACTIVE
+	formData.Metadata=userResourcePermission.Metadata
 	err = formData.Validate()
-	if err != nil {
-		return common.GenerateErrorResponse(context, "[ERROR]: Failed to register user!", err.Error())
+	if err!=nil{
+		return common.GenerateErrorResponse(context,"[ERROR]: Failed to register user!",err.Error())
 	}
 	err = u.userService.Store(formData)
 	if err != nil {
 		return common.GenerateErrorResponse(context, nil, err.Error())
 	}
-	err = u.userService.SendOtp(formData.Email, "")
+	err=u.userService.SendOtp(formData.Email,"")
 	if err != nil {
 		return common.GenerateErrorResponse(context, "[ERROR]: Failed to send otp!", "User has been created but failed to send otp!")
 	}
 	return common.GenerateSuccessResponse(context, formData, nil, "Successfully Created User!")
 }
-
 
 func (u userApi) Get(context echo.Context) error {
 	data := u.userService.Get()

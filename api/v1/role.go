@@ -1,21 +1,71 @@
 package v1
 
 import (
+	"encoding/json"
 	"errors"
+	"github.com/golang-jwt/jwt"
 	"github.com/klovercloud-ci/api/common"
+	"github.com/klovercloud-ci/config"
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/api"
 	"github.com/klovercloud-ci/core/v1/service"
 	"github.com/klovercloud-ci/enums"
 	"github.com/labstack/echo/v4"
 	"log"
+	"strings"
 )
 
 type roleApi struct {
 	service service.Role
+	jwtService service.Jwt
+}
+
+func (r roleApi) CheckUserPermission(context echo.Context) error {
+	bearerToken:=context.Request().Header.Get("Authorization")
+	if bearerToken==""{
+		return common.GenerateForbiddenResponse(context,"[ERROR]: No token found!","Please provide a valid token!")
+	}
+	var token string
+	if len(strings.Split(bearerToken," "))==2{
+		token=strings.Split(bearerToken," ")[1]
+	}else{
+		return common.GenerateForbiddenResponse(context,"[ERROR]: No token found!","Please provide a valid token!")
+	}
+	if !r.jwtService.IsTokenValid(token){
+		return common.GenerateForbiddenResponse(context, "[ERROR]: Token is expired!","Please login again to get token!")
+	}
+	claims := jwt.MapClaims{}
+	jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(config.Publickey), nil
+	})
+	jsonbody, err := json.Marshal(claims["data"])
+	if err != nil {
+		log.Println(err)
+	}
+	userResourcePermission := v1.UserResourcePermission{}
+	if err := json.Unmarshal(jsonbody, &userResourcePermission); err != nil {
+		log.Println(err)
+	}
+	flag := false
+	for _, eachResource := range userResourcePermission.Resources {
+		if eachResource.Name == string(enums.USER) {
+			for _, eachRole := range eachResource.Roles {
+				if eachRole.Name == string(enums.ADMIN) {
+					flag = true
+				}
+			}
+		}
+	}
+	if !flag {
+		return common.GenerateForbiddenResponse(context,"[ERROR]: Insufficient permission","User do not have sufficient permission!")
+	}
+	return nil
 }
 
 func (r roleApi) Store(context echo.Context) error {
+	if err := r.CheckUserPermission(context); err != nil {
+		return nil
+	}
 	formData := v1.Role{}
 	if err := context.Bind(&formData); err != nil {
 		log.Println("Input Error:", err.Error())
@@ -79,6 +129,9 @@ func (r roleApi) Update(context echo.Context) error {
 		nil, "Operation Successful")
 }
 
-func NewRoleApi(roleService service.Role) api.Role {
-	return &roleApi{service: roleService}
+func NewRoleApi(roleService service.Role, jwtService service.Jwt) api.Role {
+	return &roleApi{
+		service: roleService,
+		jwtService: jwtService,
+	}
 }
