@@ -5,12 +5,14 @@ import (
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/api"
 	"github.com/klovercloud-ci/core/v1/service"
+	"github.com/klovercloud-ci/enums"
 	"github.com/labstack/echo/v4"
 	"log"
 )
 
 type resourceApi struct {
 	service service.Resource
+	jwtService service.Jwt
 }
 
 func (r resourceApi) Store(context echo.Context) error {
@@ -29,6 +31,13 @@ func (r resourceApi) Store(context echo.Context) error {
 }
 
 func (r resourceApi) Get(context echo.Context) error {
+	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, r.jwtService)
+	if err != nil {
+		return common.GenerateErrorResponse(context, err.Error(), "Operation Failed!")
+	}
+	if err := checkAuthority(userResourcePermission, string(enums.USER), "", string(enums.READ)); err != nil {
+		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
+	}
 	data := r.service.Get()
 	if len(data) == 0 {
 		return common.GenerateErrorResponse(context, nil, "No resource found!")
@@ -55,6 +64,9 @@ func (r resourceApi) Delete(context echo.Context) error {
 	return common.GenerateSuccessResponse(context, nil, nil, "Success!")
 }
 
-func NewResourceApi(resourceService service.Resource) api.Resource {
-	return &resourceApi{service: resourceService}
+func NewResourceApi(resourceService service.Resource, jwtService service.Jwt) api.Resource {
+	return &resourceApi{
+		service: resourceService,
+		jwtService: jwtService,
+	}
 }

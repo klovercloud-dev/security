@@ -19,10 +19,10 @@ type roleApi struct {
 func (r roleApi) Store(context echo.Context) error {
 	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, r.jwtService)
 	if err != nil {
-		return common.GenerateErrorResponse(context, nil, "Operation Failed!")
+		return common.GenerateErrorResponse(context, err.Error(), "Operation Failed!")
 	}
 	if err := checkAuthority(userResourcePermission, string(enums.USER), "", string(enums.CREATE)); err != nil {
-		return common.GenerateForbiddenResponse(context, nil, "[ERROR]: Insufficient permission")
+		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
 	}
 	formData := v1.Role{}
 	if err := context.Bind(&formData); err != nil {
@@ -41,10 +41,10 @@ func (r roleApi) Store(context echo.Context) error {
 func (r roleApi) Get(context echo.Context) error {
 	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, r.jwtService)
 	if err != nil {
-		return common.GenerateErrorResponse(context, nil, "Operation Failed!")
+		return common.GenerateErrorResponse(context, err.Error(), "Operation Failed!")
 	}
 	if err := checkAuthority(userResourcePermission, string(enums.USER), "", string(enums.READ)); err != nil {
-		return common.GenerateForbiddenResponse(context, nil, "[ERROR]: Insufficient permission")
+		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
 	}
 	data := r.service.Get()
 	if len(data) == 0 {
@@ -56,10 +56,10 @@ func (r roleApi) Get(context echo.Context) error {
 func (r roleApi) GetByName(context echo.Context) error {
 	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, r.jwtService)
 	if err != nil {
-		return common.GenerateErrorResponse(context, nil, "Operation Failed!")
+		return common.GenerateErrorResponse(context, err.Error(), "Operation Failed!")
 	}
 	if err := checkAuthority(userResourcePermission, string(enums.USER), "", string(enums.READ)); err != nil {
-		return common.GenerateForbiddenResponse(context, nil, "[ERROR]: Insufficient permission")
+		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
 	}
 	name := context.Param("roleName")
 	data := r.service.GetByName(name)
@@ -72,10 +72,10 @@ func (r roleApi) GetByName(context echo.Context) error {
 func (r roleApi) Delete(context echo.Context) error {
 	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, r.jwtService)
 	if err != nil {
-		return common.GenerateErrorResponse(context, nil, "Operation Failed!")
+		return common.GenerateErrorResponse(context, err.Error(), "Operation Failed!")
 	}
 	if err := checkAuthority(userResourcePermission, string(enums.USER), "", string(enums.DELETE)); err != nil {
-		return common.GenerateForbiddenResponse(context, nil, "[ERROR]: Insufficient permission")
+		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
 	}
 	name := context.Param("roleName")
 	err = r.service.Delete(name)
@@ -89,10 +89,10 @@ func (r roleApi) Delete(context echo.Context) error {
 func (r roleApi) Update(context echo.Context) error {
 	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, r.jwtService)
 	if err != nil {
-		return common.GenerateErrorResponse(context, nil, "Operation Failed!")
+		return common.GenerateErrorResponse(context, err.Error(), "Operation Failed!")
 	}
 	if err := checkAuthority(userResourcePermission, string(enums.USER), "", string(enums.UPDATE)); err != nil {
-		return common.GenerateForbiddenResponse(context, nil, "[ERROR]: Insufficient permission")
+		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
 	}
 	var formData []v1.Permission
 	if err := context.Bind(&formData); err != nil {

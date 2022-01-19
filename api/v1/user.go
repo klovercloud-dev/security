@@ -1,12 +1,9 @@
 package v1
 
 import (
-	"encoding/json"
 	"errors"
-	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/klovercloud-ci/api/common"
-	"github.com/klovercloud-ci/config"
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/api"
 	"github.com/klovercloud-ci/core/v1/service"
@@ -187,43 +184,12 @@ func (u userApi) RegisterAdmin(context echo.Context) error {
 }
 
 func (u userApi) RegisterUser(context echo.Context) error {
-	bearerToken:=context.Request().Header.Get("Authorization")
-	if bearerToken==""{
-		return common.GenerateForbiddenResponse(context,"[ERROR]: No token found!","Please provide a valid token!")
-	}
-	var token string
-	if len(strings.Split(bearerToken," "))==2{
-		token=strings.Split(bearerToken," ")[1]
-	}else{
-		return common.GenerateForbiddenResponse(context,"[ERROR]: No token found!","Please provide a valid token!")
-	}
-	if !u.jwtService.IsTokenValid(token){
-		return common.GenerateForbiddenResponse(context, "[ERROR]: Token is expired!","Please login again to get token!")
-	}
-	claims := jwt.MapClaims{}
-	jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(config.Publickey), nil
-	})
-	jsonbody, err := json.Marshal(claims["data"])
+	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, u.jwtService)
 	if err != nil {
-		log.Println(err)
+		return common.GenerateErrorResponse(context, err.Error(), "Operation Failed!")
 	}
-	userResourcePermission := v1.UserResourcePermission{}
-	if err := json.Unmarshal(jsonbody, &userResourcePermission); err != nil {
-		log.Println(err)
-	}
-	flag := false
-	for _, eachResource := range userResourcePermission.Resources {
-		if eachResource.Name == string(enums.USER) {
-			for _, eachRole := range eachResource.Roles {
-				if eachRole.Name == string(enums.ADMIN) {
-					flag = true
-				}
-			}
-		}
-	}
-	if !flag {
-		return common.GenerateForbiddenResponse(context,"[ERROR]: Insufficient permission","User do not have sufficient permission!")
+	if err := checkAuthority(userResourcePermission, string(enums.USER), string(enums.ADMIN), ""); err != nil {
+		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
 	}
 	if userResourcePermission.Metadata.CompanyId==""{
 		return common.GenerateErrorResponse(context,"[ERROR]: User got no company!","Please attach a company first!")
@@ -296,7 +262,16 @@ func (u userApi) Get(context echo.Context) error {
 }
 
 func (u userApi) GetByID(context echo.Context) error {
+	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, u.jwtService)
+	if err != nil {
+		return common.GenerateErrorResponse(context, err.Error(), "Operation Failed!")
+	}
 	id := context.Param("id")
+	if userResourcePermission.UserId != id {
+		if err := checkAuthority(userResourcePermission, string(enums.USER), "", string(enums.READ)); err != nil {
+			return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
+		}
+	}
 	data:= u.userService.GetByID(id)
 	if data.ID == "" {
 		return common.GenerateErrorResponse(context, nil, "User Not Found!")
