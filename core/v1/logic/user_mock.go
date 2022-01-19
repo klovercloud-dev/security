@@ -13,6 +13,45 @@ type userMock struct {
 	phoneMediaService service.Media
 }
 
+var mockUsers map[string]v1.User
+
+func InitMockUsers() {
+	mockUsers = make(map[string]v1.User)
+	mockUsers["shabrul2451@gmail.com"] = v1.User{
+		ID:           "6363355f-d35f-4f0a-9696-9364c9a42051",
+		FirstName:    "shabrul",
+		LastName:     "islam",
+		Email:        "shabrul2451@gmail.com",
+		Password:     "$2a$10$VP2kfzMgzOT.ketk.g4qhOa5Wop3FreHfs8q5x8Flf9dpiX2Gmpze", //1323234
+		Status:       "active",
+		CreatedDate:  time.Now().UTC(),
+		UpdatedDate:  time.Now().UTC(),
+		AuthType:     "password",
+	}
+	mockUsers["shahidul.islam@klovercloud.com"] = v1.User{
+		ID:           "b876ec8a-9650-408e-84bb-e5f3d36b4704",
+		FirstName:    "Shahidul",
+		LastName:     "TheGURU",
+		Email:        "shahidul.islam@klovercloud.com",
+		Password:     "$2a$10$/4C2h.bi2YBUQGPmAfOgFe45JbV.1mrIWHSNxqAmBueIRomlXfgtq", //IAmTheBoss
+		Status:       "active",
+		CreatedDate:  time.Now().UTC(),
+		UpdatedDate:  time.Now().UTC(),
+		AuthType:     "password",
+	}
+	mockUsers["niloy.mishu@klovercloud.com"] = v1.User{
+		ID:           "9572c6dd-96a0-4e40-a01e-56bf1f7d3c59",
+		FirstName:    "Niloy",
+		LastName:     "Deb Roy",
+		Email:        "niloy.mishu@klovercloud.com",
+		Password:     "$2a$10$8qIQlRXzOsqpygHl.zX4jOSfDM0r1wV0.eRNfYITeMlwBPHBd/Icq", //password
+		Status:       "active",
+		CreatedDate:  time.Now().UTC(),
+		UpdatedDate:  time.Now().UTC(),
+		AuthType:     "password",
+	}
+}
+
 func (u userMock) AttachCompany(company v1.Company, companyId,token string) error {
 	panic("implement me")
 }
@@ -64,21 +103,12 @@ func (u userMock) UpdatePassword(user v1.User) error {
 }
 
 func (u userMock) GetByEmail(email string) v1.User {
-	return v1.User{
-		Metadata:    v1.UserMetadata{
-			CompanyId: "1001",
-		},
-		ID:          "1",
-		FirstName:   "Shahidul",
-		LastName:    "islam",
-		Email:       "zeromsi.official@gmail.com",
-		Phone:       "",
-		Password:    "$2a$10$VP2kfzMgzOT.ketk.g4qhOa5Wop3FreHfs8q5x8Flf9dpiX2Gmpze", //1323234
-		Status:      "active",
-		CreatedDate: time.Now().UTC(),
-		UpdatedDate: time.Now().UTC(),
-		AuthType:    "password",
+	InitMockUsers()
+	user, ok := mockUsers[email]
+	if ok {
+		return user
 	}
+	return v1.User{}
 }
 
 func (u userMock) UpdateToken(token, refreshToken, existingToken string) error {

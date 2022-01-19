@@ -19,20 +19,22 @@ const (
 	INMEMORY = "INMEMORY"
 )
 
-
+// ROLE_UPDATE_OPTION role update option type
 type ROLE_UPDATE_OPTION string
 const (
+	// APPEND_PERMISSION refers to append permission update option
 	APPEND_PERMISSION = ROLE_UPDATE_OPTION("append")
+	// REMOVE_PERMISSION refers to remove permission update option
 	REMOVE_PERMISSION = ROLE_UPDATE_OPTION("remove")
 )
 
 // TOKEN_TYPE token type of user
 type TOKEN_TYPE string
 const (
-	// REGULAR_TOKEN refers to  limited lifetime token and refresh token
+	// REGULAR_TOKEN refers to limited lifetime token and refresh token
 	REGULAR_TOKEN = TOKEN_TYPE("regular")
-	// CTL_TOKEN refers to  long lifetime token and refresh token
-	CTL_TOKEN     = TOKEN_TYPE("ctl")
+	// CTL_TOKEN refers to long lifetime token and refresh token
+	CTL_TOKEN = TOKEN_TYPE("ctl")
 )
 
 // USER_UPDATE_ACTION users update action
@@ -92,9 +94,27 @@ type RESOURCE string
 const (
 	// USER refers to user resource
 	USER = RESOURCE("user")
+	// PIPELINE refers to pipeline resource
 	PIPELINE = RESOURCE("pipeline")
+	// PROCESS refers to process resource
 	PROCESS = RESOURCE("process")
+	// COMPANY refers to company resource
 	COMPANY = RESOURCE("company")
+	// REPOSITORY refers to repository resource
 	REPOSITORY = RESOURCE("repository")
+	// APPLICATION refers to application resource
 	APPLICATION = RESOURCE("application")
+)
+
+// PERMISSION permission string
+type PERMISSION string
+const (
+	// CREATE refers to CREATE permission
+	CREATE = PERMISSION("CREATE")
+	// READ refers to READ permission
+	READ = PERMISSION("READ")
+	// UPDATE refers to UPDATE permission
+	UPDATE = PERMISSION("UPDATE")
+	// DELETE refers to DELETE permission
+	DELETE = PERMISSION("DELETE")
 )
