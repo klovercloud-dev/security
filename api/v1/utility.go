@@ -67,3 +67,38 @@ func checkAuthority(userResourcePermission v1.UserResourcePermission, resourceNa
 	}
 	return errors.New("[ERROR]: Insufficient permission")
 }
+
+func getRoleMapFromRoles(roles []v1.Role) map[string]v1.Role{
+	roleMap:=make(map[string]v1.Role)
+	for _,role:=range roles{
+		roleMap[role.Name]=role
+	}
+	return roleMap
+}
+
+func getResourceMapFromResources(resources []v1.Resource) map[string]v1.Resource{
+	resourceMap:=make(map[string]v1.Resource)
+	for _,resource:=range resources{
+		resourceMap[resource.Name]=resource
+	}
+	return resourceMap
+}
+
+func filterOutNonExistingRulesAndResources(roleMap map[string]v1.Role, resourceMap map[string]v1.Resource,resourceWiseRoles [] v1.ResourceWiseRoles)[] v1.ResourceWiseRoles{
+	for _, eachResource := range resourceWiseRoles {
+		if _, ok := resourceMap[eachResource.Name]; ok {
+			var addedRoles []v1.Role
+			for _, eachRole := range eachResource.Roles {
+				if val, roleOk := roleMap[eachRole.Name]; roleOk {
+					addedRoles = append(addedRoles, val)
+				}
+			}
+			resourceWiseRole := v1.ResourceWiseRoles{
+				Name:  eachResource.Name,
+				Roles: addedRoles,
+			}
+			resourceWiseRoles = append(resourceWiseRoles, resourceWiseRole)
+		}
+	}
+	return resourceWiseRoles
+}

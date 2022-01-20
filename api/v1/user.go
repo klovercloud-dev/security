@@ -226,37 +226,9 @@ func (u userApi) RegisterUser(context echo.Context) error {
 		formData.Password = ""
 	}
 	formData.ID = uuid.New().String()
-	var resourceWiseRoles []v1.ResourceWiseRoles
-	resources := formData.ResourcePermission.Resources
-	existingResources := u.resourceService.Get()
-	existingRoles := u.roleService.Get()
-	roleMap:=make(map[string]v1.Role)
-	resourceMap:=make(map[string]v1.Resource)
-	for _,role:=range existingRoles{
-		roleMap[role.Name]=role
-	}
-	existingRoles=nil
-	for _,resource:=range existingResources{
-		resourceMap[resource.Name]=resource
-	}
-	existingResources=nil
-	for _, eachResource := range resources {
-		if _, ok := resourceMap[eachResource.Name]; ok {
-			var addedRoles []v1.Role
-			for _, eachRole := range eachResource.Roles {
-				if val, roleOk := roleMap[eachRole.Name]; roleOk {
-					addedRoles = append(addedRoles, val)
-				}
-			}
-			resourceWiseRole := v1.ResourceWiseRoles{
-				Name:  eachResource.Name,
-				Roles: addedRoles,
-			}
-			resourceWiseRoles = append(resourceWiseRoles, resourceWiseRole)
-		}
-	}
-
-	userResourcePermission.Resources = resourceWiseRoles
+	roleMap:=getRoleMapFromRoles(u.roleService.Get())
+	resourceMap:=getResourceMapFromResources(u.resourceService.Get())
+	userResourcePermission.Resources = filterOutNonExistingRulesAndResources(roleMap,resourceMap,formData.ResourcePermission.Resources)
 	formData.ResourcePermission = userResourcePermission
 	formData.CreatedDate = time.Now().UTC()
 	formData.UpdatedDate = time.Now().UTC()
