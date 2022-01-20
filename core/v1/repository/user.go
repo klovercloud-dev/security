@@ -16,5 +16,5 @@ type User interface {
 	UpdatePassword(user v1.User) error
 	AttachCompany(id,companyId string) error
 	UpdateStatus(id string,status enums.STATUS) error
-	GetUsersByCompanyId(companyId string) [] v1.User
+	GetUsersByCompanyId(companyId string, status enums.STATUS) [] v1.User
 }

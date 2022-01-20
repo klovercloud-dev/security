@@ -23,8 +23,8 @@ type userService struct {
 	httpClientService service.HttpClient
 }
 
-func (u userService) GetUsersByCompanyId(companyId string) []v1.User {
-	return u.userRepo.GetUsersByCompanyId(companyId)
+func (u userService) GetUsersByCompanyId(companyId string, status enums.STATUS) []v1.User {
+	return u.userRepo.GetUsersByCompanyId(companyId, status)
 }
 
 func (u userService) UpdateStatus(id string, status enums.STATUS) error {
