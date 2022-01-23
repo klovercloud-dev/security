@@ -11,6 +11,8 @@ type User interface {
 	Delete(context echo.Context) error
     ResetPassword(context echo.Context) error
 	ForgotPassword(context echo.Context) error
+	AttachCompany(context echo.Context) error
+	UpdateStatus(context echo.Context) error
 	Update(context echo.Context) error
 	UpdateUserResourcePermission(context echo.Context) error
 }

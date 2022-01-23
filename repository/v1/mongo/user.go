@@ -2,7 +2,6 @@ package mongo
 
 import (
 	"context"
-	"errors"
 	v1 "github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/core/v1/repository"
 	"github.com/klovercloud-ci/enums"
@@ -23,17 +22,59 @@ type userRepository struct {
 	timeout time.Duration
 }
 
-func (u userRepository) GetUsersByCompanyId(companyId string) []v1.User {
-	panic("implement me")
+func (u userRepository) GetUsersByCompanyId(companyId string, status enums.STATUS) []v1.User {
+	var results []v1.User
+	metadata := v1.UserMetadata{CompanyId: companyId}
+	query := bson.M{
+		"$and": []bson.M{
+			{"metadata": metadata},
+			{"status": status},
+		},
+	}
+	coll := u.manager.Db.Collection(UserCollection)
+	result, err := coll.Find(u.manager.Ctx, query, nil)
+	if err != nil {
+		log.Println(err.Error())
+	}
+	for result.Next(context.TODO()) {
+		elemValue := new(v1.User)
+		err := result.Decode(elemValue)
+		if err != nil {
+			log.Println("[ERROR]", err)
+			break
+		}
+		results = append(results, *elemValue)
+	}
+	return results
 }
 
 func (u userRepository) UpdateStatus(id string, status enums.STATUS) error {
-	panic("implement me")
+	user := u.GetByID(id)
+	user.Status = status
+	filter := bson.M{
+		"$and": []bson.M{
+			{"id": id},
+		},
+	}
+	update := bson.M{
+		"$set": user,
+	}
+	upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	coll := u.manager.Db.Collection(UserCollection)
+	err := coll.FindOneAndUpdate(u.manager.Ctx, filter, update, &opt)
+	if err != nil {
+		log.Println("[ERROR] Insert document:", err.Err())
+	}
+	return nil
 }
 
 func (u userRepository) AttachCompany(id, companyId string) error {
 	user := u.GetByID(id)
-
 	user.Metadata.CompanyId = companyId
 	filter := bson.M{
 		"$and": []bson.M{
@@ -218,16 +259,28 @@ func (u userRepository) GetByID(id string) v1.User{
 }
 
 func (u userRepository) Delete(id string) error {
+	user := u.GetByID(id)
+	user.Status = enums.DELETED
+	filter := bson.M{
+		"$and": []bson.M{
+			{"id": id},
+		},
+	}
+	update := bson.M{
+		"$set": user,
+	}
+	upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
 	coll := u.manager.Db.Collection(UserCollection)
-	filter := bson.M{"id": id}
-	res, err := coll.DeleteOne(u.manager.Ctx, filter)
+	err := coll.FindOneAndUpdate(u.manager.Ctx, filter, update, &opt)
 	if err != nil {
-		log.Println("[ERROR]", err)
+		log.Println("[ERROR] Insert document:", err.Err())
 	}
-	if res.DeletedCount == 0 {
-		return errors.New("[ERROR] Delete failed")
-	}
-	return err
+	return nil
 }
 
 func NewUserRepository(timeout int) repository.User {

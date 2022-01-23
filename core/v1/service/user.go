@@ -18,5 +18,5 @@ type User interface {
 	SendOtp(email, phone string) error
 	AttachCompany(company v1.Company, companyId,token string) error
 	UpdateStatus(id string,status enums.STATUS) error
-	GetUsersByCompanyId(companyId string) [] v1.User
+	GetUsersByCompanyId(companyId string, status enums.STATUS) [] v1.User
 }

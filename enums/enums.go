@@ -39,7 +39,6 @@ const (
 
 // USER_UPDATE_ACTION users update action
 type USER_UPDATE_ACTION string
-
 const (
 	// RESET_PASSWORD refers to password reset action
 	RESET_PASSWORD = USER_UPDATE_ACTION("reset_password")
@@ -47,6 +46,8 @@ const (
 	FORGOT_PASSWORD     = USER_UPDATE_ACTION("forgot_password")
 	// ATTACH_COMPANY refers to company attachment action
 	ATTACH_COMPANY    = USER_UPDATE_ACTION("attach_company")
+	// UPDATE_STATUS refers to status update action
+	UPDATE_STATUS    = USER_UPDATE_ACTION("update_status")
 )
 
 // STATUS status update action
