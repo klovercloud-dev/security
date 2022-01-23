@@ -57,7 +57,7 @@ func (u userMock) UpdateStatus(id string, status enums.STATUS) error {
 	panic("implement me")
 }
 
-func (u userMock) GetUsersByCompanyId(companyId string) []v1.User {
+func (u userMock) GetUsersByCompanyId(companyId string, status enums.STATUS) []v1.User {
 	panic("implement me")
 }
 

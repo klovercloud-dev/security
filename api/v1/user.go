@@ -61,9 +61,15 @@ func (u userApi) UpdateStatus(context echo.Context) error {
 		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
 	}
 	status := context.QueryParam("status")
+	if enums.STATUS(status) != enums.ACTIVE && enums.STATUS(status) != enums.INACTIVE{
+		return common.GenerateErrorResponse(context, "[ERROR]: Invalid update status!", "Please provide a valid update status!")
+	}
 	userId := context.QueryParam("id")
 	user := u.userService.GetByID(userId)
 	if user.ID == "" {
+		return common.GenerateErrorResponse(context, "[ERROR]: User not found!", "Please provide a valid user id!")
+	}
+	if user.Status == enums.DELETED {
 		return common.GenerateErrorResponse(context, "[ERROR]: User not found!", "Please provide a valid user id!")
 	}
 	err = u.userService.UpdateStatus(userId, enums.STATUS(status))
@@ -290,6 +296,10 @@ func (u userApi) GetByID(context echo.Context) error {
 
 func (u userApi) Delete(context echo.Context) error {
 	id := context.Param("id")
+	user := u.userService.GetByID(id)
+	if user.ID == "" {
+		return common.GenerateErrorResponse(context, "[ERROR]: User not found!", "Please provide a valid user id!")
+	}
 	err := u.userService.Delete(id)
 	if err != nil {
 		return common.GenerateErrorResponse(context, nil, "Failed to Delete User!")
