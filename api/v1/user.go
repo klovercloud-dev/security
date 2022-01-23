@@ -94,7 +94,6 @@ func (u userApi) ResetPassword(context echo.Context) error {
 		log.Println("Input Error:", err.Error())
 		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
 	}
-
 	if !u.otpService.IsValid(formData.Otp){
 		return common.GenerateErrorResponse(context,"[ERROR]: Invalid Otp","Please provide a valid otp!")
 	}
