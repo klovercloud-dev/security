@@ -163,7 +163,7 @@ func (u UserResourcePermission) Validate() error {
 // Validate validates Role data
 func (r Role) Validate() error {
 	if r.Name == "" {
-		return errors.New("role name is required")
+		return errors.New("[ERROR]: Blank role name")
 	}
 	for _, each := range r.Permissions {
 		if err := each.Validate(); err != nil {
