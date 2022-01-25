@@ -24,14 +24,22 @@ type userApi struct {
 }
 
 func (u userApi) UpdateUserResourcePermission(context echo.Context) error {
+	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, u.jwtService)
+	if err != nil {
+		return common.GenerateErrorResponse(context, err.Error(), "Operation Failed!")
+	}
+	if err := checkAuthority(userResourcePermission, string(enums.USER), "", string(enums.UPDATE)); err != nil {
+		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
+	}
 	userId:=context.Param("id")
 	formData := v1.UserResourcePermission{}
 	if err := context.Bind(&formData); err != nil {
 		log.Println("Input Error:", err.Error())
 		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
 	}
+
 	formData.UserId=userId
-	err := u.userResourcePermissionService.Update(formData)
+	err = u.userResourcePermissionService.Update(formData)
 	if err != nil {
 		return common.GenerateErrorResponse(context, nil, "Failed to update!")
 	}

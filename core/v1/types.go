@@ -147,7 +147,9 @@ func (u UserRegistrationDto) Validate() error {
 func (u UserResourcePermission) Validate() error {
 	for _, eachResource := range u.Resources {
 		if eachResource.Name == "" {
-			return errors.New("resource name is required")
+			return errors.New("[ERROR]: Blank resource name")
+		} else if eachResource.Name != string(enums.USER) || eachResource.Name != string(enums.PIPELINE) || eachResource.Name != string(enums.PROCESS) ||eachResource.Name != string(enums.COMPANY) || eachResource.Name != string(enums.REPOSITORY) || eachResource.Name != string(enums.APPLICATION) {
+			return errors.New("[ERROR]: Invalid resource name")
 		}
 		for _, eachRole := range eachResource.Roles {
 			if err := eachRole.Validate(); err != nil {
@@ -174,7 +176,9 @@ func (r Role) Validate() error {
 // Validate validates Permission data
 func (p Permission) Validate() error {
 	if p.Name == "" {
-		return errors.New("permission name is required")
+		return errors.New("[ERROR]: Blank permission name")
+	} else if p.Name != string(enums.CREATE) || p.Name != string(enums.READ) ||p.Name != string(enums.UPDATE) ||p.Name != string(enums.DELETE) {
+		return errors.New("[ERROR]: Invalid permission name")
 	}
 	return nil
 }
