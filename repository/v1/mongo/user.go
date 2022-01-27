@@ -73,6 +73,31 @@ func (u userRepository) UpdateStatus(id string, status enums.STATUS) error {
 	return nil
 }
 
+func (u userRepository) UpdateUserResourcePermissionDto(id string, userResourcePermissionDto v1.UserResourcePermission) error {
+	user := u.GetByID(id)
+	user.ResourcePermission = userResourcePermissionDto
+	filter := bson.M{
+		"$and": []bson.M{
+			{"id": id},
+		},
+	}
+	update := bson.M{
+		"$set": user,
+	}
+	upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+	coll := u.manager.Db.Collection(UserCollection)
+	err := coll.FindOneAndUpdate(u.manager.Ctx, filter, update, &opt)
+	if err != nil {
+		log.Println("[ERROR] Insert document:", err.Err())
+	}
+	return nil
+}
+
 func (u userRepository) AttachCompany(id, companyId string) error {
 	user := u.GetByID(id)
 	user.Metadata.CompanyId = companyId
@@ -175,6 +200,8 @@ func (u userRepository) UpdatePassword(user v1.User) error {
 	}
 	return nil
 }
+
+
 
 func (u userRepository) GetByEmail(email string) v1.User {
 	var res v1.User

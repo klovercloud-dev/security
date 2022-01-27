@@ -14,6 +14,10 @@ type userMock struct {
 	phoneMediaService service.Media
 }
 
+func (u userMock) UpdateUserResourcePermissionDto(id string, userResourcePermissionDto v1.UserResourcePermission) error {
+	panic("implement me")
+}
+
 var mockUsers map[string]v1.User
 
 func InitMockUsers() {

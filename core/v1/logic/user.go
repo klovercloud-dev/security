@@ -75,8 +75,8 @@ func (u userService) SendOtp(email, phone string) error {
 	}
 	if email!=""{
 		u.emailMediaService.Listen(otp)
-	}else{
-		 u.phoneMediaService.Listen(otp)
+	} else{
+		u.phoneMediaService.Listen(otp)
 	}
 	return u.otpService.Store(otp)
 }
@@ -102,12 +102,16 @@ func (u userService) UpdateToken(token, refreshToken, existingToken string) erro
 	return u.tokenService.Update(token,refreshToken,existingToken)
 }
 
+func (u userService) UpdateUserResourcePermissionDto(id string, userResourcePermissionDto v1.UserResourcePermission) error {
+	return u.userRepo.UpdateUserResourcePermissionDto(id, userResourcePermissionDto)
+}
+
 func (u userService) GetByEmail(email string) v1.User {
 	return u.userRepo.GetByEmail(email)
 }
 
 func (u userService) Store(userWithResourcePermission v1.UserRegistrationDto) error {
-	user, userResourcePermission := v1.GetUserAndResourcePermissionBody(userWithResourcePermission)
+	user := v1.GetUserFromUserRegistrationDto(userWithResourcePermission)
 	isUserExist := u.userRepo.GetByEmail(user.Email)
 	if isUserExist.Email != "" {
 		return errors.New("email is already registered")
@@ -119,11 +123,6 @@ func (u userService) Store(userWithResourcePermission v1.UserRegistrationDto) er
 	}
 
 	err = u.userRepo.Store(user)
-	if err != nil {
-		return err
-	}
-
-	err = u.urpService.Store(userResourcePermission)
 	if err != nil {
 		return err
 	}

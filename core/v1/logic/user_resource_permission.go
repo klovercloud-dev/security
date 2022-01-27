@@ -7,31 +7,31 @@ import (
 )
 
 type userResourcePermissionService struct {
-	repo repository.UserResourcePermission
+	userRepo repository.User
+	roleRepo repository.Role
 }
 
-func (u userResourcePermissionService) Store(userResourcePermission v1.UserResourcePermission) error {
-	return u.repo.Store(userResourcePermission)
+func (u userResourcePermissionService) GetByUserID(userID string) v1.UserResourcePermissionDto {
+	user := u.userRepo.GetByID(userID)
+	userResourcePermission := v1.UserResourcePermissionDto{
+		Metadata:  user.Metadata,
+		UserId:    userID,
+	}
+	resourceWiseRoles := []v1.ResourceWiseRoles{}
+	for _, eachResource := range user.ResourcePermission.Resources {
+		resourceWiseRole := v1.ResourceWiseRoles{Name:  eachResource.Name}
+		for _, eachRole := range eachResource.Roles {
+			resourceWiseRole.Roles = append(resourceWiseRole.Roles,  u.roleRepo.GetByName(eachRole.Name))
+		}
+		resourceWiseRoles = append(resourceWiseRoles, resourceWiseRole)
+	}
+	userResourcePermission.Resources = resourceWiseRoles
+	return userResourcePermission
 }
 
-func (u userResourcePermissionService) Get() []v1.UserResourcePermission {
-	return u.repo.Get()
-}
-
-func (u userResourcePermissionService) GetByUserID(userID string) v1.UserResourcePermission {
-	return u.repo.GetByUserID(userID)
-}
-
-func (u userResourcePermissionService) Delete(userID string) error {
-	return u.repo.Delete(userID)
-}
-
-func (u userResourcePermissionService) Update(userResourcePermission v1.UserResourcePermission) error {
-	return u.repo.Update(userResourcePermission)
-}
-
-func NewUserResourcePermissionService(repo repository.UserResourcePermission) service.UserResourcePermission {
+func NewUserResourcePermissionService(userRepo repository.User, roleRepo repository.Role) service.UserResourcePermission {
 	return &userResourcePermissionService{
-		repo: repo,
+		userRepo: userRepo,
+		roleRepo: roleRepo,
 	}
 }

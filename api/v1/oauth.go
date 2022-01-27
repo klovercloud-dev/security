@@ -18,7 +18,7 @@ import (
 type oauthApi struct {
 	userService            service.User
 	jwtService             service.Jwt
-	userResourcePermission service.UserResourcePermission
+	userResourcePermissionService service.UserResourcePermission
 	tokenService           service.Token
 }
 
@@ -49,7 +49,7 @@ func  (o oauthApi) handleRefreshTokenGrant(context echo.Context) error{
 	if err != nil {
 		log.Println(err)
 	}
-	usersPermission := v1.UserResourcePermission{}
+	usersPermission := v1.UserResourcePermissionDto{}
 	if err := json.Unmarshal(jsonbody, &usersPermission); err != nil {
 		log.Println(err)
 	}
@@ -98,7 +98,7 @@ func (o oauthApi) handlePasswordGrant(context echo.Context) error {
 	if err != nil {
 		return common.GenerateForbiddenResponse(context, "[ERROR]: Password not matched!", "Please login with due credential!"+err.Error())
 	}
-	userResourcePermission := o.userResourcePermission.GetByUserID(existingUser.ID)
+	userResourcePermission := o.userResourcePermissionService.GetByUserID(existingUser.ID)
 	userResourcePermission.Metadata.CompanyId=existingUser.Metadata.CompanyId
 	var tokenLifeTime int64
 	if token_type == string(enums.REGULAR_TOKEN) {
@@ -130,11 +130,11 @@ func (o oauthApi) handlePasswordGrant(context echo.Context) error {
 	return common.GenerateSuccessResponse(context, v1.JWTPayLoad{token, refreshToken}, nil, "")
 }
 
-func NewOauthApi(userService service.User, jwtService service.Jwt,userResourcePermission service.UserResourcePermission,tokenService service.Token) api.Oauth {
+func NewOauthApi(userService service.User, jwtService service.Jwt, userResourcePermissionService service.UserResourcePermission,tokenService service.Token) api.Oauth {
 	return &oauthApi{
 		userService: userService,
 		jwtService:  jwtService,
-		userResourcePermission:userResourcePermission,
+		userResourcePermissionService: userResourcePermissionService,
 		tokenService: tokenService,
 	}
 }

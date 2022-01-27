@@ -21,16 +21,32 @@ type Role struct {
 	Permissions []Permission `json:"permissions" bson:"permissions"`
 }
 
-type UserResourcePermission struct {
+type UserResourcePermissionDto struct {
 	Metadata  UserMetadata        `json:"metadata" bson:"-"`
 	UserId    string              `json:"user_id" bson:"user_id"`
 	Resources []ResourceWiseRoles `json:"resources" bson:"resources"`
+}
+
+type UserResourcePermission struct {
+	Metadata  UserMetadata        `json:"metadata" bson:"-"`
+	UserId    string              `json:"user_id" bson:"user_id"`
+	Resources []ResourceWiseRolesDto `json:"resources" bson:"resources"`
 }
 
 type ResourceWiseRoles struct {
 	Name  string `json:"name" bson:"name"`
 	Roles []Role `json:"roles" bson:"roles"`
 }
+
+type ResourceWiseRolesDto struct {
+	Name  string `json:"name" bson:"name"`
+	Roles []RoleDto `json:"roles" bson:"roles"`
+}
+
+type RoleDto struct {
+	Name        string       `json:"name" bson:"name"`
+}
+
 type User struct {
 	Metadata    UserMetadata    `json:"metadata" bson:"metadata"`
 	ID          string          `json:"id" bson:"id"`
@@ -42,23 +58,24 @@ type User struct {
 	Status      enums.STATUS    `json:"status" bson:"status"`
 	CreatedDate time.Time       `json:"created_date" bson:"created_date"`
 	UpdatedDate time.Time       `json:"updated_date" bson:"updated_date"`
-	AuthType    enums.AUTH_TYPE `json:"auth_type" bson:"auth_type"`
+	AuthType           enums.AUTH_TYPE        `json:"auth_type" bson:"auth_type"`
+	ResourcePermission UserResourcePermission `json:"resource_permission" bson:"resource_permission"`
 }
 
 type UserMetadata struct {
 	CompanyId string `json:"company_id" bson:"company_id"`
 }
 type UserRegistrationDto struct {
-	Metadata           UserMetadata           `json:"metadata"`
-	ID                 string                 `json:"id" bson:"id"`
-	FirstName          string                 `json:"first_name" bson:"first_name" `
-	LastName           string                 `json:"last_name" bson:"last_name"`
-	Email              string                 `json:"email" bson:"email" `
-	Phone              string                 `json:"phone" bson:"phone"`
-	Password           string                 `json:"password" bson:"password" `
-	Status             enums.STATUS           `json:"status" bson:"status"`
-	CreatedDate        time.Time              `json:"created_date" bson:"created_date"`
-	UpdatedDate        time.Time              `json:"updated_date" bson:"updated_date"`
+	Metadata           UserMetadata           		`json:"metadata"`
+	ID                 string                 		`json:"id" bson:"id"`
+	FirstName          string                 		`json:"first_name" bson:"first_name" `
+	LastName           string                 		`json:"last_name" bson:"last_name"`
+	Email              string                 		`json:"email" bson:"email" `
+	Phone              string                 		`json:"phone" bson:"phone"`
+	Password           string                 		`json:"password" bson:"password" `
+	Status             enums.STATUS           		`json:"status" bson:"status"`
+	CreatedDate        time.Time              		`json:"created_date" bson:"created_date"`
+	UpdatedDate        time.Time              		`json:"updated_date" bson:"updated_date"`
 	AuthType           enums.AUTH_TYPE        `json:"auth_type" bson:"auth_type"`
 	ResourcePermission UserResourcePermission `json:"resource_permission" bson:"resource_permission"`
 }
@@ -67,7 +84,7 @@ type RoleUpdateOption struct {
 	Option enums.ROLE_UPDATE_OPTION `json:"option" bson:"option"`
 }
 
-func GetUserAndResourcePermissionBody(u UserRegistrationDto) (User, UserResourcePermission) {
+func GetUserFromUserRegistrationDto(u UserRegistrationDto) User {
 	user := User{
 		ID:          u.ID,
 		FirstName:   u.FirstName,
@@ -79,12 +96,9 @@ func GetUserAndResourcePermissionBody(u UserRegistrationDto) (User, UserResource
 		CreatedDate: u.CreatedDate,
 		UpdatedDate: u.UpdatedDate,
 		AuthType:    u.AuthType,
+		ResourcePermission: u.ResourcePermission,
 	}
-	userResourcePermission := UserResourcePermission{
-		UserId:    u.ID,
-		Resources: u.ResourcePermission.Resources,
-	}
-	return user, userResourcePermission
+	return user
 }
 
 type RsaKeys struct {
@@ -143,12 +157,13 @@ func (u UserRegistrationDto) Validate() error {
 	return u.ResourcePermission.Validate()
 }
 
-// Validate validates UserResourcePermission data
+// Validate validates UserResourcePermissionDto data
 func (u UserResourcePermission) Validate() error {
 	for _, eachResource := range u.Resources {
 		if eachResource.Name == "" {
 			return errors.New("[ERROR]: Blank resource name")
-		} else if eachResource.Name != string(enums.USER) || eachResource.Name != string(enums.PIPELINE) || eachResource.Name != string(enums.PROCESS) ||eachResource.Name != string(enums.COMPANY) || eachResource.Name != string(enums.REPOSITORY) || eachResource.Name != string(enums.APPLICATION) {
+		}
+		if eachResource.Name != string(enums.USER) && eachResource.Name != string(enums.PIPELINE) && eachResource.Name != string(enums.PROCESS) && eachResource.Name != string(enums.COMPANY) && eachResource.Name != string(enums.REPOSITORY) && eachResource.Name != string(enums.APPLICATION) {
 			return errors.New("[ERROR]: Invalid resource name")
 		}
 		for _, eachRole := range eachResource.Roles {
@@ -161,14 +176,9 @@ func (u UserResourcePermission) Validate() error {
 }
 
 // Validate validates Role data
-func (r Role) Validate() error {
+func (r RoleDto) Validate() error {
 	if r.Name == "" {
 		return errors.New("[ERROR]: Blank role name")
-	}
-	for _, each := range r.Permissions {
-		if err := each.Validate(); err != nil {
-			return err
-		}
 	}
 	return nil
 }
@@ -177,7 +187,8 @@ func (r Role) Validate() error {
 func (p Permission) Validate() error {
 	if p.Name == "" {
 		return errors.New("[ERROR]: Blank permission name")
-	} else if p.Name != string(enums.CREATE) || p.Name != string(enums.READ) ||p.Name != string(enums.UPDATE) ||p.Name != string(enums.DELETE) {
+	}
+	if p.Name != string(enums.CREATE) && p.Name != string(enums.READ) && p.Name != string(enums.UPDATE) && p.Name != string(enums.DELETE) {
 		return errors.New("[ERROR]: Invalid permission name")
 	}
 	return nil
