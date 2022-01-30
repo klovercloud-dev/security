@@ -30,6 +30,16 @@ func (p permissionApi) Store(context echo.Context) error {
 		nil, "Operation Successful")
 }
 
+// Get... Get Api
+// @Summary Get api
+// @Description Api for getting permissions
+// @Tags Permission
+// @Produce json
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
+// @Success 200 {object} common.ResponseDTO{data=[]v1.Permission{}}
+// @Failure 400 {object} common.ResponseDTO
+// @Forbidden 403 {object} common.ResponseDTO
+// @Router /api/v1/permissions [GET]
 func (p permissionApi) Get(context echo.Context) error {
 	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, p.jwtService)
 	if err != nil {

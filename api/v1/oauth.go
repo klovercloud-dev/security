@@ -27,6 +27,7 @@ type oauthApi struct {
 // @Description Api for users login
 // @Tags Oauth
 // @Produce json
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
 // @Param loginData body v1.LoginDto true "Login dto if grant_type=password"
 // @Param refreshTokenData body v1.RefreshTokenDto true "RefreshTokenDto dto if grant_type=refresh_token"
 // @Param token_type path string true "token_type type [regular/ctl] if grant_type=password"
@@ -88,7 +89,6 @@ func  (o oauthApi) handleRefreshTokenGrant(context echo.Context) error{
 	}
 	return common.GenerateSuccessResponse(context, v1.JWTPayLoad{token, refreshToken}, nil, "")
 }
-
 
 func (o oauthApi) handlePasswordGrant(context echo.Context) error {
 	token_type := context.QueryParam("token_type")

@@ -58,6 +58,7 @@ func (u userApi) UpdateUserResourcePermission(context echo.Context) error {
 // @Description Api for updating users object
 // @Tags User
 // @Produce json
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
 // @Param action path string true "action type [reset_password/forgot_password/attach_company/update_status]"
 // @Param media path string false "media type [users email/phone] if action forgot_password"
 // @Param status path string false "status type [inactive/active] if action update_status"
@@ -186,10 +187,12 @@ func (u userApi) ResetPassword(context echo.Context) error {
 // @Description Api for users registration
 // @Tags User
 // @Produce json
+// @Param Authorization header string true "Insert your access token while adding new user for your compnay" default(Bearer <Add access token here>)
 // @Param data body v1.UserRegistrationDto true "dto for creating user"
 // @Param action path string true "action [create_user] if admin wants to create new user"
 // @Success 200 {object} common.ResponseDTO
 // @Failure 400 {object} common.ResponseDTO
+// @Forbidden 403 {object} common.ResponseDTO
 // @Router /api/v1/users [POST]
 func (u userApi) Registration(context echo.Context) error {
 	registrationType := context.QueryParam("action")
@@ -292,6 +295,17 @@ func (u userApi) registerUser(context echo.Context) error {
 	return common.GenerateSuccessResponse(context, formData, nil, "Successfully Created User!")
 }
 
+// Get... Get Api
+// @Summary Get api
+// @Description Api for getiing all user by admins company Id
+// @Tags User
+// @Produce json
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
+// @Param status path string true "status type [active/inactive]"
+// @Success 200 {object} common.ResponseDTO{data=[]v1.User{}}
+// @Forbidden 403 {object} common.ResponseDTO
+// @Failure 400 {object} common.ResponseDTO
+// @Router /api/v1/users [GET]
 func (u userApi) Get(context echo.Context) error {
 	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, u.jwtService)
 	if err != nil {
@@ -313,6 +327,17 @@ func (u userApi) Get(context echo.Context) error {
 	return common.GenerateForbiddenResponse(context, "[ERROR]: No valid status found!", "Please provide a valid status.")
 }
 
+// GetByID... GetByID Api
+// @Summary Registration api
+// @Description Api for getiing user by id
+// @Tags User
+// @Produce json
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
+// @Param id path string true "id user id"
+// @Success 200 {object} common.ResponseDTO{data=v1.User{}}
+// @Failure 400 {object} common.ResponseDTO
+// @Forbidden 403 {object} common.ResponseDTO
+// @Router /api/v1/users/{id} [GET]
 func (u userApi) GetByID(context echo.Context) error {
 	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, u.jwtService)
 	if err != nil {
@@ -339,6 +364,7 @@ func (u userApi) GetByID(context echo.Context) error {
 // @Description Api to delete user
 // @Tags User
 // @Produce json
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
 // @Param id path string true "id user id"
 // @Success 200 {object} common.ResponseDTO
 // @Failure 400 {object} common.ResponseDTO

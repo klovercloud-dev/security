@@ -27,9 +27,9 @@ func RoleRouter(g *echo.Group) {
 	roleApi := NewRoleApi(dependency.GetV1RoleService(), dependency.GetV1JwtService())
 	g.POST("", roleApi.Store)
 	g.GET("", roleApi.Get)
-	g.GET("/:roleName", roleApi.GetByName)
-	g.DELETE("/:roleName", roleApi.Delete)
-	g.POST("/:roleName", roleApi.Update)
+	g.GET("/:name", roleApi.GetByName)
+	g.DELETE("/:name", roleApi.Delete)
+	g.POST("/:name", roleApi.Update)
 }
 
 func UserRouter(g *echo.Group) {
