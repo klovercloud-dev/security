@@ -119,6 +119,7 @@ func (u userApi) AttachCompany(context echo.Context) error {
 	}
 	return common.GenerateSuccessResponse(context, nil, nil, "Successfully attached company with user")
 }
+
 func (u userApi) ForgotPassword(context echo.Context) error {
 	media := context.QueryParam("media")
 	var err error
@@ -132,6 +133,7 @@ func (u userApi) ForgotPassword(context echo.Context) error {
 	}
 	return common.GenerateSuccessResponse(context, nil, nil, "Please check your corresponding media to get the otp")
 }
+
 func (u userApi) ResetPassword(context echo.Context) error {
 	formData := v1.PasswordResetDto{}
 	if err := context.Bind(&formData); err != nil {
@@ -160,17 +162,27 @@ func (u userApi) ResetPassword(context echo.Context) error {
 	return common.GenerateSuccessResponse(context, nil, nil, "Operation Successful!")
 }
 
+// Registration... Registration Api
+// @Summary Registration api
+// @Description Api for users registration
+// @Tags User
+// @Produce json
+// @Param data body v1.UserRegistrationDto true "dto for creating user"
+// @Param action path string true "action [create_user] if admin wants to create new user"
+// @Success 200 {object} common.ResponseDTO
+// @Failure 400 {object} common.ResponseDTO
+// @Router /api/v1/users [POST]
 func (u userApi) Registration(context echo.Context) error {
 	registrationType := context.QueryParam("action")
 	if registrationType == "" {
-		return u.RegisterAdmin(context)
+		return u.registerAdmin(context)
 	} else if registrationType == string(enums.CREATE_USER) {
-		return u.RegisterUser(context)
+		return u.registerUser(context)
 	}
 	return common.GenerateErrorResponse(context,"[ERROR]: Failed to register user!",errors.New("invalid query action").Error())
 }
 
-func (u userApi) RegisterAdmin(context echo.Context) error {
+func (u userApi) registerAdmin(context echo.Context) error {
 	formData := v1.UserRegistrationDto{}
 	if err := context.Bind(&formData); err != nil {
 		log.Println("Input Error:", err.Error())
@@ -213,7 +225,7 @@ func (u userApi) RegisterAdmin(context echo.Context) error {
 	return common.GenerateSuccessResponse(context, formData, nil, "Successfully Created User!")
 }
 
-func (u userApi) RegisterUser(context echo.Context) error {
+func (u userApi) registerUser(context echo.Context) error {
 	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, u.jwtService)
 	if err != nil {
 		return common.GenerateErrorResponse(context, err.Error(), "Operation Failed!")

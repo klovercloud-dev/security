@@ -5,6 +5,7 @@ import (
 	"github.com/klovercloud-ci/config"
 	"github.com/klovercloud-ci/core/v1"
 	"github.com/klovercloud-ci/dependency"
+	_ "github.com/klovercloud-ci/docs"
 	"github.com/klovercloud-ci/enums"
 )
 
