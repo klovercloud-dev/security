@@ -9,24 +9,22 @@ import (
 )
 
 type emailService struct {
-
 }
 
 func (e emailService) Listen(otp v1.Otp) {
-	message:=`Hi `+otp.Email+`,`+`
+	message := `Hi ` + otp.Email + `,` + `
 		  Please find your OTP attached below. It will be expired within 5 minutes.
-		  OTP:`+otp.Otp
+		  OTP:` + otp.Otp
 	// Create authentication
 	auth := smtp.PlainAuth("", config.MailServerHostEmail, config.MailServerHostEmailSecret, config.SmtpHost)
 	// Send actual message
-	err := smtp.SendMail(config.SmtpHost+":"+config.SmtpPort, auth, config.MailServerHostEmail, []string{otp.Email},[]byte (message))
+	err := smtp.SendMail(config.SmtpHost+":"+config.SmtpPort, auth, config.MailServerHostEmail, []string{otp.Email}, []byte(message))
 	if err != nil {
 		log.Println(err.Error())
 	}
 }
 
+// NewEmailService returns service.Media type service
 func NewEmailService() service.Media {
-	return &emailService{
-	}
+	return &emailService{}
 }
-

@@ -33,7 +33,7 @@ func (r resourceService) Delete(name string) error {
 	return r.repo.Delete(name)
 }
 
-// NewCompanyService returns Company type service
+// NewResourceService returns service.Resource type service
 func NewResourceService(repo repository.Resource) service.Resource {
 	return &resourceService{
 		repo: repo,

@@ -11,7 +11,7 @@ import (
 )
 
 type permissionApi struct {
-	service service.Permission
+	service    service.Permission
 	jwtService service.Jwt
 }
 
@@ -62,9 +62,10 @@ func (p permissionApi) Delete(context echo.Context) error {
 	return common.GenerateSuccessResponse(context, nil, nil, "Success!")
 }
 
+// NewPermissionApi returns api.Permission type api
 func NewPermissionApi(service service.Permission, jwtService service.Jwt) api.Permission {
 	return &permissionApi{
-		service: service,
+		service:    service,
 		jwtService: jwtService,
 	}
 }

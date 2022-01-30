@@ -8,104 +8,121 @@ import (
 	"time"
 )
 
+// Resource holds resource name.
 type Resource struct {
 	Name string `json:"name" bson:"name"`
 }
 
+// Permission holds permission names.
 type Permission struct {
 	Name string `json:"name" bson:"name"`
 }
 
+// Role holds role wise permissions.
 type Role struct {
 	Name        string       `json:"name" bson:"name"`
 	Permissions []Permission `json:"permissions" bson:"permissions"`
 }
 
+// UserResourcePermissionDto holds metadata, user and resource wise permissions.
 type UserResourcePermissionDto struct {
 	Metadata  UserMetadata        `json:"metadata" bson:"-"`
 	UserId    string              `json:"user_id" bson:"user_id"`
 	Resources []ResourceWiseRoles `json:"resources" bson:"resources"`
 }
 
+// UserResourcePermission dto that holds metadata, user and resource wise roles.
 type UserResourcePermission struct {
-	Metadata  UserMetadata        `json:"metadata" bson:"-"`
-	UserId    string              `json:"user_id" bson:"user_id"`
+	Metadata  UserMetadata           `json:"metadata" bson:"-"`
+	UserId    string                 `json:"user_id" bson:"user_id"`
 	Resources []ResourceWiseRolesDto `json:"resources" bson:"resources"`
 }
 
+// ResourceWiseRoles holds resource wise roles.
 type ResourceWiseRoles struct {
 	Name  string `json:"name" bson:"name"`
 	Roles []Role `json:"roles" bson:"roles"`
 }
 
+// ResourceWiseRolesDto dto that holds resource wise role dtos.
 type ResourceWiseRolesDto struct {
-	Name  string `json:"name" bson:"name"`
+	Name  string    `json:"name" bson:"name"`
 	Roles []RoleDto `json:"roles" bson:"roles"`
 }
 
+// RoleDto dto that holds role name.
 type RoleDto struct {
-	Name        string       `json:"name" bson:"name"`
+	Name string `json:"name" bson:"name"`
 }
 
+// User holds users info.
 type User struct {
-	Metadata    UserMetadata    `json:"metadata" bson:"metadata"`
-	ID          string          `json:"id" bson:"id"`
-	FirstName   string          `json:"first_name" bson:"first_name" `
-	LastName    string          `json:"last_name" bson:"last_name"`
-	Email       string          `json:"email" bson:"email" `
-	Phone       string          `json:"phone" bson:"phone" `
-	Password    string          `json:"password" bson:"password" `
-	Status      enums.STATUS    `json:"status" bson:"status"`
-	CreatedDate time.Time       `json:"created_date" bson:"created_date"`
-	UpdatedDate time.Time       `json:"updated_date" bson:"updated_date"`
+	Metadata           UserMetadata           `json:"metadata" bson:"metadata"`
+	ID                 string                 `json:"id" bson:"id"`
+	FirstName          string                 `json:"first_name" bson:"first_name" `
+	LastName           string                 `json:"last_name" bson:"last_name"`
+	Email              string                 `json:"email" bson:"email" `
+	Phone              string                 `json:"phone" bson:"phone" `
+	Password           string                 `json:"password" bson:"password" `
+	Status             enums.STATUS           `json:"status" bson:"status"`
+	CreatedDate        time.Time              `json:"created_date" bson:"created_date"`
+	UpdatedDate        time.Time              `json:"updated_date" bson:"updated_date"`
 	AuthType           enums.AUTH_TYPE        `json:"auth_type" bson:"auth_type"`
 	ResourcePermission UserResourcePermission `json:"resource_permission" bson:"resource_permission"`
 }
 
+// UserMetadata holds users metadata.
 type UserMetadata struct {
 	CompanyId string `json:"company_id" bson:"company_id"`
 }
+
+// UserRegistrationDto dto that holds user registration info.
 type UserRegistrationDto struct {
-	Metadata           UserMetadata           		`json:"metadata"`
-	ID                 string                 		`json:"id" bson:"id"`
-	FirstName          string                 		`json:"first_name" bson:"first_name" `
-	LastName           string                 		`json:"last_name" bson:"last_name"`
-	Email              string                 		`json:"email" bson:"email" `
-	Phone              string                 		`json:"phone" bson:"phone"`
-	Password           string                 		`json:"password" bson:"password" `
-	Status             enums.STATUS           		`json:"status" bson:"status"`
-	CreatedDate        time.Time              		`json:"created_date" bson:"created_date"`
-	UpdatedDate        time.Time              		`json:"updated_date" bson:"updated_date"`
+	Metadata           UserMetadata           `json:"metadata"`
+	ID                 string                 `json:"id" bson:"id"`
+	FirstName          string                 `json:"first_name" bson:"first_name" `
+	LastName           string                 `json:"last_name" bson:"last_name"`
+	Email              string                 `json:"email" bson:"email" `
+	Phone              string                 `json:"phone" bson:"phone"`
+	Password           string                 `json:"password" bson:"password" `
+	Status             enums.STATUS           `json:"status" bson:"status"`
+	CreatedDate        time.Time              `json:"created_date" bson:"created_date"`
+	UpdatedDate        time.Time              `json:"updated_date" bson:"updated_date"`
 	AuthType           enums.AUTH_TYPE        `json:"auth_type" bson:"auth_type"`
 	ResourcePermission UserResourcePermission `json:"resource_permission" bson:"resource_permission"`
 }
 
+// RoleUpdateOption contains options for role update.
 type RoleUpdateOption struct {
 	Option enums.ROLE_UPDATE_OPTION `json:"option" bson:"option"`
 }
 
+// GetUserFromUserRegistrationDto converts User from UserRegistrationDto
 func GetUserFromUserRegistrationDto(u UserRegistrationDto) User {
 	user := User{
-		Metadata: UserMetadata{CompanyId: u.Metadata.CompanyId},
-		ID:          u.ID,
-		FirstName:   u.FirstName,
-		LastName:    u.LastName,
-		Email:       u.Email,
-		Phone:       u.Phone,
-		Password:    u.Password,
-		Status:      u.Status,
-		CreatedDate: u.CreatedDate,
-		UpdatedDate: u.UpdatedDate,
-		AuthType:    u.AuthType,
+		Metadata:           UserMetadata{CompanyId: u.Metadata.CompanyId},
+		ID:                 u.ID,
+		FirstName:          u.FirstName,
+		LastName:           u.LastName,
+		Email:              u.Email,
+		Phone:              u.Phone,
+		Password:           u.Password,
+		Status:             u.Status,
+		CreatedDate:        u.CreatedDate,
+		UpdatedDate:        u.UpdatedDate,
+		AuthType:           u.AuthType,
 		ResourcePermission: u.ResourcePermission,
 	}
 	return user
 }
 
+// RsaKeys contains RSA keys.
 type RsaKeys struct {
 	PrivateKey *rsa.PrivateKey
 	PublicKey  *rsa.PublicKey
 }
+
+// Token contains token info.
 type Token struct {
 	Uid          string           `json:"uid" bson:"uid"`
 	Token        string           `json:"token" bson:"token"`
@@ -113,20 +130,24 @@ type Token struct {
 	Type         enums.TOKEN_TYPE `json:"type" bson:"type"`
 }
 
+// LoginDto contains user login info.
 type LoginDto struct {
 	Email    string `json:"email" bson:"email"`
 	Password string `json:"password" bson:"password"`
 }
 
+// RefreshTokenDto contains refresh token.
 type RefreshTokenDto struct {
 	RefreshToken string `json:"refresh_token" bson:"refresh_token"`
 }
 
+// JWTPayLoad contains payload of JWT token.
 type JWTPayLoad struct {
 	AccessToken  string `json:"access_token" bson:"access_token"`
 	RefreshToken string `json:"refresh_token" bson:"refresh_token"`
 }
 
+// PasswordResetDto contains data for password reset
 type PasswordResetDto struct {
 	Otp             string `json:"otp" bson:"otp"`
 	Email           string `json:"email" bson:"email"`
@@ -195,6 +216,7 @@ func (p Permission) Validate() error {
 	return nil
 }
 
+// Otp contains otp data
 type Otp struct {
 	ID    string    `json:"id" bson:"id"`
 	Email string    `json:"email" bson:"email"`

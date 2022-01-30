@@ -6,7 +6,6 @@ import (
 )
 
 type mockRoleService struct {
-
 }
 
 func (m mockRoleService) Store(role v1.Role) error {
@@ -29,7 +28,7 @@ func (m mockRoleService) Update(name string, permissions []v1.Permission, option
 	panic("implement me")
 }
 
+// NewMockRoleService returns service.Role type service
 func NewMockRoleService() service.Role {
-	return &mockRoleService{
-	}
+	return &mockRoleService{}
 }

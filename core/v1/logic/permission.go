@@ -22,6 +22,7 @@ func (p permissionService) Delete(permissionName string) error {
 	return p.repo.Delete(permissionName)
 }
 
+// NewPermissionService returns service.Permission type service
 func NewPermissionService(repo repository.Permission) service.Permission {
 	return &permissionService{
 		repo: repo,

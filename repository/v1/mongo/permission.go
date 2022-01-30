@@ -19,9 +19,8 @@ type permissionRepository struct {
 	timeout time.Duration
 }
 
-// Store given permission into the database
 func (p permissionRepository) Store(permission v1.Permission) error {
-	if p.GetByName(permission.Name).Name=="" {
+	if p.GetByName(permission.Name).Name == "" {
 		coll := p.manager.Db.Collection(PermissionCollection)
 		_, err := coll.InsertOne(p.manager.Ctx, permission)
 		if err != nil {
@@ -30,12 +29,12 @@ func (p permissionRepository) Store(permission v1.Permission) error {
 	}
 	return nil
 }
-// Get permission from the database by the given name
-func (r permissionRepository) GetByName(name string) v1.Permission {
+
+func (p permissionRepository) GetByName(name string) v1.Permission {
 	elemValue := new(v1.Permission)
 	filter := bson.M{"name": name}
-	coll := r.manager.Db.Collection(PermissionCollection)
-	result := coll.FindOne(r.manager.Ctx, filter)
+	coll := p.manager.Db.Collection(PermissionCollection)
+	result := coll.FindOne(p.manager.Ctx, filter)
 	err := result.Decode(elemValue)
 	if err != nil {
 		log.Println("[ERROR]", err)
@@ -44,7 +43,6 @@ func (r permissionRepository) GetByName(name string) v1.Permission {
 	return *elemValue
 }
 
-// Get all Permissions from the database
 func (p permissionRepository) Get() []v1.Permission {
 	var permissions []v1.Permission
 	coll := p.manager.Db.Collection(PermissionCollection)
@@ -64,7 +62,6 @@ func (p permissionRepository) Get() []v1.Permission {
 	return permissions
 }
 
-// Delete given permission from the database
 func (p permissionRepository) Delete(permissionName string) error {
 	coll := p.manager.Db.Collection(PermissionCollection)
 	filter := bson.M{"name": permissionName}
@@ -75,6 +72,7 @@ func (p permissionRepository) Delete(permissionName string) error {
 	return err
 }
 
+// NewPermissionRepository returns repository.Permission type repository
 func NewPermissionRepository(timeout int) repository.Permission {
 	return &permissionRepository{
 		manager: GetDmManager(),

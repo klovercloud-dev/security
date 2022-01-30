@@ -12,7 +12,8 @@ import (
 	"strings"
 )
 
-func GetUserResourcePermissionFromBearerToken(context echo.Context,  jwtService service.Jwt) (v1.UserResourcePermissionDto, error) {
+// GetUserResourcePermissionFromBearerToken returns users resource wise permissions from bearer token
+func GetUserResourcePermissionFromBearerToken(context echo.Context, jwtService service.Jwt) (v1.UserResourcePermissionDto, error) {
 	bearerToken := context.Request().Header.Get("Authorization")
 	if bearerToken == "" {
 		return v1.UserResourcePermissionDto{}, errors.New("[ERROR]: No token found!")
@@ -55,7 +56,7 @@ func checkAuthority(userResourcePermission v1.UserResourcePermissionDto, resourc
 				return nil
 			}
 		}
-	} else if permission!=""{
+	} else if permission != "" {
 		for _, each := range resourceWiseRoles.Roles {
 			for _, perm := range each.Permissions {
 				if perm.Name == permission {
@@ -68,23 +69,23 @@ func checkAuthority(userResourcePermission v1.UserResourcePermissionDto, resourc
 	return errors.New("[ERROR]: Insufficient permission")
 }
 
-func getRoleMapFromRoles(roles []v1.Role) map[string]v1.RoleDto{
-	roleMap:=make(map[string]v1.RoleDto)
-	for _,role:=range roles{
-		roleMap[role.Name]=v1.RoleDto{Name: role.Name}
+func getRoleMapFromRoles(roles []v1.Role) map[string]v1.RoleDto {
+	roleMap := make(map[string]v1.RoleDto)
+	for _, role := range roles {
+		roleMap[role.Name] = v1.RoleDto{Name: role.Name}
 	}
 	return roleMap
 }
 
-func getResourceMapFromResources(resources []v1.Resource) map[string]v1.Resource{
-	resourceMap:=make(map[string]v1.Resource)
-	for _,resource:=range resources{
-		resourceMap[resource.Name]=resource
+func getResourceMapFromResources(resources []v1.Resource) map[string]v1.Resource {
+	resourceMap := make(map[string]v1.Resource)
+	for _, resource := range resources {
+		resourceMap[resource.Name] = resource
 	}
 	return resourceMap
 }
 
-func filterOutNonExistingRolesAndResources(roleMap map[string]v1.RoleDto, resourceMap map[string]v1.Resource, resourceWiseRoles [] v1.ResourceWiseRolesDto)[] v1.ResourceWiseRolesDto{
+func filterOutNonExistingRolesAndResources(roleMap map[string]v1.RoleDto, resourceMap map[string]v1.Resource, resourceWiseRoles []v1.ResourceWiseRolesDto) []v1.ResourceWiseRolesDto {
 	var newResourceWiseRoles []v1.ResourceWiseRolesDto
 	for _, eachResource := range resourceWiseRoles {
 		if _, ok := resourceMap[eachResource.Name]; ok {
@@ -104,6 +105,7 @@ func filterOutNonExistingRolesAndResources(roleMap map[string]v1.RoleDto, resour
 	return newResourceWiseRoles
 }
 
+// CheckDuplicateData checks and removes duplicate roles from v1.UserResourcePermission
 func CheckDuplicateData(data v1.UserResourcePermission) v1.UserResourcePermission {
 	resourceMap := make(map[string]int)
 	temp := v1.UserResourcePermission{UserId: data.UserId}
@@ -121,9 +123,9 @@ func CheckDuplicateData(data v1.UserResourcePermission) v1.UserResourcePermissio
 	return temp
 }
 
+// CheckDuplicateRoles checks and removes duplicate roles from v1.UserResourcePermission and returns v1.ResourceWiseRolesDto
 func CheckDuplicateRoles(resource v1.ResourceWiseRolesDto, tempResource v1.ResourceWiseRolesDto, roleMap map[string]int) v1.ResourceWiseRolesDto {
 	for _, eachRole := range resource.Roles {
-		//permissionMap := make(map[string]bool)
 		if _, ok := roleMap[eachRole.Name]; !ok {
 			roleMap[eachRole.Name] = len(tempResource.Roles)
 			tempResource.Roles = append(tempResource.Roles, v1.RoleDto{Name: eachRole.Name})

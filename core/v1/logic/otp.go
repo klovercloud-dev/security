@@ -30,6 +30,7 @@ func (o otpService) IsValid(otpStr string) bool {
 	return true
 }
 
+// NewOtpService returns service.Otp type service
 func NewOtpService(repo repository.Otp) service.Otp {
 	return &otpService{
 		repo: repo,

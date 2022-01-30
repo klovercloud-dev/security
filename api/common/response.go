@@ -16,10 +16,11 @@ type MetaData struct {
 
 // ResponseDTO Http response dto
 type ResponseDTO struct {
-	Data     interface{} `json:"data" msgpack:"data" xml:"data"`
-	Status   string      `json:"status" msgpack:"status" xml:"status"`
-	Message  string      `json:"message" msgpack:"message" xml:"message"`
+	Data    interface{} `json:"data" msgpack:"data" xml:"data"`
+	Status  string      `json:"status" msgpack:"status" xml:"status"`
+	Message string      `json:"message" msgpack:"message" xml:"message"`
 }
+
 // ResponseDTOWithPagination Http response dto with pagination
 type ResponseDTOWithPagination struct {
 	Metadata *MetaData   `json:"_metadata"`
@@ -71,7 +72,6 @@ func GenerateUnauthorizedResponse(c echo.Context, data interface{}, message stri
 		Data:    data,
 	})
 }
-
 
 // GetPaginationMetadata return pagination metadata
 func GetPaginationMetadata(page, limit, totalRecords, totalPaginatedRecords int64) MetaData {

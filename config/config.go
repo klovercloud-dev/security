@@ -41,7 +41,6 @@ var Publickey string
 // RegularTokenLifetime refers to token lifetime of regular.
 var RegularTokenLifetime string
 
-
 // CTLTokenLifetime refers to token lifetime of ctl.
 var CTLTokenLifetime string
 
@@ -61,10 +60,10 @@ var SmtpHost string
 var SmtpPort string
 
 // Resources refers to resources.
-var Resources  []string
+var Resources []string
 
 // Permissions refers to permission.
-var Permissions  []string
+var Permissions []string
 
 // ApiServerUrl refers to api servers base url.
 var ApiServerUrl string
@@ -99,19 +98,19 @@ func InitEnvironmentVariables() {
 	if Database == enums.MONGO {
 		DatabaseConnectionString = "mongodb://" + DbUsername + ":" + DbPassword + "@" + DbServer + ":" + DbPort
 	}
-	PrivateKey =os.Getenv("PRIVATE_KEY")
-	Publickey=os.Getenv("PUBLIC_KEY")
-	RegularTokenLifetime =os.Getenv("REGULAR_TOKEN_LIFETIME")
-	CTLTokenLifetime=os.Getenv("CTL_TOKEN_LIFETIME")
+	PrivateKey = os.Getenv("PRIVATE_KEY")
+	Publickey = os.Getenv("PUBLIC_KEY")
+	RegularTokenLifetime = os.Getenv("REGULAR_TOKEN_LIFETIME")
+	CTLTokenLifetime = os.Getenv("CTL_TOKEN_LIFETIME")
 
-	MailServerHostEmail=os.Getenv("MAIL_SERVER_HOST_EMAIL")
-	MailServerHostEmailSecret=os.Getenv("MAIL_SERVER_HOST_EMAIL_SECRET")
-	SmtpHost=os.Getenv("SMTP_HOST")
-	SmtpPort=os.Getenv("SMTP_PORT")
-	Resources=strings.Split(os.Getenv("RESOURCES"),",")
-	Permissions=strings.Split(os.Getenv("PERMISSIONS"),",")
-	ApiServerUrl=os.Getenv("API_SERVER_URL")
-	if os.Getenv("APPLICATION_CREATION_ENABLED")=="true"{
+	MailServerHostEmail = os.Getenv("MAIL_SERVER_HOST_EMAIL")
+	MailServerHostEmailSecret = os.Getenv("MAIL_SERVER_HOST_EMAIL_SECRET")
+	SmtpHost = os.Getenv("SMTP_HOST")
+	SmtpPort = os.Getenv("SMTP_PORT")
+	Resources = strings.Split(os.Getenv("RESOURCES"), ",")
+	Permissions = strings.Split(os.Getenv("PERMISSIONS"), ",")
+	ApiServerUrl = os.Getenv("API_SERVER_URL")
+	if os.Getenv("APPLICATION_CREATION_ENABLED") == "true" {
 		ApplicationCreationEnabled = true
 	} else {
 		ApplicationCreationEnabled = false

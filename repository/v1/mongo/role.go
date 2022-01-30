@@ -21,7 +21,6 @@ type roleRepository struct {
 	timeout time.Duration
 }
 
-// Update updates existing roles with given permissions
 func (r roleRepository) Update(name string, permissions []v1.Permission) error {
 	role := r.GetByName(name)
 	role.Permissions = permissions
@@ -47,9 +46,8 @@ func (r roleRepository) Update(name string, permissions []v1.Permission) error {
 	return nil
 }
 
-// Store stores given role to database
 func (r roleRepository) Store(role v1.Role) error {
-	if r.GetByName(role.Name).Name=="" {
+	if r.GetByName(role.Name).Name == "" {
 		coll := r.manager.Db.Collection(RoleCollection)
 		_, err := coll.InsertOne(r.manager.Ctx, role)
 		if err != nil {
@@ -59,7 +57,6 @@ func (r roleRepository) Store(role v1.Role) error {
 	return nil
 }
 
-// Get gets all the roles
 func (r roleRepository) Get() []v1.Role {
 	var roles []v1.Role
 	coll := r.manager.Db.Collection(RoleCollection)
@@ -79,7 +76,6 @@ func (r roleRepository) Get() []v1.Role {
 	return roles
 }
 
-// GetByName gets a role corresponding to the given name
 func (r roleRepository) GetByName(name string) v1.Role {
 	elemValue := new(v1.Role)
 	filter := bson.M{"name": name}
@@ -93,7 +89,6 @@ func (r roleRepository) GetByName(name string) v1.Role {
 	return *elemValue
 }
 
-// Delete deletes a role corresponding to the given name
 func (r roleRepository) Delete(roleName string) error {
 	coll := r.manager.Db.Collection(RoleCollection)
 	filter := bson.M{"name": roleName}
@@ -109,12 +104,11 @@ func (r roleRepository) Delete(roleName string) error {
 	return err
 }
 
-// AppendPermissions add permissions to the existing role permissions
 func (r roleRepository) AppendPermissions(name string, permissions []v1.Permission) error {
 	role := r.GetByName(name)
-	for i, _ := range permissions {
+	for i := range permissions {
 		flag := false
-		for j, _ := range role.Permissions {
+		for j := range role.Permissions {
 			if permissions[i].Name == role.Permissions[j].Name {
 				flag = true
 				break
@@ -131,13 +125,12 @@ func (r roleRepository) AppendPermissions(name string, permissions []v1.Permissi
 	return nil
 }
 
-// RemovePermissions removes the given permission from an existing role
 func (r roleRepository) RemovePermissions(name string, permissions []v1.Permission) error {
 	role := r.GetByName(name)
 	var newPermissions []v1.Permission
-	for i, _ := range role.Permissions {
+	for i := range role.Permissions {
 		flag := false
-		for j, _ := range permissions {
+		for j := range permissions {
 			if role.Permissions[i].Name == permissions[j].Name {
 				flag = true
 				break
@@ -154,6 +147,7 @@ func (r roleRepository) RemovePermissions(name string, permissions []v1.Permissi
 	return nil
 }
 
+// NewRoleRepository returns repository.Role type repository
 func NewRoleRepository(timeout int) repository.Role {
 	return &roleRepository{manager: GetDmManager(), timeout: time.Duration(timeout)}
 }

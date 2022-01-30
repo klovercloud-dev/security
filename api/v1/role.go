@@ -12,7 +12,7 @@ import (
 )
 
 type roleApi struct {
-	service service.Role
+	service    service.Role
 	jwtService service.Jwt
 }
 
@@ -170,9 +170,10 @@ func (r roleApi) Update(context echo.Context) error {
 		nil, "Operation Successful")
 }
 
+// NewRoleApi returns api.Role type api
 func NewRoleApi(roleService service.Role, jwtService service.Jwt) api.Role {
 	return &roleApi{
-		service: roleService,
+		service:    roleService,
 		jwtService: jwtService,
 	}
 }

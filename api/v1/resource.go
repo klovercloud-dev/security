@@ -11,7 +11,7 @@ import (
 )
 
 type resourceApi struct {
-	service service.Resource
+	service    service.Resource
 	jwtService service.Jwt
 }
 
@@ -74,9 +74,10 @@ func (r resourceApi) Delete(context echo.Context) error {
 	return common.GenerateSuccessResponse(context, nil, nil, "Success!")
 }
 
+// NewResourceApi returns api.Resource type api
 func NewResourceApi(resourceService service.Resource, jwtService service.Jwt) api.Resource {
 	return &resourceApi{
-		service: resourceService,
+		service:    resourceService,
 		jwtService: jwtService,
 	}
 }

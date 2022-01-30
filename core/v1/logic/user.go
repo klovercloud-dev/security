@@ -10,14 +10,13 @@ import (
 	"github.com/klovercloud-ci/core/v1/service"
 	"github.com/klovercloud-ci/enums"
 	"io"
-	"net/mail"
 )
 
 type userService struct {
-	userRepo repository.User
-	urpService  service.UserResourcePermission
-	tokenService service.Token
-	otpService service.Otp
+	userRepo          repository.User
+	urpService        service.UserResourcePermission
+	tokenService      service.Token
+	otpService        service.Otp
 	emailMediaService service.Media
 	phoneMediaService service.Media
 	httpClientService service.HttpClient
@@ -28,12 +27,12 @@ func (u userService) GetUsersByCompanyId(companyId string, status enums.STATUS) 
 }
 
 func (u userService) UpdateStatus(id string, status enums.STATUS) error {
-	return u.userRepo.UpdateStatus(id,status)
+	return u.userRepo.UpdateStatus(id, status)
 }
 
 func (u userService) AttachCompany(company v1.Company, companyId, token string) error {
-	tokenObject:=u.tokenService.GetByToken(token)
-	if tokenObject.Uid==""{
+	tokenObject := u.tokenService.GetByToken(token)
+	if tokenObject.Uid == "" {
 		return errors.New("no token found")
 	}
 	user := u.userRepo.GetByID(tokenObject.Uid)
@@ -54,11 +53,11 @@ func (u userService) AttachCompany(company v1.Company, companyId, token string) 
 			return err
 		}
 	}
-	return u.userRepo.AttachCompany(tokenObject.Uid,companyId)
+	return u.userRepo.AttachCompany(tokenObject.Uid, companyId)
 }
 
 func (u userService) GetByOtp(otp string) v1.User {
-	otpObject:=u.otpService.FindByOtp(otp)
+	otpObject := u.otpService.FindByOtp(otp)
 	return u.GetByID(otpObject.ID)
 }
 
@@ -68,20 +67,20 @@ func (u userService) GetByPhone(phone string) v1.User {
 
 func (u userService) SendOtp(email, phone string) error {
 	var user v1.User
-	if email!=""{
-		user=u.GetByEmail(email)
-	}else if phone!=""{
-		user=u.GetByPhone(phone)
+	if email != "" {
+		user = u.GetByEmail(email)
+	} else if phone != "" {
+		user = u.GetByPhone(phone)
 	}
-	otp:=v1.Otp{
+	otp := v1.Otp{
 		ID:    user.ID,
 		Email: user.Email,
 		Phone: user.Phone,
 		Otp:   u.generateOtp(6),
 	}
-	if email!=""{
+	if email != "" {
 		u.emailMediaService.Listen(otp)
-	} else{
+	} else {
 		u.phoneMediaService.Listen(otp)
 	}
 	return u.otpService.Store(otp)
@@ -105,7 +104,7 @@ func (u userService) UpdatePassword(user v1.User) error {
 }
 
 func (u userService) UpdateToken(token, refreshToken, existingToken string) error {
-	return u.tokenService.Update(token,refreshToken,existingToken)
+	return u.tokenService.Update(token, refreshToken, existingToken)
 }
 
 func (u userService) UpdateUserResourcePermissionDto(id string, userResourcePermissionDto v1.UserResourcePermission) error {
@@ -123,7 +122,7 @@ func (u userService) Store(userWithResourcePermission v1.UserRegistrationDto) er
 		return errors.New("email is already registered")
 	}
 
-	err:=userWithResourcePermission.Validate()
+	err := userWithResourcePermission.Validate()
 	if err != nil {
 		return err
 	}
@@ -152,12 +151,8 @@ func (u userService) Delete(id string) error {
 	return nil
 }
 
-func mailValidation(email string) bool {
-	_, err := mail.ParseAddress(email)
-	return err == nil
-}
-
-func NewUserService(userRepo repository.User, urpService service.UserResourcePermission,tokenService service.Token,otpService service.Otp,emailMediaService service.Media,phoneMediaService service.Media, httpClientService service.HttpClient) service.User {
+// NewUserService returns service.User type service
+func NewUserService(userRepo repository.User, urpService service.UserResourcePermission, tokenService service.Token, otpService service.Otp, emailMediaService service.Media, phoneMediaService service.Media, httpClientService service.HttpClient) service.User {
 	return &userService{
 		userRepo:          userRepo,
 		urpService:        urpService,

@@ -1,7 +1,7 @@
 definitions:
   common.ResponseDTO:
     properties:
-      data: {}
+      data: { }
       message:
         type: string
       status:
@@ -234,7 +234,7 @@ definitions:
         type: string
     type: object
 info:
-  contact: {}
+  contact: { }
   description: Klovercloud-security API
   title: Klovercloud-ci-security API
 paths:
@@ -242,163 +242,163 @@ paths:
     post:
       description: Api for users login
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Login dto if grant_type=password
-        in: body
-        name: loginData
-        required: true
-        schema:
-          $ref: '#/definitions/v1.LoginDto'
-      - description: RefreshTokenDto dto if grant_type=refresh_token
-        in: body
-        name: refreshTokenData
-        required: true
-        schema:
-          $ref: '#/definitions/v1.RefreshTokenDto'
-      - description: token_type type [regular/ctl] if grant_type=password
-        in: path
-        name: token_type
-        required: true
-        type: string
+        - default: Bearer <Add access token here>
+          description: Insert your access token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: Login dto if grant_type=password
+          in: body
+          name: loginData
+          required: true
+          schema:
+            $ref: '#/definitions/v1.LoginDto'
+        - description: RefreshTokenDto dto if grant_type=refresh_token
+          in: body
+          name: refreshTokenData
+          required: true
+          schema:
+            $ref: '#/definitions/v1.RefreshTokenDto'
+        - description: token_type type [regular/ctl] if grant_type=password
+          in: path
+          name: token_type
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/common.ResponseDTO'
-            - properties:
-                data:
-                  $ref: '#/definitions/v1.JWTPayLoad'
-              type: object
+              - $ref: '#/definitions/common.ResponseDTO'
+              - properties:
+                  data:
+                    $ref: '#/definitions/v1.JWTPayLoad'
+                type: object
         "403":
           description: Forbidden
           schema:
             $ref: '#/definitions/common.ResponseDTO'
       summary: Login api
       tags:
-      - Oauth
+        - Oauth
   /api/v1/permissions:
     get:
       description: Api for getting permissions
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
+        - default: Bearer <Add access token here>
+          description: Insert your access token
+          in: header
+          name: Authorization
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/common.ResponseDTO'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/v1.Permission'
-                  type: array
-              type: object
+              - $ref: '#/definitions/common.ResponseDTO'
+              - properties:
+                  data:
+                    items:
+                      $ref: '#/definitions/v1.Permission'
+                    type: array
+                type: object
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/common.ResponseDTO'
       summary: Get api
       tags:
-      - Permission
+        - Permission
   /api/v1/resources:
     get:
       description: Api for getting resources
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
+        - default: Bearer <Add access token here>
+          description: Insert your access token
+          in: header
+          name: Authorization
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/common.ResponseDTO'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/v1.Resource'
-                  type: array
-              type: object
+              - $ref: '#/definitions/common.ResponseDTO'
+              - properties:
+                  data:
+                    items:
+                      $ref: '#/definitions/v1.Resource'
+                    type: array
+                type: object
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/common.ResponseDTO'
       summary: Store api
       tags:
-      - Resource
+        - Resource
   /api/v1/roles:
     get:
       description: Api for getting role
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
+        - default: Bearer <Add access token here>
+          description: Insert your access token
+          in: header
+          name: Authorization
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/common.ResponseDTO'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/v1.Role'
-                  type: array
-              type: object
+              - $ref: '#/definitions/common.ResponseDTO'
+              - properties:
+                  data:
+                    items:
+                      $ref: '#/definitions/v1.Role'
+                    type: array
+                type: object
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/common.ResponseDTO'
       summary: Get api
       tags:
-      - Role
+        - Role
     post:
       description: Api for storing role
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: dto for creating role
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/v1.Role'
-      - description: action [create_user] if admin wants to create new user
-        in: path
-        name: action
-        required: true
-        type: string
+        - default: Bearer <Add access token here>
+          description: Insert your access token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: dto for creating role
+          in: body
+          name: data
+          required: true
+          schema:
+            $ref: '#/definitions/v1.Role'
+        - description: action [create_user] if admin wants to create new user
+          in: path
+          name: action
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -410,23 +410,23 @@ paths:
             $ref: '#/definitions/common.ResponseDTO'
       summary: Store api
       tags:
-      - Role
+        - Role
   /api/v1/roles/{name}:
     delete:
       description: Api for deleting role by name
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: role name
-        in: path
-        name: name
-        type: string
+        - default: Bearer <Add access token here>
+          description: Insert your access token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: role name
+          in: path
+          name: name
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -438,54 +438,54 @@ paths:
             $ref: '#/definitions/common.ResponseDTO'
       summary: Delete api
       tags:
-      - Role
+        - Role
     get:
       description: Api for getting role by name
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: role name
-        in: path
-        name: name
-        type: string
+        - default: Bearer <Add access token here>
+          description: Insert your access token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: role name
+          in: path
+          name: name
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/common.ResponseDTO'
-            - properties:
-                data:
-                  $ref: '#/definitions/v1.Role'
-              type: object
+              - $ref: '#/definitions/common.ResponseDTO'
+              - properties:
+                  data:
+                    $ref: '#/definitions/v1.Role'
+                type: object
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/common.ResponseDTO'
       summary: GetByName api
       tags:
-      - Role
+        - Role
     put:
       description: Api for updating role by name
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: role name
-        in: path
-        name: name
-        type: string
+        - default: Bearer <Add access token here>
+          description: Insert your access token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: role name
+          in: path
+          name: name
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -497,24 +497,24 @@ paths:
             $ref: '#/definitions/common.ResponseDTO'
       summary: Update api
       tags:
-      - Role
+        - Role
   /api/v1/users:
     delete:
       description: Api to delete user
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: id user id
-        in: path
-        name: id
-        required: true
-        type: string
+        - default: Bearer <Add access token here>
+          description: Insert your access token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: id user id
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -526,64 +526,64 @@ paths:
             $ref: '#/definitions/common.ResponseDTO'
       summary: Delete api
       tags:
-      - User
+        - User
     get:
       description: Api for getiing all user by admins company Id
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: status type [active/inactive]
-        in: path
-        name: status
-        required: true
-        type: string
+        - default: Bearer <Add access token here>
+          description: Insert your access token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: status type [active/inactive]
+          in: path
+          name: status
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/common.ResponseDTO'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/v1.User'
-                  type: array
-              type: object
+              - $ref: '#/definitions/common.ResponseDTO'
+              - properties:
+                  data:
+                    items:
+                      $ref: '#/definitions/v1.User'
+                    type: array
+                type: object
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/common.ResponseDTO'
       summary: Get api
       tags:
-      - User
+        - User
     post:
       description: Api for users registration
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token while adding new user for your compnay
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: dto for creating user
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/v1.UserRegistrationDto'
-      - description: action [create_user] if admin wants to create new user
-        in: path
-        name: action
-        required: true
-        type: string
+        - default: Bearer <Add access token here>
+          description: Insert your access token while adding new user for your compnay
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: dto for creating user
+          in: body
+          name: data
+          required: true
+          schema:
+            $ref: '#/definitions/v1.UserRegistrationDto'
+        - description: action [create_user] if admin wants to create new user
+          in: path
+          name: action
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -595,47 +595,47 @@ paths:
             $ref: '#/definitions/common.ResponseDTO'
       summary: Registration api
       tags:
-      - User
+        - User
     put:
       description: Api for updating users object
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: action type [reset_password/forgot_password/attach_company/update_status]
-        in: path
-        name: action
-        required: true
-        type: string
-      - description: media type [users email/phone] if action forgot_password
-        in: path
-        name: media
-        type: string
-      - description: status type [inactive/active] if action update_status
-        in: path
-        name: status
-        type: string
-      - description: updating users id, if action update_status
-        in: path
-        name: id
-        type: string
-      - description: dto for resetting users password
-        in: body
-        name: password_reset_dto
-        required: true
-        schema:
-          $ref: '#/definitions/v1.PasswordResetDto'
-      - description: dto for attaching company with user
-        in: body
-        name: company_dto
-        required: true
-        schema:
-          $ref: '#/definitions/v1.Company'
+        - default: Bearer <Add access token here>
+          description: Insert your access token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: action type [reset_password/forgot_password/attach_company/update_status]
+          in: path
+          name: action
+          required: true
+          type: string
+        - description: media type [users email/phone] if action forgot_password
+          in: path
+          name: media
+          type: string
+        - description: status type [inactive/active] if action update_status
+          in: path
+          name: status
+          type: string
+        - description: updating users id, if action update_status
+          in: path
+          name: id
+          type: string
+        - description: dto for resetting users password
+          in: body
+          name: password_reset_dto
+          required: true
+          schema:
+            $ref: '#/definitions/v1.PasswordResetDto'
+        - description: dto for attaching company with user
+          in: body
+          name: company_dto
+          required: true
+          schema:
+            $ref: '#/definitions/v1.Company'
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -647,39 +647,39 @@ paths:
             $ref: '#/definitions/common.ResponseDTO'
       summary: Update api
       tags:
-      - User
+        - User
   /api/v1/users/{id}:
     get:
       description: Api for getiing user by id
       parameters:
-      - default: Bearer <Add access token here>
-        description: Insert your access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: id user id
-        in: path
-        name: id
-        required: true
-        type: string
+        - default: Bearer <Add access token here>
+          description: Insert your access token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: id user id
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/common.ResponseDTO'
-            - properties:
-                data:
-                  $ref: '#/definitions/v1.User'
-              type: object
+              - $ref: '#/definitions/common.ResponseDTO'
+              - properties:
+                  data:
+                    $ref: '#/definitions/v1.User'
+                type: object
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/common.ResponseDTO'
       summary: Registration api
       tags:
-      - User
+        - User
 swagger: "2.0"

@@ -22,7 +22,7 @@ func (o mockOtpService) IsValid(otp string) bool {
 	return true
 }
 
+// NewMockOtpService returns service.Otp type service
 func NewMockOtpService() service.Otp {
-	return &mockOtpService{
-	}
+	return &mockOtpService{}
 }

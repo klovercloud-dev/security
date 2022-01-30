@@ -5,6 +5,7 @@ import (
 	"github.com/klovercloud-ci/enums"
 )
 
+// User Repository operations user.
 type User interface {
 	Store(user v1.User) error
 	Get() []v1.User
@@ -15,7 +16,7 @@ type User interface {
 	GetByToken(token string) v1.User
 	UpdatePassword(user v1.User) error
 	UpdateUserResourcePermissionDto(id string, userResourcePermissionDto v1.UserResourcePermission) error
-	AttachCompany(id,companyId string) error
-	UpdateStatus(id string,status enums.STATUS) error
-	GetUsersByCompanyId(companyId string, status enums.STATUS) [] v1.User
+	AttachCompany(id, companyId string) error
+	UpdateStatus(id string, status enums.STATUS) error
+	GetUsersByCompanyId(companyId string, status enums.STATUS) []v1.User
 }

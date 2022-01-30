@@ -16,10 +16,10 @@ import (
 )
 
 type oauthApi struct {
-	userService            service.User
-	jwtService             service.Jwt
+	userService                   service.User
+	jwtService                    service.Jwt
 	userResourcePermissionService service.UserResourcePermission
-	tokenService           service.Token
+	tokenService                  service.Token
 }
 
 // Login... Login Api
@@ -37,22 +37,21 @@ type oauthApi struct {
 func (o oauthApi) Login(context echo.Context) error {
 	if context.QueryParam("grant_type") == "password" {
 		return o.handlePasswordGrant(context)
-	}else if context.QueryParam("grant_type") == "refresh_token"{
+	} else if context.QueryParam("grant_type") == "refresh_token" {
 		return o.handleRefreshTokenGrant(context)
 	}
 	return common.GenerateForbiddenResponse(context, nil, "Please provide a valid grant_type")
 }
 
-
-func  (o oauthApi) handleRefreshTokenGrant(context echo.Context) error{
+func (o oauthApi) handleRefreshTokenGrant(context echo.Context) error {
 	refreshTokenDto := new(v1.RefreshTokenDto)
 	if err := context.Bind(&refreshTokenDto); err != nil {
 		log.Println("Input Error:", err.Error())
 		return common.GenerateErrorResponse(context, "[ERROR]: Failed bind payload from context", err.Error())
 	}
 
-	if !o.jwtService.IsTokenValid(refreshTokenDto.RefreshToken){
-		return common.GenerateForbiddenResponse(context, "[ERROR]: Token is expired!","Please login again to get token!")
+	if !o.jwtService.IsTokenValid(refreshTokenDto.RefreshToken) {
+		return common.GenerateForbiddenResponse(context, "[ERROR]: Token is expired!", "Please login again to get token!")
 	}
 	claims := jwt.MapClaims{}
 	jwt.ParseWithClaims(refreshTokenDto.RefreshToken, claims, func(token *jwt.Token) (interface{}, error) {
@@ -67,10 +66,10 @@ func  (o oauthApi) handleRefreshTokenGrant(context echo.Context) error{
 		log.Println(err)
 	}
 	existingUser := o.userService.GetByID(usersPermission.UserId)
-	if existingUser.ID == "" || existingUser.Status!=enums.ACTIVE {
+	if existingUser.ID == "" || existingUser.Status != enums.ACTIVE {
 		return common.GenerateForbiddenResponse(context, "[ERROR]: No User found!", "Please login with actual user email!")
 	}
-	usersPermission.Metadata=existingUser.Metadata
+	usersPermission.Metadata = existingUser.Metadata
 	tokenLifeTime, err := strconv.ParseInt(config.RegularTokenLifetime, 10, 64)
 	if err != nil {
 		log.Println(err.Error())
@@ -91,11 +90,11 @@ func  (o oauthApi) handleRefreshTokenGrant(context echo.Context) error{
 }
 
 func (o oauthApi) handlePasswordGrant(context echo.Context) error {
-	token_type := context.QueryParam("token_type")
-	if token_type == "" {
-		token_type = string(enums.REGULAR_TOKEN)
-	} else if token_type != string(enums.REGULAR_TOKEN) && token_type != string(enums.CTL_TOKEN) {
-		return common.GenerateErrorResponse(context, "No valid token token_type provided!", "Please provide a valid token_type!")
+	tokenType := context.QueryParam("token_type")
+	if tokenType == "" {
+		tokenType = string(enums.REGULAR_TOKEN)
+	} else if tokenType != string(enums.REGULAR_TOKEN) && tokenType != string(enums.CTL_TOKEN) {
+		return common.GenerateErrorResponse(context, "No valid token tokenType provided!", "Please provide a valid tokenType!")
 	}
 	loginDto := new(v1.LoginDto)
 	if err := context.Bind(&loginDto); err != nil {
@@ -104,7 +103,7 @@ func (o oauthApi) handlePasswordGrant(context echo.Context) error {
 	}
 
 	existingUser := o.userService.GetByEmail(loginDto.Email)
-	if existingUser.ID == "" || existingUser.Status!=enums.ACTIVE{
+	if existingUser.ID == "" || existingUser.Status != enums.ACTIVE {
 		return common.GenerateForbiddenResponse(context, "[ERROR]: No User found!", "Please login with actual user email!")
 	}
 	err := bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(loginDto.Password))
@@ -112,9 +111,9 @@ func (o oauthApi) handlePasswordGrant(context echo.Context) error {
 		return common.GenerateForbiddenResponse(context, "[ERROR]: Password not matched!", "Please login with due credential!"+err.Error())
 	}
 	userResourcePermission := o.userResourcePermissionService.GetByUserID(existingUser.ID)
-	userResourcePermission.Metadata.CompanyId=existingUser.Metadata.CompanyId
+	userResourcePermission.Metadata.CompanyId = existingUser.Metadata.CompanyId
 	var tokenLifeTime int64
-	if token_type == string(enums.REGULAR_TOKEN) {
+	if tokenType == string(enums.REGULAR_TOKEN) {
 		i, err := strconv.ParseInt(config.RegularTokenLifetime, 10, 64)
 		if err != nil {
 			log.Println(err.Error())
@@ -135,7 +134,7 @@ func (o oauthApi) handlePasswordGrant(context echo.Context) error {
 		return common.GenerateForbiddenResponse(context, "[ERROR]: failed to create token!", err.Error())
 	}
 
-	err = o.tokenService.Store(v1.Token{userResourcePermission.UserId, token, refreshToken, enums.TOKEN_TYPE(token_type)})
+	err = o.tokenService.Store(v1.Token{userResourcePermission.UserId, token, refreshToken, enums.TOKEN_TYPE(tokenType)})
 	if err != nil {
 		log.Println(err.Error())
 		return common.GenerateForbiddenResponse(context, "[ERROR]: failed to store token!", err.Error())
@@ -143,11 +142,12 @@ func (o oauthApi) handlePasswordGrant(context echo.Context) error {
 	return common.GenerateSuccessResponse(context, v1.JWTPayLoad{token, refreshToken}, nil, "")
 }
 
-func NewOauthApi(userService service.User, jwtService service.Jwt, userResourcePermissionService service.UserResourcePermission,tokenService service.Token) api.Oauth {
+// NewOauthApi returns api.Oauth type api
+func NewOauthApi(userService service.User, jwtService service.Jwt, userResourcePermissionService service.UserResourcePermission, tokenService service.Token) api.Oauth {
 	return &oauthApi{
-		userService: userService,
-		jwtService:  jwtService,
+		userService:                   userService,
+		jwtService:                    jwtService,
 		userResourcePermissionService: userResourcePermissionService,
-		tokenService: tokenService,
+		tokenService:                  tokenService,
 	}
 }

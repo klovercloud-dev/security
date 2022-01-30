@@ -13,17 +13,17 @@ import (
 	"time"
 )
 
+// RsaKeys object reference for v1.RsaKeys
 var RsaKeys *v1.RsaKeys = nil
 
 type jwtService struct {
-
 }
 
 func (j jwtService) GetRsaKeys() *v1.RsaKeys {
 	if RsaKeys == nil {
 		RsaKeys = &v1.RsaKeys{
 			PrivateKey: j.GetPrivateKey(),
-			PublicKey: j.GetPublicKey(),
+			PublicKey:  j.GetPublicKey(),
 		}
 	}
 	return RsaKeys
@@ -32,34 +32,33 @@ func (j jwtService) GetRsaKeys() *v1.RsaKeys {
 func (j jwtService) GenerateToken(userUUID string, duration int64, data interface{}) (string, string, error) {
 	token := jwt.New(jwt.SigningMethodRS512)
 	token.Claims = jwt.MapClaims{
-		"exp": time.Now().UTC().Add(time.Duration(duration) * time.Millisecond).Unix(),
-		"iat": time.Now().UTC().Unix(),
-		"sub": userUUID,
-		"data":data,
+		"exp":  time.Now().UTC().Add(time.Duration(duration) * time.Millisecond).Unix(),
+		"iat":  time.Now().UTC().Unix(),
+		"sub":  userUUID,
+		"data": data,
 	}
 	tokenString, err := token.SignedString(j.GetRsaKeys().PrivateKey)
 	if err != nil {
-		return "","",err
+		return "", "", err
 	}
 	token.Claims = jwt.MapClaims{
-		"exp": time.Now().UTC().Add(time.Duration(duration+duration/4) * time.Millisecond).Unix(),
-		"iat": time.Now().UTC().Unix(),
-		"sub": userUUID,
-		"data":data,
+		"exp":  time.Now().UTC().Add(time.Duration(duration+duration/4) * time.Millisecond).Unix(),
+		"iat":  time.Now().UTC().Unix(),
+		"sub":  userUUID,
+		"data": data,
 	}
-	refreshTokenStr,err:=token.SignedString(j.GetRsaKeys().PrivateKey)
+	refreshTokenStr, err := token.SignedString(j.GetRsaKeys().PrivateKey)
 	if err != nil {
-		return "","",err
+		return "", "", err
 	}
 
-	return tokenString, refreshTokenStr,nil
+	return tokenString, refreshTokenStr, nil
 }
-
 
 func (j jwtService) IsTokenValid(tokenString string) bool {
 	claims := jwt.MapClaims{}
 	jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		return (j.GetRsaKeys().PublicKey), nil
+		return j.GetRsaKeys().PublicKey, nil
 	})
 
 	var tm time.Time
@@ -70,7 +69,7 @@ func (j jwtService) IsTokenValid(tokenString string) bool {
 		v, _ := iat.Int64()
 		tm = time.Unix(v, 0)
 	}
-	if time.Now().UTC().After(tm){
+	if time.Now().UTC().After(tm) {
 		return false
 	}
 	return true
@@ -99,7 +98,7 @@ func (j jwtService) GetPublicKey() *rsa.PublicKey {
 	return publicKeyImported
 }
 
+// NewJwtService returns service.Jwt type service
 func NewJwtService() service.Jwt {
-	return &jwtService{
-	}
+	return &jwtService{}
 }

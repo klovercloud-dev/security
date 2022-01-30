@@ -5,6 +5,7 @@ import (
 	"github.com/klovercloud-ci/enums"
 )
 
+// User business operations.
 type User interface {
 	Store(user v1.UserRegistrationDto) error
 	Get() []v1.User
@@ -17,7 +18,7 @@ type User interface {
 	UpdatePassword(user v1.User) error
 	UpdateUserResourcePermissionDto(id string, userResourcePermissionDto v1.UserResourcePermission) error
 	SendOtp(email, phone string) error
-	AttachCompany(company v1.Company, companyId,token string) error
-	UpdateStatus(id string,status enums.STATUS) error
-	GetUsersByCompanyId(companyId string, status enums.STATUS) [] v1.User
+	AttachCompany(company v1.Company, companyId, token string) error
+	UpdateStatus(id string, status enums.STATUS) error
+	GetUsersByCompanyId(companyId string, status enums.STATUS) []v1.User
 }

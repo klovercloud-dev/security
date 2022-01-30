@@ -2,6 +2,7 @@ package service
 
 import v1 "github.com/klovercloud-ci/core/v1"
 
+// Role business operations.
 type Role interface {
 	Store(role v1.Role) error
 	Get() []v1.Role

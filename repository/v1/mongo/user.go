@@ -174,11 +174,11 @@ func (u userRepository) GetByToken(token string) v1.User {
 }
 
 func (u userRepository) UpdatePassword(user v1.User) error {
-	hashedPassword,err:= bcrypt.GenerateFromPassword([]byte(user.Password),bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Println("[ERROR] Insert document:", err.Error())
 	}
-	user.Password=string(hashedPassword)
+	user.Password = string(hashedPassword)
 	filter := bson.M{
 		"$and": []interface{}{
 			bson.M{"id": user.ID},
@@ -200,8 +200,6 @@ func (u userRepository) UpdatePassword(user v1.User) error {
 	}
 	return nil
 }
-
-
 
 func (u userRepository) GetByEmail(email string) v1.User {
 	var res v1.User
@@ -229,11 +227,11 @@ func (u userRepository) GetByEmail(email string) v1.User {
 }
 
 func (u userRepository) Store(user v1.User) error {
-	hashedPassword,err:= bcrypt.GenerateFromPassword([]byte(user.Password),bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Println("[ERROR] Insert document:", err.Error())
 	}
-	user.Password=string(hashedPassword)
+	user.Password = string(hashedPassword)
 	coll := u.manager.Db.Collection(UserCollection)
 	_, err = coll.InsertOne(u.manager.Ctx, user)
 	if err != nil {
@@ -261,7 +259,7 @@ func (u userRepository) Get() []v1.User {
 	return results
 }
 
-func (u userRepository) GetByID(id string) v1.User{
+func (u userRepository) GetByID(id string) v1.User {
 	var res v1.User
 	query := bson.M{
 		"$and": []bson.M{
@@ -310,6 +308,7 @@ func (u userRepository) Delete(id string) error {
 	return nil
 }
 
+// NewUserRepository returns repository.User type repository
 func NewUserRepository(timeout int) repository.User {
 	return &userRepository{
 		manager: GetDmManager(),

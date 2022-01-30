@@ -83,7 +83,7 @@ func (h httpClientService) Post(url string, header map[string]string, body []byt
 	return body, nil
 }
 
-// NewHttpClientService returns HttpClient type service
+// NewHttpClientService returns service.HttpClient type service
 func NewHttpClientService() service.HttpClient {
 	return &httpClientService{}
 }

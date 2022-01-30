@@ -52,6 +52,7 @@ func (o otpRepository) FindByOtp(otp string) v1.Otp {
 	return *elemValue
 }
 
+// NewOtpRepository returns repository.Otp type repository
 func NewOtpRepository(timeout int) repository.Otp {
 	return &otpRepository{
 		manager: GetDmManager(),

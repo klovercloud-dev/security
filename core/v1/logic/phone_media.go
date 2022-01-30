@@ -6,15 +6,13 @@ import (
 )
 
 type phoneService struct {
-
 }
 
 func (e phoneService) Listen(otp v1.Otp) {
 
 }
 
+// NewPhoneService returns service.Media type service
 func NewPhoneService() service.Media {
-	return &phoneService{
-	}
+	return &phoneService{}
 }
-

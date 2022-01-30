@@ -20,7 +20,6 @@ type resourceRepository struct {
 	timeout time.Duration
 }
 
-// Get all resources from the database
 func (r resourceRepository) Get() []v1.Resource {
 	var resources []v1.Resource
 	coll := r.manager.Db.Collection(ResourceCollection)
@@ -40,7 +39,6 @@ func (r resourceRepository) Get() []v1.Resource {
 	return resources
 }
 
-// Get resource from the database by the given name
 func (r resourceRepository) GetByName(name string) v1.Resource {
 	elemValue := new(v1.Resource)
 	filter := bson.M{"name": name}
@@ -54,7 +52,6 @@ func (r resourceRepository) GetByName(name string) v1.Resource {
 	return *elemValue
 }
 
-// Delete a resource from the database by the given name
 func (r resourceRepository) Delete(resourceName string) error {
 	coll := r.manager.Db.Collection(ResourceCollection)
 	filter := bson.M{"name": resourceName}
@@ -70,9 +67,8 @@ func (r resourceRepository) Delete(resourceName string) error {
 	return err
 }
 
-// Store a resource in the database
 func (r resourceRepository) Store(resource v1.Resource) error {
-	if r.GetByName(resource.Name).Name=="" {
+	if r.GetByName(resource.Name).Name == "" {
 		coll := r.manager.Db.Collection(ResourceCollection)
 		_, err := coll.InsertOne(r.manager.Ctx, resource)
 		if err != nil {
@@ -82,6 +78,7 @@ func (r resourceRepository) Store(resource v1.Resource) error {
 	return nil
 }
 
+// NewResourceRepository returns repository.Resource type repository
 func NewResourceRepository(timeout int) repository.Resource {
 	return &resourceRepository{
 		manager: GetDmManager(),

@@ -9,7 +9,7 @@ import (
 )
 
 type roleService struct {
-	roleRepo       repository.Role
+	roleRepo          repository.Role
 	permissionService service.Permission
 }
 
@@ -88,9 +88,10 @@ func (r roleService) Update(name string, permissions []v1.Permission, option v1.
 	return nil
 }
 
+// NewRoleService returns service.Role type service
 func NewRoleService(roleRepo repository.Role, permissionService service.Permission) service.Role {
 	return &roleService{
-		roleRepo: roleRepo,
+		roleRepo:          roleRepo,
 		permissionService: permissionService,
 	}
 }

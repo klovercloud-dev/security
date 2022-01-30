@@ -14,13 +14,14 @@ import (
 	"strings"
 	"time"
 )
+
 type userApi struct {
-	userService service.User
+	userService                   service.User
 	userResourcePermissionService service.UserResourcePermission
-	otpService service.Otp
-	jwtService service.Jwt
-	resourceService service.Resource
-	roleService service.Role
+	otpService                    service.Otp
+	jwtService                    service.Jwt
+	resourceService               service.Resource
+	roleService                   service.Role
 }
 
 func (u userApi) UpdateUserResourcePermission(context echo.Context) error {
@@ -31,21 +32,21 @@ func (u userApi) UpdateUserResourcePermission(context echo.Context) error {
 	if err := checkAuthority(userResourcePermission, string(enums.USER), "", string(enums.UPDATE)); err != nil {
 		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
 	}
-	userId:=context.Param("id")
+	userId := context.Param("id")
 	formData := v1.UserResourcePermission{}
 	if err := context.Bind(&formData); err != nil {
 		log.Println("Input Error:", err.Error())
 		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
 	}
-	formData.UserId=userId
+	formData.UserId = userId
 	if err := formData.Validate(); err != nil {
 		return common.GenerateErrorResponse(context, err.Error(), "Please give valid user resource permission data!")
 	}
 	formData = CheckDuplicateData(formData)
 	formData.Metadata.CompanyId = userResourcePermission.Metadata.CompanyId
-	roleMap:=getRoleMapFromRoles(u.roleService.Get())
-	resourceMap:=getResourceMapFromResources(u.resourceService.Get())
-	formData.Resources = filterOutNonExistingRolesAndResources(roleMap,resourceMap,formData.Resources)
+	roleMap := getRoleMapFromRoles(u.roleService.Get())
+	resourceMap := getResourceMapFromResources(u.resourceService.Get())
+	formData.Resources = filterOutNonExistingRolesAndResources(roleMap, resourceMap, formData.Resources)
 	err = u.userService.UpdateUserResourcePermissionDto(userId, formData)
 	if err != nil {
 		return common.GenerateErrorResponse(context, nil, "Failed to update!")
@@ -92,7 +93,7 @@ func (u userApi) UpdateStatus(context echo.Context) error {
 		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
 	}
 	status := context.QueryParam("status")
-	if enums.STATUS(status) != enums.ACTIVE && enums.STATUS(status) != enums.INACTIVE{
+	if enums.STATUS(status) != enums.ACTIVE && enums.STATUS(status) != enums.INACTIVE {
 		return common.GenerateErrorResponse(context, "[ERROR]: Invalid update status!", "Please provide a valid update status!")
 	}
 	userId := context.QueryParam("id")
@@ -114,28 +115,28 @@ func (u userApi) UpdateStatus(context echo.Context) error {
 }
 
 func (u userApi) AttachCompany(context echo.Context) error {
-	bearerToken:=context.Request().Header.Get("Authorization")
-	if bearerToken==""{
-		return common.GenerateForbiddenResponse(context,"[ERROR]: No token found!","Please provide a valid token!")
+	bearerToken := context.Request().Header.Get("Authorization")
+	if bearerToken == "" {
+		return common.GenerateForbiddenResponse(context, "[ERROR]: No token found!", "Please provide a valid token!")
 	}
 	var token string
-	if len(strings.Split(bearerToken," "))==2{
-		token=strings.Split(bearerToken," ")[1]
-	}else{
-		return common.GenerateForbiddenResponse(context,"[ERROR]: No token found!","Please provide a valid token!")
+	if len(strings.Split(bearerToken, " ")) == 2 {
+		token = strings.Split(bearerToken, " ")[1]
+	} else {
+		return common.GenerateForbiddenResponse(context, "[ERROR]: No token found!", "Please provide a valid token!")
 	}
-	if !u.jwtService.IsTokenValid(token){
-		return common.GenerateForbiddenResponse(context, "[ERROR]: Token is expired!","Please login again to get token!")
+	if !u.jwtService.IsTokenValid(token) {
+		return common.GenerateForbiddenResponse(context, "[ERROR]: Token is expired!", "Please login again to get token!")
 	}
 	formData := v1.Company{}
 	if err := context.Bind(&formData); err != nil {
 		log.Println("Input Error:", err.Error())
 		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
 	}
-	if formData.Id==""{
-		formData.Id=uuid.New().String()
+	if formData.Id == "" {
+		formData.Id = uuid.New().String()
 	}
-	err := u.userService.AttachCompany(formData, formData.Id,token)
+	err := u.userService.AttachCompany(formData, formData.Id, token)
 	if err != nil {
 		return common.GenerateErrorResponse(context, "[ERROR]: Failed to attach company with user", err.Error())
 	}
@@ -145,9 +146,9 @@ func (u userApi) AttachCompany(context echo.Context) error {
 func (u userApi) ForgotPassword(context echo.Context) error {
 	media := context.QueryParam("media")
 	var err error
-	if strings.Contains(media,"@") {
+	if strings.Contains(media, "@") {
 		err = u.userService.SendOtp(media, "")
-	} else  {
+	} else {
 		err = u.userService.SendOtp("", media)
 	}
 	if err != nil {
@@ -156,15 +157,14 @@ func (u userApi) ForgotPassword(context echo.Context) error {
 	return common.GenerateSuccessResponse(context, nil, nil, "Please check your corresponding media to get the otp")
 }
 
-
 func (u userApi) ResetPassword(context echo.Context) error {
 	formData := v1.PasswordResetDto{}
 	if err := context.Bind(&formData); err != nil {
 		log.Println("Input Error:", err.Error())
 		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
 	}
-	if !u.otpService.IsValid(formData.Otp){
-		return common.GenerateErrorResponse(context,"[ERROR]: Invalid Otp","Please provide a valid otp!")
+	if !u.otpService.IsValid(formData.Otp) {
+		return common.GenerateErrorResponse(context, "[ERROR]: Invalid Otp", "Please provide a valid otp!")
 	}
 	var user v1.User
 
@@ -204,7 +204,7 @@ func (u userApi) Registration(context echo.Context) error {
 	} else if registrationType == string(enums.CREATE_USER) {
 		return u.registerUser(context)
 	}
-	return common.GenerateErrorResponse(context,"[ERROR]: Failed to register user!",errors.New("invalid query action").Error())
+	return common.GenerateErrorResponse(context, "[ERROR]: Failed to register user!", errors.New("invalid query action").Error())
 }
 
 func (u userApi) registerAdmin(context echo.Context) error {
@@ -214,13 +214,13 @@ func (u userApi) registerAdmin(context echo.Context) error {
 		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
 	}
 	if formData.Password == "" {
-		return common.GenerateErrorResponse(context,"[ERROR]: Failed to register user!", "password is required")
+		return common.GenerateErrorResponse(context, "[ERROR]: Failed to register user!", "password is required")
 	} else if len(formData.Password) < 8 {
-		return common.GenerateErrorResponse(context,"[ERROR]: Failed to register user!", "password length must be at least 8")
+		return common.GenerateErrorResponse(context, "[ERROR]: Failed to register user!", "password length must be at least 8")
 	}
 	formData.ID = uuid.New().String()
 	userResourcePermissionDto := v1.UserResourcePermission{
-		Metadata:  v1.UserMetadata{},
+		Metadata: v1.UserMetadata{},
 		UserId:   formData.ID,
 	}
 	var resourceWiseRoles []v1.ResourceWiseRolesDto
@@ -238,10 +238,10 @@ func (u userApi) registerAdmin(context echo.Context) error {
 
 	formData.CreatedDate = time.Now().UTC()
 	formData.UpdatedDate = time.Now().UTC()
-	formData.Status=enums.ACTIVE
-	err:=formData.Validate()
-	if err!=nil{
-		return common.GenerateErrorResponse(context,"[ERROR]: Failed to register user!",err.Error())
+	formData.Status = enums.ACTIVE
+	err := formData.Validate()
+	if err != nil {
+		return common.GenerateErrorResponse(context, "[ERROR]: Failed to register user!", err.Error())
 	}
 	err = u.userService.Store(formData)
 	if err != nil {
@@ -258,8 +258,8 @@ func (u userApi) registerUser(context echo.Context) error {
 	if err := checkAuthority(userResourcePermission, string(enums.USER), string(enums.ADMIN), ""); err != nil {
 		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
 	}
-	if userResourcePermission.Metadata.CompanyId==""{
-		return common.GenerateErrorResponse(context,"[ERROR]: User got no company!","Please attach a company first!")
+	if userResourcePermission.Metadata.CompanyId == "" {
+		return common.GenerateErrorResponse(context, "[ERROR]: User got no company!", "Please attach a company first!")
 	}
 	formData := v1.UserRegistrationDto{}
 	if err := context.Bind(&formData); err != nil {
@@ -277,22 +277,22 @@ func (u userApi) registerUser(context echo.Context) error {
 	formData.Metadata.CompanyId = userResourcePermission.Metadata.CompanyId
 	formData.CreatedDate = time.Now().UTC()
 	formData.UpdatedDate = time.Now().UTC()
-	formData.Status=enums.ACTIVE
-	formData.Metadata=userResourcePermission.Metadata
+	formData.Status = enums.ACTIVE
+	formData.Metadata = userResourcePermission.Metadata
 	formData.ResourcePermission = CheckDuplicateData(formData.ResourcePermission)
-	roleMap:=getRoleMapFromRoles(u.roleService.Get())
-	resourceMap:=getResourceMapFromResources(u.resourceService.Get())
-	formData.ResourcePermission.Resources = filterOutNonExistingRolesAndResources(roleMap,resourceMap,formData.ResourcePermission.Resources)
+	roleMap := getRoleMapFromRoles(u.roleService.Get())
+	resourceMap := getResourceMapFromResources(u.resourceService.Get())
+	formData.ResourcePermission.Resources = filterOutNonExistingRolesAndResources(roleMap, resourceMap, formData.ResourcePermission.Resources)
 
 	err = formData.Validate()
-	if err!=nil{
-		return common.GenerateErrorResponse(context,"[ERROR]: Failed to register user!",err.Error())
+	if err != nil {
+		return common.GenerateErrorResponse(context, "[ERROR]: Failed to register user!", err.Error())
 	}
 	err = u.userService.Store(formData)
 	if err != nil {
 		return common.GenerateErrorResponse(context, nil, err.Error())
 	}
-	err=u.userService.SendOtp(formData.Email,"")
+	err = u.userService.SendOtp(formData.Email, "")
 	if err != nil {
 		return common.GenerateErrorResponse(context, "[ERROR]: Failed to send otp!", "User has been created but failed to send otp!")
 	}
@@ -319,8 +319,8 @@ func (u userApi) Get(context echo.Context) error {
 		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
 	}
 	companyId := userResourcePermission.Metadata.CompanyId
-	if companyId == ""{
-		return common.GenerateErrorResponse(context,"[ERROR]: User got no company!","Please attach a company first!")
+	if companyId == "" {
+		return common.GenerateErrorResponse(context, "[ERROR]: User got no company!", "Please attach a company first!")
 	}
 	status := context.QueryParam("status")
 	if status == string(enums.ACTIVE) {
@@ -353,7 +353,7 @@ func (u userApi) GetByID(context echo.Context) error {
 			return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
 		}
 	}
-	data:= u.userService.GetByID(id)
+	data := u.userService.GetByID(id)
 	if data.ID == "" {
 		return common.GenerateErrorResponse(context, "[ERROR]: User Not Found!", "Please give a valid user id!")
 	}
@@ -397,13 +397,14 @@ func (u userApi) Delete(context echo.Context) error {
 	return common.GenerateSuccessResponse(context, nil, nil, "Successfully Deleted User!")
 }
 
-func NewUserApi(userService service.User,userResourcePermissionService service.UserResourcePermission, otpService service.Otp, jwtService service.Jwt, resourceService service.Resource, roleService service.Role) api.User {
+// NewUserApi returns api.User type api
+func NewUserApi(userService service.User, userResourcePermissionService service.UserResourcePermission, otpService service.Otp, jwtService service.Jwt, resourceService service.Resource, roleService service.Role) api.User {
 	return &userApi{
-		userService: userService,
+		userService:                   userService,
 		userResourcePermissionService: userResourcePermissionService,
-		otpService: otpService,
-		jwtService: jwtService,
-		resourceService: resourceService,
-		roleService: roleService,
+		otpService:                    otpService,
+		jwtService:                    jwtService,
+		resourceService:               resourceService,
+		roleService:                   roleService,
 	}
 }

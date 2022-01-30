@@ -30,7 +30,6 @@ func (t tokenService) Store(token v1.Token) error {
 	return t.tokenRepo.Store(token)
 }
 
-
 func (t tokenService) Delete(uid string) error {
 	return t.tokenRepo.Delete(uid)
 }
@@ -39,6 +38,7 @@ func (t tokenService) Update(token string, refreshToken string, existingToken st
 	return t.tokenRepo.Update(token, refreshToken, existingToken)
 }
 
+// NewTokenService returns service.Token type service
 func NewTokenService(tokenRepo repository.Token, jwtService service.Jwt) service.Token {
 	return &tokenService{
 		tokenRepo:  tokenRepo,

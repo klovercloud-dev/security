@@ -14,14 +14,14 @@ type userResourcePermissionService struct {
 func (u userResourcePermissionService) GetByUserID(userID string) v1.UserResourcePermissionDto {
 	user := u.userRepo.GetByID(userID)
 	userResourcePermission := v1.UserResourcePermissionDto{
-		Metadata:  user.Metadata,
-		UserId:    userID,
+		Metadata: user.Metadata,
+		UserId:   userID,
 	}
 	resourceWiseRoles := []v1.ResourceWiseRoles{}
 	for _, eachResource := range user.ResourcePermission.Resources {
-		resourceWiseRole := v1.ResourceWiseRoles{Name:  eachResource.Name}
+		resourceWiseRole := v1.ResourceWiseRoles{Name: eachResource.Name}
 		for _, eachRole := range eachResource.Roles {
-			resourceWiseRole.Roles = append(resourceWiseRole.Roles,  u.roleRepo.GetByName(eachRole.Name))
+			resourceWiseRole.Roles = append(resourceWiseRole.Roles, u.roleRepo.GetByName(eachRole.Name))
 		}
 		resourceWiseRoles = append(resourceWiseRoles, resourceWiseRole)
 	}
@@ -29,6 +29,7 @@ func (u userResourcePermissionService) GetByUserID(userID string) v1.UserResourc
 	return userResourcePermission
 }
 
+// NewUserResourcePermissionService returns service.UserResourcePermission type service
 func NewUserResourcePermissionService(userRepo repository.User, roleRepo repository.Role) service.UserResourcePermission {
 	return &userResourcePermissionService{
 		userRepo: userRepo,

@@ -2,6 +2,7 @@ package repository
 
 import v1 "github.com/klovercloud-ci/core/v1"
 
+// Role Repository operations role.
 type Role interface {
 	Store(role v1.Role) error
 	Get() []v1.Role

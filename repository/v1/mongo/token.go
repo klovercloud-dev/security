@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+// TokenCollection collection name
 var (
 	TokenCollection = "tokenCollection"
 )
@@ -68,11 +69,11 @@ func (t tokenRepository) Delete(uid string) error {
 
 func (t tokenRepository) Update(token string, refreshToken string, existingToken string) error {
 	oldTokenObj := t.GetByToken(existingToken)
-	if oldTokenObj.Uid==""{
+	if oldTokenObj.Uid == "" {
 		return errors.New("[ERROR] Token does not exists")
 	}
-	oldTokenObj.Token=token
-	oldTokenObj.RefreshToken=refreshToken
+	oldTokenObj.Token = token
+	oldTokenObj.RefreshToken = refreshToken
 
 	filter := bson.M{
 		"$and": []interface{}{
@@ -121,6 +122,7 @@ func (t tokenRepository) GetByToken(token string) v1.Token {
 	return res
 }
 
+// NewTokenRepository returns repository.Token type repository
 func NewTokenRepository(timeout int) repository.Token {
 	return &tokenRepository{
 		manager: GetDmManager(),

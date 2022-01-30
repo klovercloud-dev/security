@@ -1,6 +1,6 @@
 package service
 
-// HttpClient HttpClient related operations.
+// HttpClient business operations.
 type HttpClient interface {
 	Get(url string, header map[string]string) ([]byte, error)
 	Post(url string, header map[string]string, body []byte) ([]byte, error)

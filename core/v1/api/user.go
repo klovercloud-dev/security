@@ -4,12 +4,13 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+//User api operations
 type User interface {
 	Registration(context echo.Context) error
 	Get(context echo.Context) error
 	GetByID(context echo.Context) error
 	Delete(context echo.Context) error
-    ResetPassword(context echo.Context) error
+	ResetPassword(context echo.Context) error
 	ForgotPassword(context echo.Context) error
 	AttachCompany(context echo.Context) error
 	UpdateStatus(context echo.Context) error
