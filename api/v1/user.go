@@ -271,6 +271,7 @@ func (u userApi) registerUser(context echo.Context) error {
 	if err := formData.ResourcePermission.Validate(); err != nil {
 		return common.GenerateErrorResponse(context, err.Error(), "Please give valid user resource permission data!")
 	}
+	formData.Metadata.CompanyId = userResourcePermission.Metadata.CompanyId
 	formData.CreatedDate = time.Now().UTC()
 	formData.UpdatedDate = time.Now().UTC()
 	formData.Status=enums.ACTIVE

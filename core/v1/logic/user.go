@@ -36,6 +36,10 @@ func (u userService) AttachCompany(company v1.Company, companyId, token string) 
 	if tokenObject.Uid==""{
 		return errors.New("no token found")
 	}
+	user := u.userRepo.GetByID(tokenObject.Uid)
+	if user.Metadata.CompanyId != "" {
+		return errors.New("[ERROR]: User already got company id attached")
+	}
 	if config.ApplicationCreationEnabled {
 		marshal, marshalErr := json.Marshal(company)
 		if marshalErr != nil {

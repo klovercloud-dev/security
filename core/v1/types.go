@@ -86,6 +86,7 @@ type RoleUpdateOption struct {
 
 func GetUserFromUserRegistrationDto(u UserRegistrationDto) User {
 	user := User{
+		Metadata: UserMetadata{CompanyId: u.Metadata.CompanyId},
 		ID:          u.ID,
 		FirstName:   u.FirstName,
 		LastName:    u.LastName,
