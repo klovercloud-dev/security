@@ -57,14 +57,13 @@ import (
 	"go/build"
 	"go/parser"
 	"go/token"
+	exec "golang.org/x/sys/execabs"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
-
-	exec "golang.org/x/sys/execabs"
 )
 
 // ProcessFiles invokes the cgo preprocessor on bp.CgoFiles, parses
@@ -168,7 +167,6 @@ func Run(bp *build.Package, pkgdir, tmpdir string, useabs bool) (files, displayF
 	}
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Dir = pkgdir
-	cmd.Env = append(os.Environ(), "PWD="+pkgdir)
 	cmd.Stdout = os.Stderr
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {

@@ -81,6 +81,9 @@ func (u userApi) UpdateStatus(context echo.Context) error {
 	}
 	userId := context.QueryParam("id")
 	user := u.userService.GetByID(userId)
+	if user.Metadata.CompanyId != userResourcePermission.Metadata.CompanyId {
+		return common.GenerateForbiddenResponse(context, "[ERROR]: Insufficient permission!", "Operation Failed!")
+	}
 	if user.ID == "" {
 		return common.GenerateErrorResponse(context, "[ERROR]: User not found!", "Please provide a valid user id!")
 	}
@@ -316,12 +319,22 @@ func (u userApi) GetByID(context echo.Context) error {
 }
 
 func (u userApi) Delete(context echo.Context) error {
+	userResourcePermission, err := GetUserResourcePermissionFromBearerToken(context, u.jwtService)
+	if err != nil {
+		return common.GenerateErrorResponse(context, err.Error(), "Operation Failed!")
+	}
+	if err := checkAuthority(userResourcePermission, string(enums.USER), "", string(enums.DELETE)); err != nil {
+		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
+	}
 	id := context.Param("id")
 	user := u.userService.GetByID(id)
+	if user.Metadata.CompanyId != userResourcePermission.Metadata.CompanyId {
+		return common.GenerateForbiddenResponse(context, "[ERROR]: Insufficient permission!", "Operation Failed!")
+	}
 	if user.ID == "" {
 		return common.GenerateErrorResponse(context, "[ERROR]: User not found!", "Please provide a valid user id!")
 	}
-	err := u.userService.Delete(id)
+	err = u.userService.Delete(id)
 	if err != nil {
 		return common.GenerateErrorResponse(context, nil, "Failed to Delete User!")
 	}
