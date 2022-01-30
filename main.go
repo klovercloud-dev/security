@@ -8,8 +8,8 @@ import (
 	"github.com/klovercloud-ci/enums"
 )
 
-// @title integration-manager API
-// @description integration-manager API
+// @title Klovercloud-ci-security API
+// @description Klovercloud-security API
 func main() {
 	e := config.New()
 	go initResources()
@@ -42,3 +42,5 @@ func initRoles(){
 	}
 	dependency.GetV1RoleService().Store(role)
 }
+
+//swag init --parseDependency --parseInternal

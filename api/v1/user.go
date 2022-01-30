@@ -295,7 +295,10 @@ func (u userApi) GetByID(context echo.Context) error {
 	}
 	data:= u.userService.GetByID(id)
 	if data.ID == "" {
-		return common.GenerateErrorResponse(context, nil, "User Not Found!")
+		return common.GenerateErrorResponse(context, "[ERROR]: User Not Found!", "Please give a valid user id!")
+	}
+	if data.Metadata.CompanyId != userResourcePermission.Metadata.CompanyId {
+		return common.GenerateForbiddenResponse(context, "[ERROR]: Insufficient permission!", "Operation Failed!")
 	}
 	return common.GenerateSuccessResponse(context, data, nil, "Success!")
 }

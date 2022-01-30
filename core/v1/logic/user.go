@@ -31,22 +31,24 @@ func (u userService) UpdateStatus(id string, status enums.STATUS) error {
 	return u.userRepo.UpdateStatus(id,status)
 }
 
-func (u userService) AttachCompany(company v1.Company, companyId,token string) error {
+func (u userService) AttachCompany(company v1.Company, companyId, token string) error {
 	tokenObject:=u.tokenService.GetByToken(token)
 	if tokenObject.Uid==""{
 		return errors.New("no token found")
 	}
-	marshal, marshalErr := json.Marshal(company)
-	if marshalErr != nil {
-		return marshalErr
-	}
-	header := make(map[string]string)
-	header["token"] = token
-	header["Authorization"]="Bearer "+token
-	header["Content-Type"] = "application/json"
-	_, err := u.httpClientService.Post(config.ApiServerUrl+"/companies", header, marshal)
-	if err != nil {
-		return  err
+	if config.ApplicationCreationEnabled {
+		marshal, marshalErr := json.Marshal(company)
+		if marshalErr != nil {
+			return marshalErr
+		}
+		header := make(map[string]string)
+		header["token"] = token
+		header["Authorization"] = "Bearer " + token
+		header["Content-Type"] = "application/json"
+		_, err := u.httpClientService.Post(config.ApiServerUrl+"/companies", header, marshal)
+		if err != nil {
+			return err
+		}
 	}
 	return u.userRepo.AttachCompany(tokenObject.Uid,companyId)
 }

@@ -75,7 +75,7 @@ func (h httpClientService) Post(url string, header map[string]string, body []byt
 	defer resp.Body.Close()
 	body, err = ioutil.ReadAll(resp.Body)
 	if resp.StatusCode != 200 && resp.StatusCode != 201 {
-		return nil, err
+		return nil, errors.New("[ERROR] Bad request code:" + strconv.Itoa(resp.StatusCode))
 	}
 	if err != nil {
 		return nil, err
