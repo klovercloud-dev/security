@@ -190,7 +190,7 @@ func (u userApi) ResetPassword(context echo.Context) error {
 // @Description Api for users registration
 // @Tags User
 // @Produce json
-// @Param Authorization header string true "Insert your access token while adding new user for your compnay" default(Bearer <Add access token here>)
+// @Param Authorization header string true "Insert your access token while adding new user for your company" default(Bearer <Add access token here>)
 // @Param data body v1.UserRegistrationDto true "dto for creating user"
 // @Param action path string true "action [create_user] if admin wants to create new user"
 // @Success 200 {object} common.ResponseDTO
