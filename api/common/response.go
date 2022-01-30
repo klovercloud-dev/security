@@ -16,6 +16,12 @@ type MetaData struct {
 
 // ResponseDTO Http response dto
 type ResponseDTO struct {
+	Data     interface{} `json:"data" msgpack:"data" xml:"data"`
+	Status   string      `json:"status" msgpack:"status" xml:"status"`
+	Message  string      `json:"message" msgpack:"message" xml:"message"`
+}
+// ResponseDTOWithPagination Http response dto with pagination
+type ResponseDTOWithPagination struct {
 	Metadata *MetaData   `json:"_metadata"`
 	Data     interface{} `json:"data" msgpack:"data" xml:"data"`
 	Status   string      `json:"status" msgpack:"status" xml:"status"`
@@ -25,7 +31,7 @@ type ResponseDTO struct {
 // GenerateSuccessResponse Http success response
 func GenerateSuccessResponse(c echo.Context, data interface{}, metadata *MetaData, message string) error {
 	if metadata != nil {
-		return c.JSON(http.StatusOK, ResponseDTO{
+		return c.JSON(http.StatusOK, ResponseDTOWithPagination{
 			Status:   "success",
 			Message:  message,
 			Data:     data,

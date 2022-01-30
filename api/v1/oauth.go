@@ -22,6 +22,17 @@ type oauthApi struct {
 	tokenService           service.Token
 }
 
+// Login... Login Api
+// @Summary Login api
+// @Description Api for users login
+// @Tags Oauth
+// @Produce json
+// @Param loginData body v1.LoginDto true "Login dto if grant_type=password"
+// @Param refreshTokenData body v1.RefreshTokenDto true "RefreshTokenDto dto if grant_type=refresh_token"
+// @Param token_type path string true "token_type type [regular/ctl] if grant_type=password"
+// @Success 200 {object} common.ResponseDTO{data=v1.JWTPayLoad{}}
+// @Failure 403 {object} common.ResponseDTO
+// @Router /api/v1/oauth/login [POST]
 func (o oauthApi) Login(context echo.Context) error {
 	if context.QueryParam("grant_type") == "password" {
 		return o.handlePasswordGrant(context)
@@ -30,6 +41,7 @@ func (o oauthApi) Login(context echo.Context) error {
 	}
 	return common.GenerateForbiddenResponse(context, nil, "Please provide a valid grant_type")
 }
+
 
 func  (o oauthApi) handleRefreshTokenGrant(context echo.Context) error{
 	refreshTokenDto := new(v1.RefreshTokenDto)
@@ -76,6 +88,7 @@ func  (o oauthApi) handleRefreshTokenGrant(context echo.Context) error{
 	}
 	return common.GenerateSuccessResponse(context, v1.JWTPayLoad{token, refreshToken}, nil, "")
 }
+
 
 func (o oauthApi) handlePasswordGrant(context echo.Context) error {
 	token_type := context.QueryParam("token_type")
