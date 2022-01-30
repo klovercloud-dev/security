@@ -2,7 +2,7 @@ package mongo
 
 import (
 	"context"
-	"github.com/klovercloud-ci/config"
+	"github.com/klovercloud-ci-cd/security/config"
 	"log"
 	"sync"
 )

@@ -2,7 +2,7 @@ package service
 
 import (
 	"crypto/rsa"
-	v1 "github.com/klovercloud-ci/core/v1"
+	v1 "github.com/klovercloud-ci-cd/security/core/v1"
 )
 
 // Jwt business operations.

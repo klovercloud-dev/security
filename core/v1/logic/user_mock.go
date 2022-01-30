@@ -2,9 +2,9 @@ package logic
 
 import (
 	"crypto/rand"
-	v1 "github.com/klovercloud-ci/core/v1"
-	"github.com/klovercloud-ci/core/v1/service"
-	"github.com/klovercloud-ci/enums"
+	v1 "github.com/klovercloud-ci-cd/security/core/v1"
+	"github.com/klovercloud-ci-cd/security/core/v1/service"
+	"github.com/klovercloud-ci-cd/security/enums"
 	"io"
 	"time"
 )

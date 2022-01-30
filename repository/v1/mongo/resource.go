@@ -3,8 +3,8 @@ package mongo
 import (
 	"context"
 	"errors"
-	v1 "github.com/klovercloud-ci/core/v1"
-	"github.com/klovercloud-ci/core/v1/repository"
+	v1 "github.com/klovercloud-ci-cd/security/core/v1"
+	"github.com/klovercloud-ci-cd/security/core/v1/repository"
 	"go.mongodb.org/mongo-driver/bson"
 	"log"
 	"time"

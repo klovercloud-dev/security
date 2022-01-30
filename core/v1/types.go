@@ -3,7 +3,7 @@ package v1
 import (
 	"crypto/rsa"
 	"errors"
-	"github.com/klovercloud-ci/enums"
+	"github.com/klovercloud-ci-cd/security/enums"
 	"net/mail"
 	"time"
 )

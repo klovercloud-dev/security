@@ -1,6 +1,6 @@
 package repository
 
-import v1 "github.com/klovercloud-ci/core/v1"
+import v1 "github.com/klovercloud-ci-cd/security/core/v1"
 
 // Permission Repository operations permission.
 type Permission interface {

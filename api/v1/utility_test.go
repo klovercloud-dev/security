@@ -2,7 +2,7 @@ package v1
 
 import (
 	"errors"
-	v1 "github.com/klovercloud-ci/core/v1"
+	v1 "github.com/klovercloud-ci-cd/security/core/v1"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"

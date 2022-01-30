@@ -1,4 +1,4 @@
-module github.com/klovercloud-ci
+module github.com/klovercloud-ci-cd/security
 
 go 1.16
 

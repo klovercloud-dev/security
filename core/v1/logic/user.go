@@ -4,11 +4,11 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"errors"
-	"github.com/klovercloud-ci/config"
-	v1 "github.com/klovercloud-ci/core/v1"
-	"github.com/klovercloud-ci/core/v1/repository"
-	"github.com/klovercloud-ci/core/v1/service"
-	"github.com/klovercloud-ci/enums"
+	"github.com/klovercloud-ci-cd/security/config"
+	v1 "github.com/klovercloud-ci-cd/security/core/v1"
+	"github.com/klovercloud-ci-cd/security/core/v1/repository"
+	"github.com/klovercloud-ci-cd/security/core/v1/service"
+	"github.com/klovercloud-ci-cd/security/enums"
 	"io"
 )
 

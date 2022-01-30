@@ -1,8 +1,8 @@
 package logic
 
 import (
-	v1 "github.com/klovercloud-ci/core/v1"
-	"github.com/klovercloud-ci/core/v1/service"
+	v1 "github.com/klovercloud-ci-cd/security/core/v1"
+	"github.com/klovercloud-ci-cd/security/core/v1/service"
 )
 
 type mockRoleService struct {

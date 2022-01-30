@@ -1,9 +1,9 @@
 package dependency
 
 import (
-	"github.com/klovercloud-ci/core/v1/logic"
-	"github.com/klovercloud-ci/core/v1/service"
-	"github.com/klovercloud-ci/repository/v1/mongo"
+	"github.com/klovercloud-ci-cd/security/core/v1/logic"
+	"github.com/klovercloud-ci-cd/security/core/v1/service"
+	"github.com/klovercloud-ci-cd/security/repository/v1/mongo"
 )
 
 // GetV1ResourceService returns service.Resource

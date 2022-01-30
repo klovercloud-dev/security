@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/klovercloud-ci/api"
-	"github.com/klovercloud-ci/config"
-	"github.com/klovercloud-ci/core/v1"
-	"github.com/klovercloud-ci/dependency"
-	_ "github.com/klovercloud-ci/docs"
-	"github.com/klovercloud-ci/enums"
+	"github.com/klovercloud-ci-cd/security/api"
+	"github.com/klovercloud-ci-cd/security/config"
+	"github.com/klovercloud-ci-cd/security/core/v1"
+	"github.com/klovercloud-ci-cd/security/dependency"
+	_ "github.com/klovercloud-ci-cd/security/docs"
+	"github.com/klovercloud-ci-cd/security/enums"
 )
 
 // @title Klovercloud-ci-security API
