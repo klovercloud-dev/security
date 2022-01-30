@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "integration-manager API",
-        "title": "integration-manager API",
+        "description": "Klovercloud-security API",
+        "title": "Klovercloud-ci-security API",
         "contact": {}
     },
     "paths": {
@@ -72,6 +72,75 @@
             }
         },
         "/api/v1/users": {
+            "put": {
+                "description": "Api for updating users object",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update api",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "action type [reset_password/forgot_password/attach_company/update_status]",
+                        "name": "action",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "media type [users email/phone] if action forgot_password",
+                        "name": "media",
+                        "in": "path"
+                    },
+                    {
+                        "type": "string",
+                        "description": "status type [inactive/active] if action update_status",
+                        "name": "status",
+                        "in": "path"
+                    },
+                    {
+                        "type": "string",
+                        "description": "updating users id, if action update_status",
+                        "name": "id",
+                        "in": "path"
+                    },
+                    {
+                        "description": "dto for resetting users password",
+                        "name": "password_reset_dto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.PasswordResetDto"
+                        }
+                    },
+                    {
+                        "description": "dto for attaching company with user",
+                        "name": "company_dto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.Company"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.ResponseDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ResponseDTO"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Api for users registration",
                 "produces": [
@@ -129,6 +198,129 @@
                 }
             }
         },
+        "v1.Application": {
+            "type": "object",
+            "properties": {
+                "_metadata": {
+                    "$ref": "#/definitions/v1.ApplicationMetadata"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "webhook": {
+                    "$ref": "#/definitions/v1.GitWebhook"
+                }
+            }
+        },
+        "v1.ApplicationMetadata": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "is_webhook_enabled": {
+                    "type": "boolean"
+                },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.Company": {
+            "type": "object",
+            "properties": {
+                "_metadata": {
+                    "$ref": "#/definitions/v1.CompanyMetadata"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "repositories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.Repository"
+                    }
+                }
+            }
+        },
+        "v1.CompanyMetadata": {
+            "type": "object",
+            "properties": {
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "number_of_concurrent_process": {
+                    "type": "integer"
+                },
+                "total_process_per_day": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.GitWebhook": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "config": {
+                    "type": "object",
+                    "properties": {
+                        "content_type": {
+                            "type": "string"
+                        },
+                        "insecure_ssl": {
+                            "type": "string"
+                        },
+                        "url": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deliveries_url": {
+                    "type": "string"
+                },
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "ping_url": {
+                    "type": "string"
+                },
+                "test_url": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
         "v1.JWTPayLoad": {
             "type": "object",
             "properties": {
@@ -151,10 +343,47 @@
                 }
             }
         },
+        "v1.PasswordResetDto": {
+            "type": "object",
+            "properties": {
+                "current_password": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "new_password": {
+                    "type": "string"
+                },
+                "otp": {
+                    "type": "string"
+                }
+            }
+        },
         "v1.RefreshTokenDto": {
             "type": "object",
             "properties": {
                 "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.Repository": {
+            "type": "object",
+            "properties": {
+                "applications": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.Application"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }

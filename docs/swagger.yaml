@@ -7,6 +7,86 @@ definitions:
       status:
         type: string
     type: object
+  v1.Application:
+    properties:
+      _metadata:
+        $ref: '#/definitions/v1.ApplicationMetadata'
+      url:
+        type: string
+      webhook:
+        $ref: '#/definitions/v1.GitWebhook'
+    type: object
+  v1.ApplicationMetadata:
+    properties:
+      id:
+        type: string
+      is_webhook_enabled:
+        type: boolean
+      labels:
+        additionalProperties:
+          type: string
+        type: object
+      name:
+        type: string
+    type: object
+  v1.Company:
+    properties:
+      _metadata:
+        $ref: '#/definitions/v1.CompanyMetadata'
+      id:
+        type: string
+      name:
+        type: string
+      repositories:
+        items:
+          $ref: '#/definitions/v1.Repository'
+        type: array
+    type: object
+  v1.CompanyMetadata:
+    properties:
+      labels:
+        additionalProperties:
+          type: string
+        type: object
+      number_of_concurrent_process:
+        type: integer
+      total_process_per_day:
+        type: integer
+    type: object
+  v1.GitWebhook:
+    properties:
+      active:
+        type: boolean
+      config:
+        properties:
+          content_type:
+            type: string
+          insecure_ssl:
+            type: string
+          url:
+            type: string
+        type: object
+      created_at:
+        type: string
+      deliveries_url:
+        type: string
+      events:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      ping_url:
+        type: string
+      test_url:
+        type: string
+      type:
+        type: string
+      updated_at:
+        type: string
+      url:
+        type: string
+    type: object
   v1.JWTPayLoad:
     properties:
       access_token:
@@ -21,9 +101,33 @@ definitions:
       password:
         type: string
     type: object
+  v1.PasswordResetDto:
+    properties:
+      current_password:
+        type: string
+      email:
+        type: string
+      new_password:
+        type: string
+      otp:
+        type: string
+    type: object
   v1.RefreshTokenDto:
     properties:
       refresh_token:
+        type: string
+    type: object
+  v1.Repository:
+    properties:
+      applications:
+        items:
+          $ref: '#/definitions/v1.Application'
+        type: array
+      id:
+        type: string
+      token:
+        type: string
+      type:
         type: string
     type: object
   v1.ResourceWiseRolesDto:
@@ -85,8 +189,8 @@ definitions:
     type: object
 info:
   contact: {}
-  description: integration-manager API
-  title: integration-manager API
+  description: Klovercloud-security API
+  title: Klovercloud-ci-security API
 paths:
   /api/v1/oauth/login:
     post:
@@ -155,6 +259,52 @@ paths:
           schema:
             $ref: '#/definitions/common.ResponseDTO'
       summary: Registration api
+      tags:
+      - User
+    put:
+      description: Api for updating users object
+      parameters:
+      - description: action type [reset_password/forgot_password/attach_company/update_status]
+        in: path
+        name: action
+        required: true
+        type: string
+      - description: media type [users email/phone] if action forgot_password
+        in: path
+        name: media
+        type: string
+      - description: status type [inactive/active] if action update_status
+        in: path
+        name: status
+        type: string
+      - description: updating users id, if action update_status
+        in: path
+        name: id
+        type: string
+      - description: dto for resetting users password
+        in: body
+        name: password_reset_dto
+        required: true
+        schema:
+          $ref: '#/definitions/v1.PasswordResetDto'
+      - description: dto for attaching company with user
+        in: body
+        name: company_dto
+        required: true
+        schema:
+          $ref: '#/definitions/v1.Company'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.ResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ResponseDTO'
+      summary: Update api
       tags:
       - User
 swagger: "2.0"

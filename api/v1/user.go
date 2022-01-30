@@ -53,6 +53,21 @@ func (u userApi) UpdateUserResourcePermission(context echo.Context) error {
 	return common.GenerateSuccessResponse(context, nil, nil, "Successfully updated")
 }
 
+// Update... Update Api
+// @Summary Update api
+// @Description Api for updating users object
+// @Tags User
+// @Produce json
+// @Param action path string true "action type [reset_password/forgot_password/attach_company/update_status]"
+// @Param media path string false "media type [users email/phone] if action forgot_password"
+// @Param status path string false "status type [inactive/active] if action update_status"
+// @Param id path string false "updating users id, if action update_status"
+// @Param password_reset_dto body v1.PasswordResetDto true "dto for resetting users password"
+// @Param company_dto body v1.Company true "dto for attaching company with user"
+// @Success 200 {object} common.ResponseDTO
+// @Failure 400 {object} common.ResponseDTO
+// @Forbidden 403 {object} common.ResponseDTO
+// @Router /api/v1/users [PUT]
 func (u userApi) Update(context echo.Context) error {
 	action := context.QueryParam("action")
 	if action == string(enums.RESET_PASSWORD) {
@@ -133,6 +148,7 @@ func (u userApi) ForgotPassword(context echo.Context) error {
 	}
 	return common.GenerateSuccessResponse(context, nil, nil, "Please check your corresponding media to get the otp")
 }
+
 
 func (u userApi) ResetPassword(context echo.Context) error {
 	formData := v1.PasswordResetDto{}
@@ -315,6 +331,16 @@ func (u userApi) GetByID(context echo.Context) error {
 	return common.GenerateSuccessResponse(context, data, nil, "Success!")
 }
 
+// Delete... Delete Api
+// @Summary Delete api
+// @Description Api to delete user
+// @Tags User
+// @Produce json
+// @Param id path string true "id user id"
+// @Success 200 {object} common.ResponseDTO
+// @Failure 400 {object} common.ResponseDTO
+// @Forbidden 403 {object} common.ResponseDTO
+// @Router /api/v1/users [DELETE]
 func (u userApi) Delete(context echo.Context) error {
 	id := context.Param("id")
 	user := u.userService.GetByID(id)
