@@ -132,6 +132,9 @@ func (u userApi) AttachCompany(context echo.Context) error {
 		log.Println("Input Error:", err.Error())
 		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
 	}
+	if formData.Id==""{
+		formData.Id=uuid.New().String()
+	}
 	err := u.userService.AttachCompany(formData, formData.Id,token)
 	if err != nil {
 		return common.GenerateErrorResponse(context, "[ERROR]: Failed to attach company with user", err.Error())
