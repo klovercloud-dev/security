@@ -121,13 +121,7 @@ func (u userService) Store(userWithResourcePermission v1.UserRegistrationDto) er
 	if isUserExist.Email != "" {
 		return errors.New("email is already registered")
 	}
-
-	err := userWithResourcePermission.Validate()
-	if err != nil {
-		return err
-	}
-
-	err = u.userRepo.Store(user)
+	err := u.userRepo.Store(user)
 	if err != nil {
 		return err
 	}

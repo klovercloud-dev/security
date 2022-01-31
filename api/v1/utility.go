@@ -95,11 +95,13 @@ func filterOutNonExistingRolesAndResources(roleMap map[string]v1.RoleDto, resour
 					addedRoles = append(addedRoles, val)
 				}
 			}
-			resourceWiseRole := v1.ResourceWiseRolesDto{
-				Name:  eachResource.Name,
-				Roles: addedRoles,
+			if len(addedRoles) > 0 {
+				resourceWiseRole := v1.ResourceWiseRolesDto{
+					Name:  eachResource.Name,
+					Roles: addedRoles,
+				}
+				newResourceWiseRoles = append(newResourceWiseRoles, resourceWiseRole)
 			}
-			newResourceWiseRoles = append(newResourceWiseRoles, resourceWiseRole)
 		}
 	}
 	return newResourceWiseRoles

@@ -185,9 +185,6 @@ func (u UserResourcePermission) Validate() error {
 		if eachResource.Name == "" {
 			return errors.New("[ERROR]: Blank resource name")
 		}
-		if eachResource.Name != string(enums.USER) && eachResource.Name != string(enums.PIPELINE) && eachResource.Name != string(enums.PROCESS) && eachResource.Name != string(enums.COMPANY) && eachResource.Name != string(enums.REPOSITORY) && eachResource.Name != string(enums.APPLICATION) {
-			return errors.New("[ERROR]: Invalid resource name")
-		}
 		for _, eachRole := range eachResource.Roles {
 			if err := eachRole.Validate(); err != nil {
 				return err

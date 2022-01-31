@@ -39,14 +39,14 @@ func (u userApi) UpdateUserResourcePermission(context echo.Context) error {
 		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
 	}
 	formData.UserId = userId
-	if err := formData.Validate(); err != nil {
-		return common.GenerateErrorResponse(context, err.Error(), "Please give valid user resource permission data!")
-	}
+	resourceMap := getResourceMapFromResources(u.resourceService.Get())
 	formData = CheckDuplicateData(formData)
 	formData.Metadata.CompanyId = userResourcePermission.Metadata.CompanyId
 	roleMap := getRoleMapFromRoles(u.roleService.Get())
-	resourceMap := getResourceMapFromResources(u.resourceService.Get())
 	formData.Resources = filterOutNonExistingRolesAndResources(roleMap, resourceMap, formData.Resources)
+	if err := formData.Validate(); err != nil {
+		return common.GenerateErrorResponse(context, err.Error(), "Please give valid user resource permission data!")
+	}
 	err = u.userService.UpdateUserResourcePermissionDto(userId, formData)
 	if err != nil {
 		return common.GenerateErrorResponse(context, nil, "Failed to update!")
@@ -234,11 +234,13 @@ func (u userApi) registerAdmin(context echo.Context) error {
 		resourceWiseRoles = append(resourceWiseRoles, resourceWiseRole)
 	}
 	userResourcePermissionDto.Resources = resourceWiseRoles
-	formData.ResourcePermission = userResourcePermissionDto
-
 	formData.CreatedDate = time.Now().UTC()
 	formData.UpdatedDate = time.Now().UTC()
 	formData.Status = enums.ACTIVE
+	formData.ResourcePermission = CheckDuplicateData(formData.ResourcePermission)
+	roleMap := getRoleMapFromRoles(u.roleService.Get())
+	resourceMap := getResourceMapFromResources(u.resourceService.Get())
+	formData.ResourcePermission.Resources = filterOutNonExistingRolesAndResources(roleMap, resourceMap, formData.ResourcePermission.Resources)
 	err := formData.Validate()
 	if err != nil {
 		return common.GenerateErrorResponse(context, "[ERROR]: Failed to register user!", err.Error())
@@ -271,9 +273,6 @@ func (u userApi) registerUser(context echo.Context) error {
 	}
 	formData.ID = uuid.New().String()
 	formData.ResourcePermission.Metadata.CompanyId = userResourcePermission.Metadata.CompanyId
-	if err := formData.ResourcePermission.Validate(); err != nil {
-		return common.GenerateErrorResponse(context, err.Error(), "Please give valid user resource permission data!")
-	}
 	formData.Metadata.CompanyId = userResourcePermission.Metadata.CompanyId
 	formData.CreatedDate = time.Now().UTC()
 	formData.UpdatedDate = time.Now().UTC()
@@ -283,7 +282,6 @@ func (u userApi) registerUser(context echo.Context) error {
 	roleMap := getRoleMapFromRoles(u.roleService.Get())
 	resourceMap := getResourceMapFromResources(u.resourceService.Get())
 	formData.ResourcePermission.Resources = filterOutNonExistingRolesAndResources(roleMap, resourceMap, formData.ResourcePermission.Resources)
-
 	err = formData.Validate()
 	if err != nil {
 		return common.GenerateErrorResponse(context, "[ERROR]: Failed to register user!", err.Error())
