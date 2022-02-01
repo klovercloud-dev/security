@@ -2,9 +2,7 @@ package logic
 
 import (
 	"crypto/rand"
-	"encoding/json"
 	"errors"
-	"github.com/klovercloud-ci-cd/security/config"
 	v1 "github.com/klovercloud-ci-cd/security/core/v1"
 	"github.com/klovercloud-ci-cd/security/core/v1/repository"
 	"github.com/klovercloud-ci-cd/security/core/v1/service"
@@ -38,20 +36,6 @@ func (u userService) AttachCompany(company v1.Company, companyId, token string) 
 	user := u.userRepo.GetByID(tokenObject.Uid)
 	if user.Metadata.CompanyId != "" {
 		return errors.New("[ERROR]: User already got company id attached")
-	}
-	if config.ApplicationCreationEnabled {
-		marshal, marshalErr := json.Marshal(company)
-		if marshalErr != nil {
-			return marshalErr
-		}
-		header := make(map[string]string)
-		header["token"] = token
-		header["Authorization"] = "Bearer " + token
-		header["Content-Type"] = "application/json"
-		_, err := u.httpClientService.Post(config.ApiServerUrl+"/companies", header, marshal)
-		if err != nil {
-			return err
-		}
 	}
 	return u.userRepo.AttachCompany(tokenObject.Uid, companyId)
 }

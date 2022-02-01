@@ -68,8 +68,6 @@ var Permissions []string
 // ApiServerUrl refers to api servers base url.
 var ApiServerUrl string
 
-// ApplicationCreationEnabled refers to application creation flag.
-var ApplicationCreationEnabled bool
 
 // InitEnvironmentVariables initializes environment variables
 func InitEnvironmentVariables() {
@@ -110,9 +108,4 @@ func InitEnvironmentVariables() {
 	Resources = strings.Split(os.Getenv("RESOURCES"), ",")
 	Permissions = strings.Split(os.Getenv("PERMISSIONS"), ",")
 	ApiServerUrl = os.Getenv("API_SERVER_URL")
-	if os.Getenv("APPLICATION_CREATION_ENABLED") == "true" {
-		ApplicationCreationEnabled = true
-	} else {
-		ApplicationCreationEnabled = false
-	}
 }
