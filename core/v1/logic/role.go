@@ -13,16 +13,16 @@ type roleService struct {
 	permissionService service.Permission
 }
 
-func (r roleService) Get() []v1.Role {
+func (r roleService) Get() []v1.RoleDto {
 	roles := r.roleRepo.Get()
 	return roles
 }
 
-func (r roleService) Store(role v1.Role) error {
+func (r roleService) Store(role v1.RoleDto) error {
 	roles := r.roleRepo.Get()
 	for _, each := range roles {
 		if each.Name == role.Name {
-			return errors.New("Role already exists!")
+			return errors.New("RoleDto already exists!")
 		}
 	}
 	err := r.roleRepo.Store(role)
@@ -32,7 +32,7 @@ func (r roleService) Store(role v1.Role) error {
 	return nil
 }
 
-func (r roleService) GetByName(name string) v1.Role {
+func (r roleService) GetByName(name string) v1.RoleDto {
 	roleByName := r.roleRepo.GetByName(name)
 	return roleByName
 }
@@ -88,7 +88,7 @@ func (r roleService) Update(name string, permissions []v1.Permission, option v1.
 	return nil
 }
 
-// NewRoleService returns service.Role type service
+// NewRoleService returns service.RoleDto type service
 func NewRoleService(roleRepo repository.Role, permissionService service.Permission) service.Role {
 	return &roleService{
 		roleRepo:          roleRepo,

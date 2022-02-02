@@ -17,19 +17,19 @@ func TestCheckAuthority(t *testing.T) {
 	var testCases []TestCase
 
 	testCases = append(testCases, TestCase{
-		actual:   checkAuthority(v1.UserResourcePermissionDto{Resources: []v1.ResourceWiseRoles{{Name: "user", Roles: []v1.Role{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}}}}}}}, "user", "ADMIN", ""),
+		actual:   checkAuthority(v1.UserResourcePermissionDto{Resources: []v1.ResourceWiseRolesDto{{Name: "user", Roles: []v1.RoleDto{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}}}}}}}, "user", "ADMIN", ""),
 		expected: nil,
 	})
 	testCases = append(testCases, TestCase{
-		actual:   checkAuthority(v1.UserResourcePermissionDto{Resources: []v1.ResourceWiseRoles{{Name: "pipeline", Roles: []v1.Role{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}}}}}}}, "user", "ADMIN", ""),
+		actual:   checkAuthority(v1.UserResourcePermissionDto{Resources: []v1.ResourceWiseRolesDto{{Name: "pipeline", Roles: []v1.RoleDto{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}}}}}}}, "user", "ADMIN", ""),
 		expected: errors.New("[ERROR]: Insufficient permission"),
 	})
 	testCases = append(testCases, TestCase{
-		actual:   checkAuthority(v1.UserResourcePermissionDto{Resources: []v1.ResourceWiseRoles{{Name: "user", Roles: []v1.Role{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}}}}}}}, "user", "", "CREATE"),
+		actual:   checkAuthority(v1.UserResourcePermissionDto{Resources: []v1.ResourceWiseRolesDto{{Name: "user", Roles: []v1.RoleDto{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}}}}}}}, "user", "", "CREATE"),
 		expected: nil,
 	})
 	testCases = append(testCases, TestCase{
-		actual:   checkAuthority(v1.UserResourcePermissionDto{Resources: []v1.ResourceWiseRoles{{Name: "pipeline", Roles: []v1.Role{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}}}}}}}, "user", "", ""),
+		actual:   checkAuthority(v1.UserResourcePermissionDto{Resources: []v1.ResourceWiseRolesDto{{Name: "pipeline", Roles: []v1.RoleDto{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}}}}}}}, "user", "", ""),
 		expected: errors.New("[ERROR]: Insufficient permission"),
 	})
 

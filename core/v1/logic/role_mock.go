@@ -8,15 +8,15 @@ import (
 type mockRoleService struct {
 }
 
-func (m mockRoleService) Store(role v1.Role) error {
+func (m mockRoleService) Store(role v1.RoleDto) error {
 	panic("implement me")
 }
 
-func (m mockRoleService) Get() []v1.Role {
+func (m mockRoleService) Get() []v1.RoleDto {
 	panic("implement me")
 }
 
-func (m mockRoleService) GetByName(name string) v1.Role {
+func (m mockRoleService) GetByName(name string) v1.RoleDto {
 	panic("implement me")
 }
 
@@ -28,7 +28,7 @@ func (m mockRoleService) Update(name string, permissions []v1.Permission, option
 	panic("implement me")
 }
 
-// NewMockRoleService returns service.Role type service
+// NewMockRoleService returns service.RoleDto type service
 func NewMockRoleService() service.Role {
 	return &mockRoleService{}
 }

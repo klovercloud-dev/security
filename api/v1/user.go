@@ -38,10 +38,12 @@ func (u userApi) UpdateUserResourcePermission(context echo.Context) error {
 		log.Println("Input Error:", err.Error())
 		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
 	}
-	formData.UserId = userId
+	user := u.userService.GetByID(userId)
+	if user.Metadata.CompanyId != userResourcePermission.Metadata.CompanyId {
+		return common.GenerateForbiddenResponse(context, "[ERROR]: Insufficient permission!", "Operation Failed!")
+	}
 	resourceMap := getResourceMapFromResources(u.resourceService.Get())
 	formData = CheckDuplicateData(formData)
-	formData.Metadata.CompanyId = userResourcePermission.Metadata.CompanyId
 	roleMap := getRoleMapFromRoles(u.roleService.Get())
 	formData.Resources = filterOutNonExistingRolesAndResources(roleMap, resourceMap, formData.Resources)
 	if err := formData.Validate(); err != nil {
@@ -219,21 +221,19 @@ func (u userApi) registerAdmin(context echo.Context) error {
 		return common.GenerateErrorResponse(context, "[ERROR]: Failed to register user!", "password length must be at least 8")
 	}
 	formData.ID = uuid.New().String()
-	userResourcePermissionDto := v1.UserResourcePermission{
-		Metadata: v1.UserMetadata{},
-		UserId:   formData.ID,
-	}
-	var resourceWiseRoles []v1.ResourceWiseRolesDto
+	userResourcePermissionDto := v1.UserResourcePermission{}
+	var resourceWiseRoles []v1.ResourceWiseRoles
 	existingResources := u.resourceService.Get()
 	adminRole := u.roleService.GetByName(string(enums.ADMIN))
 	for _, each := range existingResources {
-		resourceWiseRole := v1.ResourceWiseRolesDto{
+		resourceWiseRole := v1.ResourceWiseRoles{
 			Name:  each.Name,
-			Roles: []v1.RoleDto{{Name: adminRole.Name}},
+			Roles: []v1.Role{{Name: adminRole.Name}},
 		}
 		resourceWiseRoles = append(resourceWiseRoles, resourceWiseRole)
 	}
 	userResourcePermissionDto.Resources = resourceWiseRoles
+	formData.Metadata.CompanyId = ""
 	formData.CreatedDate = time.Now().UTC()
 	formData.UpdatedDate = time.Now().UTC()
 	formData.Status = enums.ACTIVE
@@ -269,7 +269,6 @@ func (u userApi) registerUser(context echo.Context) error {
 		formData.Password = ""
 	}
 	formData.ID = uuid.New().String()
-	formData.ResourcePermission.Metadata.CompanyId = userResourcePermission.Metadata.CompanyId
 	formData.Metadata.CompanyId = userResourcePermission.Metadata.CompanyId
 	formData.CreatedDate = time.Now().UTC()
 	formData.UpdatedDate = time.Now().UTC()
