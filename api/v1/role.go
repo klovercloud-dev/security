@@ -19,10 +19,10 @@ type roleApi struct {
 // Store... Store Api
 // @Summary Store api
 // @Description Api for storing role
-// @Tags Role
+// @Tags RoleDto
 // @Produce json
 // @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
-// @Param data body v1.Role true "dto for creating role"
+// @Param data body v1.RoleDto true "dto for creating role"
 // @Param action path string true "action [create_user] if admin wants to create new user"
 // @Success 200 {object} common.ResponseDTO
 // @Failure 400 {object} common.ResponseDTO
@@ -36,7 +36,7 @@ func (r roleApi) Store(context echo.Context) error {
 	if err := checkAuthority(userResourcePermission, string(enums.USER), "", string(enums.CREATE)); err != nil {
 		return common.GenerateForbiddenResponse(context, err.Error(), "Operation Failed!")
 	}
-	formData := v1.Role{}
+	formData := v1.RoleDto{}
 	if err := context.Bind(&formData); err != nil {
 		log.Println("Input Error:", err.Error())
 		return common.GenerateErrorResponse(context, nil, "Failed to Bind Input!")
@@ -53,10 +53,10 @@ func (r roleApi) Store(context echo.Context) error {
 // Get... Get Api
 // @Summary Get api
 // @Description Api for getting role
-// @Tags Role
+// @Tags RoleDto
 // @Produce json
 // @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
-// @Success 200 {object} common.ResponseDTO{data=[]v1.Role{}}
+// @Success 200 {object} common.ResponseDTO{data=[]v1.RoleDto{}}
 // @Failure 400 {object} common.ResponseDTO
 // @Forbidden 403 {object} common.ResponseDTO
 // @Router /api/v1/roles [GET]
@@ -78,11 +78,11 @@ func (r roleApi) Get(context echo.Context) error {
 // GetByName... GetByName Api
 // @Summary GetByName api
 // @Description Api for getting role by name
-// @Tags Role
+// @Tags RoleDto
 // @Produce json
 // @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
 // @Param name path string false "role name"
-// @Success 200 {object} common.ResponseDTO{data=v1.Role{}}
+// @Success 200 {object} common.ResponseDTO{data=v1.RoleDto{}}
 // @Failure 400 {object} common.ResponseDTO
 // @Forbidden 403 {object} common.ResponseDTO
 // @Router /api/v1/roles/{name} [GET]
@@ -97,7 +97,7 @@ func (r roleApi) GetByName(context echo.Context) error {
 	name := context.Param("name")
 	data := r.service.GetByName(name)
 	if data.Name == "" {
-		return common.GenerateErrorResponse(context, nil, "Role not found!")
+		return common.GenerateErrorResponse(context, nil, "RoleDto not found!")
 	}
 	return common.GenerateSuccessResponse(context, data, nil, "Success!")
 }
@@ -105,7 +105,7 @@ func (r roleApi) GetByName(context echo.Context) error {
 // Delete... Delete Api
 // @Summary Delete api
 // @Description Api for deleting role by name
-// @Tags Role
+// @Tags RoleDto
 // @Produce json
 // @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
 // @Param name path string false "role name"
@@ -133,7 +133,7 @@ func (r roleApi) Delete(context echo.Context) error {
 // Update... Update Api
 // @Summary Update api
 // @Description Api for updating role by name
-// @Tags Role
+// @Tags RoleDto
 // @Produce json
 // @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
 // @Param name path string false "role name"
@@ -158,7 +158,7 @@ func (r roleApi) Update(context echo.Context) error {
 	roleUpdateOption := v1.RoleUpdateOption{Option: enums.ROLE_UPDATE_OPTION(context.QueryParam("updateOption"))}
 
 	if name == "" {
-		log.Println("Role Name Error:", errors.New("empty role name"))
+		log.Println("RoleDto Name Error:", errors.New("empty role name"))
 		return common.GenerateErrorResponse(context, nil, "empty role name")
 	}
 	err = r.service.Update(name, formData, roleUpdateOption)
@@ -170,7 +170,7 @@ func (r roleApi) Update(context echo.Context) error {
 		nil, "Operation Successful")
 }
 
-// NewRoleApi returns api.Role type api
+// NewRoleApi returns api.RoleDto type api
 func NewRoleApi(roleService service.Role, jwtService service.Jwt) api.Role {
 	return &roleApi{
 		service:    roleService,

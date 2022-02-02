@@ -46,7 +46,7 @@ func (r roleRepository) Update(name string, permissions []v1.Permission) error {
 	return nil
 }
 
-func (r roleRepository) Store(role v1.Role) error {
+func (r roleRepository) Store(role v1.RoleDto) error {
 	if r.GetByName(role.Name).Name == "" {
 		coll := r.manager.Db.Collection(RoleCollection)
 		_, err := coll.InsertOne(r.manager.Ctx, role)
@@ -57,15 +57,15 @@ func (r roleRepository) Store(role v1.Role) error {
 	return nil
 }
 
-func (r roleRepository) Get() []v1.Role {
-	var roles []v1.Role
+func (r roleRepository) Get() []v1.RoleDto {
+	var roles []v1.RoleDto
 	coll := r.manager.Db.Collection(RoleCollection)
 	result, err := coll.Find(r.manager.Ctx, bson.M{})
 	if err != nil {
 		log.Println(err.Error())
 	}
 	for result.Next(context.TODO()) {
-		elemValue := new(v1.Role)
+		elemValue := new(v1.RoleDto)
 		err := result.Decode(elemValue)
 		if err != nil {
 			log.Println("[ERROR]", err)
@@ -76,8 +76,8 @@ func (r roleRepository) Get() []v1.Role {
 	return roles
 }
 
-func (r roleRepository) GetByName(name string) v1.Role {
-	elemValue := new(v1.Role)
+func (r roleRepository) GetByName(name string) v1.RoleDto {
+	elemValue := new(v1.RoleDto)
 	filter := bson.M{"name": name}
 	coll := r.manager.Db.Collection(RoleCollection)
 	result := coll.FindOne(r.manager.Ctx, filter)
@@ -147,7 +147,7 @@ func (r roleRepository) RemovePermissions(name string, permissions []v1.Permissi
 	return nil
 }
 
-// NewRoleRepository returns repository.Role type repository
+// NewRoleRepository returns repository.RoleDto type repository
 func NewRoleRepository(timeout int) repository.Role {
 	return &roleRepository{manager: GetDmManager(), timeout: time.Duration(timeout)}
 }

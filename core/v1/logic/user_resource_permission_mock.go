@@ -16,30 +16,30 @@ func InitMockUserResourcePermissions() {
 	mockUserResourcePermissions["b876ec8a-9650-408e-84bb-e5f3d36b4704"] = v1.UserResourcePermissionDto{
 		Metadata: v1.UserMetadata{CompanyId: "12345"},
 		UserId:   "b876ec8a-9650-408e-84bb-e5f3d36b4704",
-		Resources: []v1.ResourceWiseRoles{
+		Resources: []v1.ResourceWiseRolesDto{
 			{
 				Name:  "pipeline",
-				Roles: []v1.Role{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}, {Name: "READ"}, {Name: "UPDATE"}, {Name: "DELETE"}}}},
+				Roles: []v1.RoleDto{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}, {Name: "READ"}, {Name: "UPDATE"}, {Name: "DELETE"}}}},
 			},
 			{
 				Name:  "process",
-				Roles: []v1.Role{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}, {Name: "READ"}, {Name: "UPDATE"}, {Name: "DELETE"}}}},
+				Roles: []v1.RoleDto{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}, {Name: "READ"}, {Name: "UPDATE"}, {Name: "DELETE"}}}},
 			},
 			{
 				Name:  "company",
-				Roles: []v1.Role{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}, {Name: "READ"}, {Name: "UPDATE"}, {Name: "DELETE"}}}},
+				Roles: []v1.RoleDto{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}, {Name: "READ"}, {Name: "UPDATE"}, {Name: "DELETE"}}}},
 			},
 			{
 				Name:  "repository",
-				Roles: []v1.Role{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}, {Name: "READ"}, {Name: "UPDATE"}, {Name: "DELETE"}}}},
+				Roles: []v1.RoleDto{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}, {Name: "READ"}, {Name: "UPDATE"}, {Name: "DELETE"}}}},
 			},
 			{
 				Name:  "application",
-				Roles: []v1.Role{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}, {Name: "READ"}, {Name: "UPDATE"}, {Name: "DELETE"}}}},
+				Roles: []v1.RoleDto{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}, {Name: "READ"}, {Name: "UPDATE"}, {Name: "DELETE"}}}},
 			},
 			{
 				Name:  "user",
-				Roles: []v1.Role{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}, {Name: "READ"}, {Name: "UPDATE"}, {Name: "DELETE"}}}},
+				Roles: []v1.RoleDto{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}, {Name: "READ"}, {Name: "UPDATE"}, {Name: "DELETE"}}}},
 			},
 		},
 	}
@@ -47,10 +47,10 @@ func InitMockUserResourcePermissions() {
 	mockUserResourcePermissions["9572c6dd-96a0-4e40-a01e-56bf1f7d3c59"] = v1.UserResourcePermissionDto{
 		Metadata: v1.UserMetadata{CompanyId: ""},
 		UserId:   "9572c6dd-96a0-4e40-a01e-56bf1f7d3c59",
-		Resources: []v1.ResourceWiseRoles{
+		Resources: []v1.ResourceWiseRolesDto{
 			{
 				Name:  "pipeline",
-				Roles: []v1.Role{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}, {Name: "READ"}, {Name: "UPDATE"}, {Name: "DELETE"}}}},
+				Roles: []v1.RoleDto{{Name: "ADMIN", Permissions: []v1.Permission{{Name: "CREATE"}, {Name: "READ"}, {Name: "UPDATE"}, {Name: "DELETE"}}}},
 			},
 		},
 	}

@@ -57,9 +57,9 @@ package v1
 //	userIds := []string{"123"}
 //		// UserResourcePermissionDto -> Resource_Permission ->  Resources data
 //		resourcesNames := [][]string{{"resources1"}}
-//			// UserResourcePermissionDto -> Resource_Permission ->  Resources -> Roles data
+//			// UserResourcePermissionDto -> Resource_Permission ->  Resources -> RoleDto data
 //			rolesNames := [][]string{{"admin"}}
-//				// UserResourcePermissionDto -> Resource_Permission ->  Resources -> Roles -> Permission data
+//				// UserResourcePermissionDto -> Resource_Permission ->  Resources -> RoleDto -> Permission data
 //				permissionNames := [][]string{{"create", "read"}}
 //
 //	jsonData := []string{
@@ -116,11 +116,11 @@ package v1
 //				UserId:    "123",
 //				Resources: []struct {
 //					Name  string `json:"name" bson:"name"`
-//					Roles []Role `json:"roles" bson:"roles"`
+//					RoleDto []RoleDto `json:"roles" bson:"roles"`
 //				}{
 //					{
 //						Name: "resources1",
-//						Roles: []Role{
+//						RoleDto: []RoleDto{
 //							{
 //								Name: "admin",
 //								Permissions: []Permission{
@@ -157,11 +157,11 @@ package v1
 //					UserId:    userIds[i],
 //					Resources: []struct {
 //						Name  string `json:"name" bson:"name"`
-//						Roles []Role `json:"roles" bson:"roles"`
+//						RoleDto []RoleDto `json:"roles" bson:"roles"`
 //					}{
 //						{
 //							Name: resourcesNames[i][0],
-//							Roles: []Role{
+//							RoleDto: []RoleDto{
 //								{
 //									Name:        rolesNames[i][0],
 //									Permissions: []Permission{

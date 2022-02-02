@@ -17,9 +17,9 @@ func (u userResourcePermissionService) GetByUserID(userID string) v1.UserResourc
 		Metadata: user.Metadata,
 		UserId:   userID,
 	}
-	resourceWiseRoles := []v1.ResourceWiseRoles{}
+	resourceWiseRoles := []v1.ResourceWiseRolesDto{}
 	for _, eachResource := range user.ResourcePermission.Resources {
-		resourceWiseRole := v1.ResourceWiseRoles{Name: eachResource.Name}
+		resourceWiseRole := v1.ResourceWiseRolesDto{Name: eachResource.Name}
 		for _, eachRole := range eachResource.Roles {
 			resourceWiseRole.Roles = append(resourceWiseRole.Roles, u.roleRepo.GetByName(eachRole.Name))
 		}

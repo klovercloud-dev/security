@@ -36,7 +36,7 @@ func initPermissions() {
 
 func initRoles() {
 	permissions := dependency.GetV1PermissionService().Get()
-	role := v1.Role{
+	role := v1.RoleDto{
 		Name:        string(enums.ADMIN),
 		Permissions: permissions,
 	}

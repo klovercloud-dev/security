@@ -18,40 +18,38 @@ type Permission struct {
 	Name string `json:"name" bson:"name"`
 }
 
-// Role holds role wise permissions.
-type Role struct {
+// RoleDto holds role wise permissions.
+type RoleDto struct {
 	Name        string       `json:"name" bson:"name"`
 	Permissions []Permission `json:"permissions" bson:"permissions"`
 }
 
 // UserResourcePermissionDto holds metadata, user and resource wise permissions.
 type UserResourcePermissionDto struct {
-	Metadata  UserMetadata        `json:"metadata" bson:"-"`
-	UserId    string              `json:"user_id" bson:"user_id"`
-	Resources []ResourceWiseRoles `json:"resources" bson:"resources"`
-}
-
-// UserResourcePermission dto that holds metadata, user and resource wise roles.
-type UserResourcePermission struct {
 	Metadata  UserMetadata           `json:"metadata" bson:"-"`
 	UserId    string                 `json:"user_id" bson:"user_id"`
 	Resources []ResourceWiseRolesDto `json:"resources" bson:"resources"`
 }
 
-// ResourceWiseRoles holds resource wise roles.
-type ResourceWiseRoles struct {
-	Name  string `json:"name" bson:"name"`
-	Roles []Role `json:"roles" bson:"roles"`
+// UserResourcePermission dto that holds metadata, user and resource wise roles.
+type UserResourcePermission struct {
+	Resources []ResourceWiseRoles `json:"resources" bson:"resources"`
 }
 
-// ResourceWiseRolesDto dto that holds resource wise role dtos.
+// ResourceWiseRolesDto holds resource wise roles.
 type ResourceWiseRolesDto struct {
 	Name  string    `json:"name" bson:"name"`
 	Roles []RoleDto `json:"roles" bson:"roles"`
 }
 
-// RoleDto dto that holds role name.
-type RoleDto struct {
+// ResourceWiseRoles dto that holds resource wise role dtos.
+type ResourceWiseRoles struct {
+	Name  string `json:"name" bson:"name"`
+	Roles []Role `json:"roles" bson:"roles"`
+}
+
+// Role dto that holds role name.
+type Role struct {
 	Name string `json:"name" bson:"name"`
 }
 
@@ -194,8 +192,8 @@ func (u UserResourcePermission) Validate() error {
 	return nil
 }
 
-// Validate validates Role data
-func (r RoleDto) Validate() error {
+// Validate validates RoleDto data
+func (r Role) Validate() error {
 	if r.Name == "" {
 		return errors.New("[ERROR]: Blank role name")
 	}
