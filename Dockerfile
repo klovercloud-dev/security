@@ -5,7 +5,7 @@ COPY go.mod go.sum ./
 #RUN go env -w GOPROXY="https://goproxy.io,direct"
 RUN go mod download
 COPY . .
-RUN go build -o /app/bin/klovercloud-security .
+RUN go build -o /app/bin/ci-security .
 
 
 
@@ -15,4 +15,4 @@ WORKDIR /app
 COPY --from=builder /app/bin /app
 EXPOSE 8080
 # Run the executable
-CMD ["./klovercloud-security"]
+CMD ["./ci-security"]
