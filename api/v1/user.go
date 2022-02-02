@@ -237,10 +237,7 @@ func (u userApi) registerAdmin(context echo.Context) error {
 	formData.CreatedDate = time.Now().UTC()
 	formData.UpdatedDate = time.Now().UTC()
 	formData.Status = enums.ACTIVE
-	formData.ResourcePermission = CheckDuplicateData(formData.ResourcePermission)
-	roleMap := getRoleMapFromRoles(u.roleService.Get())
-	resourceMap := getResourceMapFromResources(u.resourceService.Get())
-	formData.ResourcePermission.Resources = filterOutNonExistingRolesAndResources(roleMap, resourceMap, formData.ResourcePermission.Resources)
+	formData.ResourcePermission = userResourcePermissionDto
 	err := formData.Validate()
 	if err != nil {
 		return common.GenerateErrorResponse(context, "[ERROR]: Failed to register user!", err.Error())
